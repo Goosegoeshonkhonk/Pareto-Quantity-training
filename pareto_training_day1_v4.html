@@ -1,0 +1,1614 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>P: Quantity Breaks & Discounts · CS Training Day 1</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --blue:#0953D3;--blue-l:#EEF4FF;--blue-m:#B3CEFF;
+  --teal:#0E9E89;--teal-l:#E8FAF7;--teal-m:#7FD9CE;
+  --grad:linear-gradient(150deg,#0953D3 8%,#8BDCCB 100%);
+  --ink:#111827;--ink2:#374151;--ink3:#6B7280;--ink4:#9CA3AF;
+  --bg:#F9FAFB;--white:#fff;--line:#E5E7EB;--line2:#D1D5DB;
+  --amber:#D97706;--amber-l:#FFFBEB;--amber-m:#FDE68A;
+  --rose:#E11D48;--rose-l:#FFF1F2;--rose-m:#FECDD3;
+  --violet:#7C3AED;--violet-l:#F5F3FF;--violet-m:#DDD6FE;
+  --green:#059669;--green-l:#ECFDF5;--green-m:#A7F3D0;
+  --r:10px;--rlg:14px;
+  --sh:0 1px 3px rgba(0,0,0,.07),0 1px 2px rgba(0,0,0,.05);
+  --shmd:0 4px 12px rgba(0,0,0,.08),0 2px 4px rgba(0,0,0,.04);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);overflow:hidden;-webkit-font-smoothing:antialiased;font-size:15px}
+
+/* TOPBAR */
+#topbar{position:fixed;top:0;left:0;right:0;z-index:300;height:50px;background:var(--white);border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 16px;gap:12px}
+.tb-logo{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.tb-logo .lp{width:28px;height:28px;border-radius:7px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:white;flex-shrink:0}
+.tb-logo .ln{font-size:13px;font-weight:700;color:var(--blue);letter-spacing:-.01em;white-space:nowrap}
+.tb-sep{width:1px;height:16px;background:var(--line2);flex-shrink:0}
+#tb-mod{font-size:12px;color:var(--ink3);font-weight:500;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#tb-num{font-size:12px;color:var(--ink4);font-weight:600;flex-shrink:0;font-variant-numeric:tabular-nums}
+#menu-btn{flex-shrink:0;width:32px;height:32px;border-radius:8px;border:1px solid var(--line);background:var(--white);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--ink3);font-size:14px;transition:all .15s}
+#menu-btn:hover{border-color:var(--blue);color:var(--blue)}
+
+/* PROGRESS */
+#prog{position:fixed;top:50px;left:0;right:0;height:2px;background:var(--line);z-index:299}
+#pf{height:100%;background:var(--grad);transition:width .3s ease;border-radius:0 2px 2px 0}
+
+/* SIDEBAR */
+#sidebar{position:fixed;top:52px;left:0;bottom:0;width:216px;background:var(--white);border-right:1px solid var(--line);overflow-y:auto;z-index:200;padding:10px 0;transform:translateX(-100%);transition:transform .25s ease}
+#sidebar.open{transform:translateX(0)}
+.sb-sec{padding:10px 14px 3px;font-size:10px;font-weight:700;color:var(--ink4);letter-spacing:.08em;text-transform:uppercase}
+.sb-item{padding:7px 14px;font-size:13px;color:var(--ink2);cursor:pointer;transition:all .15s;border-left:2px solid transparent}
+.sb-item:hover{background:var(--bg);color:var(--ink)}
+.sb-item.cur{color:var(--blue);border-left-color:var(--blue);background:var(--blue-l);font-weight:500}
+
+/* DECK */
+#deck{position:fixed;top:52px;left:0;right:0;bottom:56px;overflow:hidden}
+.slide{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:20px 28px;opacity:0;pointer-events:none;transform:translateX(32px);transition:opacity .28s ease,transform .28s ease}
+.slide.active{opacity:1;pointer-events:all;transform:translateX(0)}
+.slide.out-l{transform:translateX(-32px);opacity:0}
+.sc{width:100%;max-width:880px;max-height:calc(100vh - 118px);overflow-y:auto}
+.sc::-webkit-scrollbar{width:3px}
+.sc::-webkit-scrollbar-thumb{background:var(--line2);border-radius:3px}
+
+/* TYPOGRAPHY */
+.ey{font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--blue);display:flex;align-items:center;gap:6px;margin-bottom:10px}
+.ey::before{content:'';width:14px;height:2px;background:currentColor;border-radius:2px;flex-shrink:0}
+h1{font-size:clamp(22px,3vw,40px);font-weight:800;line-height:1.12;letter-spacing:-.02em}
+h2{font-size:clamp(17px,2.3vw,28px);font-weight:700;line-height:1.18;letter-spacing:-.015em}
+h3{font-size:16px;font-weight:600;margin-bottom:7px}
+p{font-size:14px;line-height:1.65;color:var(--ink2)}
+.lead{font-size:16px;color:var(--ink2);line-height:1.6}
+strong{font-weight:600;color:var(--ink)}
+code{font-family:ui-monospace,monospace;font-size:12px;background:var(--bg);border:1px solid var(--line);border-radius:4px;padding:1px 5px;color:var(--violet)}
+
+/* GRID / CARDS */
+.g{display:grid;gap:12px;margin-top:14px}
+.g2{grid-template-columns:repeat(2,1fr)}
+.g3{grid-template-columns:repeat(3,1fr)}
+.g4{grid-template-columns:repeat(4,1fr)}
+.card{background:var(--white);border:1px solid var(--line);border-radius:var(--rlg);padding:15px 17px;box-shadow:var(--sh)}
+.card h4{font-size:13px;font-weight:600;margin-bottom:5px}
+.card p{font-size:13px;margin:0}
+.card .ci{font-size:22px;margin-bottom:8px}
+.card.blue{border-color:var(--blue-m);background:var(--blue-l)}
+.card.teal{border-color:var(--teal-m);background:var(--teal-l)}
+.card.amber{border-color:var(--amber-m);background:var(--amber-l)}
+.card.rose{border-color:var(--rose-m);background:var(--rose-l)}
+.card.violet{border-color:var(--violet-m);background:var(--violet-l)}
+.card.green{border-color:var(--green-m);background:var(--green-l)}
+
+/* TAGS */
+.tag{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;line-height:1.6}
+.tag.blue{background:var(--blue-l);color:var(--blue);border:1px solid var(--blue-m)}
+.tag.teal{background:var(--teal-l);color:var(--teal);border:1px solid var(--teal-m)}
+.tag.amber{background:var(--amber-l);color:var(--amber);border:1px solid var(--amber-m)}
+.tag.rose{background:var(--rose-l);color:var(--rose);border:1px solid var(--rose-m)}
+.tag.violet{background:var(--violet-l);color:var(--violet);border:1px solid var(--violet-m)}
+.tag.green{background:var(--green-l);color:var(--green);border:1px solid var(--green-m)}
+.tag.ink{background:var(--bg);color:var(--ink3);border:1px solid var(--line2)}
+
+/* CALLOUTS */
+.callout{border-radius:var(--r);padding:10px 14px;display:flex;gap:8px;align-items:flex-start;font-size:13px;line-height:1.55;margin-top:10px}
+.callout .ci{flex-shrink:0;font-size:15px;margin-top:1px}
+.callout.info{background:var(--blue-l);border:1px solid var(--blue-m);color:#1e3a8a}
+.callout.warn{background:var(--amber-l);border:1px solid var(--amber-m);color:#78350f}
+.callout.ok{background:var(--green-l);border:1px solid var(--green-m);color:#065f46}
+.callout.danger{background:var(--rose-l);border:1px solid var(--rose-m);color:#881337}
+
+/* BLOCKQUOTE */
+.bq{border-left:3px solid var(--blue);background:var(--blue-l);border-radius:0 var(--r) var(--r) 0;padding:12px 16px;margin:12px 0;font-size:14px;color:#1e40af;line-height:1.6}
+
+/* CHECKLIST */
+.cl{list-style:none;display:flex;flex-direction:column;gap:7px;margin-top:8px}
+.cl li{display:flex;gap:7px;align-items:flex-start;font-size:13px;color:var(--ink2);line-height:1.5}
+.cl li::before{content:'→';color:var(--blue);font-weight:700;flex-shrink:0}
+
+/* IMAGE PLACEHOLDER */
+.ph{border-radius:var(--rlg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:16px;text-align:center;min-height:100px}
+.ph.blue{background:var(--blue-l);border:1.5px dashed var(--blue-m);color:#3b5fc0}
+.ph.teal{background:var(--teal-l);border:1.5px dashed var(--teal-m);color:#0f766e}
+.ph.amber{background:var(--amber-l);border:1.5px dashed var(--amber-m);color:#b45309}
+.ph.violet{background:var(--violet-l);border:1.5px dashed var(--violet-m);color:#6d28d9}
+.ph.rose{background:var(--rose-l);border:1.5px dashed var(--rose-m);color:#be123c}
+.ph-img-slot{width:100%;border-radius:var(--r);overflow:hidden;background:var(--bg);border:1px solid var(--line);min-height:90px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px;color:var(--ink4);font-size:12px;font-weight:500}
+.ph-img-slot img{width:100%;height:auto;display:block;border-radius:var(--r)}
+.ph-img-slot .ph-icon{font-size:24px;opacity:.5}
+.ph-img-slot .ph-label{font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;opacity:.5}
+.ph-img-slot .ph-desc{font-size:11px;max-width:260px;text-align:center;line-height:1.4}
+
+/* ACTIVITY */
+.act-hdr{display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.act-badge{display:inline-flex;align-items:center;gap:4px;background:var(--amber-l);border:1px solid var(--amber-m);color:var(--amber);font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;letter-spacing:.04em}
+.timer-tag{background:var(--bg);border:1px solid var(--line2);color:var(--ink3);font-size:11px;font-weight:600;padding:3px 8px;border-radius:20px}
+
+/* FLOW */
+.flow{display:flex;align-items:center;flex-wrap:wrap;gap:0;margin-top:14px}
+.fn{background:var(--white);border:1px solid var(--line);border-radius:var(--r);padding:8px 14px;font-size:12px;font-weight:500;box-shadow:var(--sh);text-align:center;min-width:88px}
+.fa{color:var(--ink4);font-size:16px;padding:0 5px;flex-shrink:0}
+
+/* TABLE */
+.cmp-table{width:100%;border-collapse:collapse;margin-top:14px;font-size:13px}
+.cmp-table th{padding:8px 12px;text-align:left;font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink3);border-bottom:2px solid var(--line)}
+.cmp-table td{padding:9px 12px;border-bottom:1px solid var(--line);color:var(--ink2);vertical-align:top}
+.cmp-table tr:last-child td{border-bottom:none}
+.cmp-table td:first-child{font-weight:600;color:var(--ink);white-space:nowrap}
+
+/* DRAG & DROP */
+.drag-pool{display:flex;flex-wrap:wrap;gap:7px;background:var(--bg);border:1px dashed var(--line2);border-radius:var(--r);padding:12px;min-height:46px;margin-bottom:12px}
+.chip{background:var(--white);border:1px solid var(--line);border-radius:7px;padding:5px 11px;font-size:12px;font-weight:500;cursor:grab;user-select:none;box-shadow:var(--sh);transition:all .15s;color:var(--ink)}
+.chip:hover{box-shadow:var(--shmd)}
+.chip.dragging{opacity:.3}
+.chip.ok{background:var(--green-l);border-color:var(--green-m);color:var(--green)}
+.chip.bad{background:var(--rose-l);border-color:var(--rose-m);color:var(--rose)}
+.dzones{display:grid;gap:10px}
+.dz2{grid-template-columns:repeat(2,1fr)}
+.dz3{grid-template-columns:repeat(3,1fr)}
+.dz5{grid-template-columns:repeat(5,1fr)}
+.dzone{border:2px dashed var(--line2);border-radius:var(--rlg);padding:10px;min-height:80px;transition:border-color .2s,background .2s}
+.dzone.over{border-color:var(--blue);background:var(--blue-l)}
+.dz-label{font-size:11px;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:4px}
+.dzone .chip{margin-bottom:5px;display:block;width:fit-content}
+.drag-fb{margin-top:8px;font-size:13px;font-weight:600;min-height:16px}
+
+/* QUIZ */
+.quiz-wrap{display:flex;flex-direction:column;gap:14px}
+.qcard{background:var(--white);border:1px solid var(--line);border-radius:var(--rlg);padding:15px 17px;box-shadow:var(--sh)}
+.qq{font-size:14px;font-weight:600;margin-bottom:11px;line-height:1.45}
+.qopts{display:flex;flex-direction:column;gap:7px}
+.qopt{display:flex;align-items:center;gap:9px;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:9px 13px;font-size:13px;cursor:pointer;transition:all .15s}
+.qopt:hover{border-color:var(--blue);background:var(--blue-l)}
+.qopt .ok-k{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--line2);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;color:var(--ink3)}
+.qopt.correct{border-color:var(--green-m);background:var(--green-l);color:var(--green)}
+.qopt.correct .ok-k{border-color:var(--green);color:var(--green)}
+.qopt.wrong{border-color:var(--rose-m);background:var(--rose-l);color:var(--rose)}
+.qopt.wrong .ok-k{border-color:var(--rose);color:var(--rose)}
+.qfb{margin-top:8px;font-size:12px;font-weight:500;min-height:16px}
+
+/* MATCH (Nối cột) */
+.match-wrap{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:14px}
+.match-col{display:flex;flex-direction:column;gap:8px}
+.match-col-label{font-size:11px;font-weight:700;color:var(--ink3);letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px}
+.match-item{background:var(--white);border:2px solid var(--line);border-radius:8px;padding:10px 14px;font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;line-height:1.4}
+.match-item:hover{border-color:var(--blue)}
+.match-item.selected{border-color:var(--blue);background:var(--blue-l);color:var(--blue)}
+.match-item.matched-ok{border-color:var(--green-m);background:var(--green-l);color:var(--green);cursor:default}
+.match-item.matched-bad{border-color:var(--rose-m);background:var(--rose-l);color:var(--rose)}
+.match-fb{margin-top:10px;font-size:13px;font-weight:600;min-height:16px;text-align:center}
+
+/* TF */
+.tf-list{display:flex;flex-direction:column;gap:10px}
+.tf-row{background:var(--white);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px;box-shadow:var(--sh)}
+.tf-stmt{font-size:13px;font-weight:500;margin-bottom:8px;line-height:1.4}
+.tf-btns{display:flex;gap:7px}
+.tf-btn{padding:5px 16px;border-radius:7px;border:1px solid var(--line);background:var(--bg);font-size:12px;font-weight:600;cursor:pointer;color:var(--ink2);font-family:inherit;transition:all .15s}
+.tf-btn:hover{border-color:var(--blue);color:var(--blue)}
+.tf-btn.correct{background:var(--green-l);border-color:var(--green-m);color:var(--green)}
+.tf-btn.wrong{background:var(--rose-l);border-color:var(--rose-m);color:var(--rose)}
+.tf-exp{font-size:12px;color:var(--ink3);margin-top:7px;padding-top:7px;border-top:1px solid var(--line);display:none;line-height:1.5}
+.tf-exp.show{display:block}
+
+/* VOTING */
+.vote-q{background:var(--white);border:1px solid var(--line);border-radius:var(--rlg);padding:16px 18px;box-shadow:var(--sh);margin-bottom:12px}
+.vq-text{font-size:15px;font-weight:600;margin-bottom:13px;line-height:1.4}
+.vopts{display:flex;flex-direction:column;gap:8px}
+.vopt{display:flex;align-items:center;gap:10px;cursor:pointer;padding:9px 13px;border-radius:8px;border:1.5px solid var(--line);background:var(--bg);transition:all .15s;font-size:13px}
+.vopt:hover{border-color:var(--blue);background:var(--blue-l)}
+.vopt.voted{border-color:var(--blue);background:var(--blue-l);color:var(--blue);font-weight:500}
+.vbar-wrap{flex:1;height:7px;background:var(--line);border-radius:4px;overflow:hidden;display:none}
+.vbar{height:100%;background:var(--blue);border-radius:4px;transition:width .5s ease}
+.vcnt{font-size:11px;font-weight:700;color:var(--ink3);min-width:26px;text-align:right;display:none}
+.vrs .vbar-wrap,.vrs .vcnt{display:none}
+.vrev-btn{background:var(--blue);color:white;border:none;border-radius:7px;padding:7px 16px;font-size:12px;font-weight:700;cursor:pointer;margin-top:8px;font-family:inherit;transition:background .15s}
+.vrev-btn:hover{background:#0842b0}
+.vexplain{font-size:12px;color:var(--ink2);font-weight:600;display:none;margin-top:6px;line-height:1.5}
+
+/* BINGO */
+.bingo-wrap{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap}
+.bingo-grid{display:grid;gap:6px;flex-shrink:0}
+.bc{background:var(--white);border:1px solid var(--line);border-radius:var(--r);padding:10px 6px;font-size:11px;font-weight:500;text-align:center;cursor:pointer;transition:all .2s;box-shadow:var(--sh);line-height:1.35}
+.bc:hover{border-color:var(--blue)}
+.bc.marked{background:var(--teal-l);border-color:var(--teal-m);color:var(--teal);font-weight:600}
+.bingo-panel{flex:1;min-width:220px;background:var(--blue-l);border:1px solid var(--blue-m);border-radius:var(--rlg);padding:15px 17px}
+.bp-label{font-size:10px;font-weight:700;color:var(--blue);letter-spacing:.07em;margin-bottom:6px}
+.bp-text{font-size:14px;font-weight:500;line-height:1.5;color:var(--ink);margin-bottom:12px}
+.bingo-nav{display:flex;gap:7px;flex-wrap:wrap}
+.bbtn{padding:6px 14px;border-radius:7px;font-size:12px;font-weight:600;border:1px solid var(--line);background:var(--white);cursor:pointer;color:var(--ink2);transition:all .15s;box-shadow:var(--sh);font-family:inherit}
+.bbtn:hover{border-color:var(--blue);color:var(--blue)}
+.bbtn.primary{background:var(--blue);color:white;border-color:var(--blue)}
+.bbtn.primary:hover{background:#0842b0}
+.bingo-ans{margin-top:10px;font-size:13px;color:var(--green);font-weight:700;display:none;padding-top:8px;border-top:1px solid var(--blue-m);line-height:1.4}
+.bingo-ans.show{display:block}
+.bingo-ans.wrong-ans{color:var(--rose)}
+#bingo-status{margin-top:8px;font-size:12px;font-weight:600;color:var(--ink3);min-height:16px}
+
+/* TICKET */
+.ticket-msg{font-family:ui-monospace,monospace;font-size:12px;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:11px;color:var(--ink2);line-height:1.6;margin-bottom:11px;white-space:pre-wrap}
+.ticket-q{font-size:13px;font-weight:600;margin-bottom:8px;color:var(--ink)}
+.ticket-ta{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:8px;color:var(--ink);font-family:inherit;font-size:13px;padding:8px 10px;resize:none;min-height:60px;outline:none;transition:border-color .15s;line-height:1.5}
+.ticket-ta:focus{border-color:var(--blue)}
+.show-ans-btn{margin-top:7px;background:var(--bg);border:1px solid var(--line2);color:var(--ink3);font-size:12px;font-weight:600;padding:4px 12px;border-radius:6px;cursor:pointer;font-family:inherit;transition:all .15s}
+.show-ans-btn:hover{border-color:var(--blue);color:var(--blue)}
+.ticket-ans{margin-top:8px;font-size:13px;color:var(--green);font-weight:600;display:none;padding-top:8px;border-top:1px solid var(--line);line-height:1.5}
+.ticket-ans.show{display:block}
+
+/* EXIT TICKET */
+.exit-ticket{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
+.et-card{background:var(--white);border:1px solid var(--line);border-radius:var(--rlg);padding:14px;box-shadow:var(--sh)}
+.et-icon{font-size:20px;margin-bottom:5px}
+.et-label{font-size:11px;font-weight:700;color:var(--ink3);display:block;margin-bottom:7px;text-transform:uppercase;letter-spacing:.04em}
+.et-card textarea{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:7px;color:var(--ink);font-family:inherit;font-size:12px;padding:8px 10px;resize:none;min-height:65px;outline:none;transition:border-color .15s;line-height:1.5}
+.et-card textarea:focus{border-color:var(--blue)}
+
+/* SPINWHEEL */
+#spin-section{text-align:center}
+#spin-canvas{border-radius:50%;box-shadow:var(--shmd)}
+#spin-question{margin:16px auto 0;max-width:500px;background:var(--white);border:1px solid var(--line);border-radius:var(--rlg);padding:16px 20px;font-size:15px;font-weight:600;line-height:1.4;min-height:60px;display:flex;align-items:center;justify-content:center;text-align:center;box-shadow:var(--sh)}
+#spin-answer{margin-top:10px;max-width:500px;margin-left:auto;margin-right:auto;font-size:14px;color:var(--green);font-weight:600;display:none;background:var(--green-l);border:1px solid var(--green-m);border-radius:var(--r);padding:10px 14px;line-height:1.5}
+#spin-answer.show{display:block}
+
+/* HOT TAKES */
+.hot-take-card{background:var(--white);border:2px solid var(--line);border-radius:var(--rlg);padding:20px;box-shadow:var(--sh);margin-bottom:12px}
+.hot-take-card.reveal-true{border-color:var(--green-m);background:var(--green-l)}
+.hot-take-card.reveal-false{border-color:var(--rose-m);background:var(--rose-l)}
+.ht-stmt{font-size:15px;font-weight:600;margin-bottom:12px;line-height:1.4}
+.ht-btns{display:flex;gap:8px}
+.ht-btn{flex:1;padding:9px;border-radius:8px;border:1.5px solid var(--line);background:var(--bg);font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .15s}
+.ht-btn:hover{border-color:var(--blue);background:var(--blue-l);color:var(--blue)}
+.ht-reveal{margin-top:10px;font-size:13px;font-weight:600;display:none;padding-top:10px;border-top:1px solid var(--line);line-height:1.5}
+.ht-reveal.show{display:block}
+
+/* BOTNAV */
+#botnav{position:fixed;bottom:0;left:0;right:0;height:56px;background:var(--white);border-top:1px solid var(--line);display:flex;align-items:center;justify-content:center;gap:12px;z-index:300}
+.nav-btn{width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:var(--white);color:var(--ink2);font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:var(--sh);transition:all .15s}
+.nav-btn:hover:not(:disabled){border-color:var(--blue);color:var(--blue);box-shadow:var(--shmd)}
+.nav-btn:disabled{opacity:.3;cursor:not-allowed;box-shadow:none}
+.dots-row{display:flex;gap:4px;align-items:center}
+.dot{width:4px;height:4px;border-radius:50%;background:var(--line2);cursor:pointer;transition:all .2s}
+.dot.active{background:var(--blue);width:14px;border-radius:3px}
+.kbd-hint{position:absolute;right:14px;font-size:10px;color:var(--ink4);display:flex;gap:4px;align-items:center}
+.kbd{background:var(--bg);border:1px solid var(--line2);border-radius:3px;padding:1px 5px;font-size:9px;font-weight:700;color:var(--ink3)}
+
+/* LIGHTBOX */
+#lightbox{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.85);display:none;align-items:center;justify-content:center;cursor:zoom-out}
+#lightbox.open{display:flex}
+#lightbox img{max-width:92vw;max-height:92vh;border-radius:8px;box-shadow:0 8px 40px rgba(0,0,0,.4);object-fit:contain}
+#lightbox-close{position:absolute;top:16px;right:20px;width:36px;height:36px;border-radius:50%;border:none;background:rgba(255,255,255,.15);color:white;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s}
+#lightbox-close:hover{background:rgba(255,255,255,.3)}
+
+/* RESPONSIVE */
+@media(max-width:860px){.g3,.g4{grid-template-columns:repeat(2,1fr)}.dz3,.dz5{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){
+  #topbar{padding:0 10px;gap:8px}
+  .tb-logo .ln{display:none}
+  #tb-num{display:none}
+  .slide{padding:10px 12px 6px}
+  h1{font-size:20px}h2{font-size:17px}
+  .g2,.g3,.g4,.dz2,.dz3,.dz5,.exit-ticket,.match-wrap{grid-template-columns:1fr}
+  .bingo-wrap{flex-direction:column}
+  .bingo-grid{grid-template-columns:repeat(3,1fr)}
+  .bc{font-size:10px;padding:7px 3px}
+  #botnav{height:52px}
+  .nav-btn{width:34px;height:34px}
+  .kbd-hint{display:none}
+}
+</style>
+</head>
+<body>
+
+<div id="topbar">
+  <button id="menu-btn" onclick="toggleSB()">☰</button>
+  <div class="tb-sep"></div>
+  <div class="tb-logo">
+    <div class="lp">P</div>
+    <span class="ln">Quantity Breaks &amp; Discounts</span>
+  </div>
+  <div class="tb-sep"></div>
+  <span id="tb-mod">Khởi động</span>
+  <span id="tb-num">1 / 38</span>
+</div>
+<div id="prog"><div id="pf"></div></div>
+
+<div id="sidebar">
+  <div class="sb-sec">Khởi động</div>
+  <div class="sb-item" onclick="go(0)">01 · Trang bìa</div>
+  <div class="sb-item" onclick="go(1)">02 · Ground rules</div>
+  <div class="sb-item" onclick="go(2)">03 · ⚡ Icebreaker — App listing</div>
+  <div class="sb-sec">Module 1 · Overview</div>
+  <div class="sb-item" onclick="go(3)">04 · Discount Function</div>
+  <div class="sb-item" onclick="go(4)">05 · 3 nhóm Offer Types</div>
+  <div class="sb-item" onclick="go(5)">06 · ⚡ Action First</div>
+  <div class="sb-sec">Module 2 · Onboarding</div>
+  <div class="sb-item" onclick="go(6)">07 · ⚡ Voting</div>
+  <div class="sb-item" onclick="go(7)">08 · Setup Guide</div>
+  <div class="sb-item" onclick="go(8)">09 · Flow install</div>
+  <div class="sb-item" onclick="go(9)">10 · ⚡ True/False</div>
+  <div class="sb-sec">Module 3A · General Settings</div>
+  <div class="sb-item" onclick="go(10)">11 · Campaign vs Display Name</div>
+  <div class="sb-item" onclick="go(11)">12 · Discounted Products</div>
+  <div class="sb-item" onclick="go(12)">13 · Set Quantity Conditions</div>
+  <div class="sb-item" onclick="go(13)">14 · ⚡ Nối cột: General Settings</div>
+  <div class="sb-item" onclick="go(14)">15 · Target Customer</div>
+  <div class="sb-item" onclick="go(15)">16 · ⚡ Quiz: Target Customer</div>
+  <div class="sb-item" onclick="go(16)">17 · Schedule</div>
+  <div class="sb-item" onclick="go(17)">18 · Market (Apply to countries)</div>
+  <div class="sb-sec">Offer Types · Tổng quan</div>
+  <div class="sb-item" onclick="go(18)">19 · Tổng quan Offer Types</div>
+  <div class="sb-item" onclick="go(19)">20 · QB vs One Discount</div>
+  <div class="sb-sec">Module 3B · Quantity Breaks</div>
+  <div class="sb-item" onclick="go(20)">21 · QB Concept + Templates</div>
+  <div class="sb-item" onclick="go(21)">22 · ⚡ Chọn layout nào?</div>
+  <div class="sb-item" onclick="go(22)">23 · Layouts overview</div>
+  <div class="sb-item" onclick="go(23)">24 · Layouts chi tiết</div>
+  <div class="sb-item" onclick="go(24)">25 · ⚡ Bingo: Chọn layout</div>
+  <div class="sb-item" onclick="go(25)">26 · ⚡ Tình huống: Multiples</div>
+  <div class="sb-item" onclick="go(26)">27 · Multiples (QB vs Order)</div>
+  <div class="sb-item" onclick="go(27)">28 · Advanced settings</div>
+  <div class="sb-item" onclick="go(28)">29 · Troubleshooting: Widget không hiện</div>
+  <div class="sb-sec">Module 3C · One Discount</div>
+  <div class="sb-item" onclick="go(29)">30 · One Discount concept</div>
+  <div class="sb-item" onclick="go(30)">31 · Sub Rules + Multiples OD</div>
+  <div class="sb-item" onclick="go(31)">32 · Display + Launch Time</div>
+  <div class="sb-item" onclick="go(32)">33 · ⚡ Quiz: QB vs One Discount</div>
+  <div class="sb-sec">Module 4 · Real Tickets</div>
+  <div class="sb-item" onclick="go(33)">34 · Ticket types overview</div>
+  <div class="sb-item" onclick="go(34)">35 · ⚡ Ticket Quiz #1 (MCQ)</div>
+  <div class="sb-item" onclick="go(35)">36 · ⚡ Ảnh settings → vào đâu sửa?</div>
+  <div class="sb-sec">Wrap-Up</div>
+  <div class="sb-item" onclick="go(36)">37 · ⚡ Spinwheel Lightning Round</div>
+  <div class="sb-item" onclick="go(37)">38 · Feedback</div>
+</div>
+
+<div id="deck">
+
+<!-- 01 TITLE -->
+<div class="slide active" data-mod="Khởi động">
+<div class="sc" style="text-align:center">
+  <div style="width:68px;height:68px;border-radius:16px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:800;color:white;margin:0 auto 18px">P</div>
+  <div class="ey" style="justify-content:center;margin-bottom:12px">CS TRAINING · DAY 1</div>
+  <h1 style="margin-bottom:14px">P: Quantity Breaks<br><span style="background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent">&amp; Discounts</span></h1>
+  <p class="lead" style="max-width:460px;margin:0 auto 20px">Format: <strong>Action First, Talk Later</strong> — thử trước, hiểu sau.</p>
+  <div style="display:flex;gap:7px;justify-content:center;flex-wrap:wrap">
+    <span class="tag blue">Thực hành nhiều nhất có thể</span><span class="tag teal">Không đánh giá</span><span class="tag amber">Hãy hỏi càng nhiều càng tốt</span>
+  </div>
+
+</div>
+</div>
+
+<!-- 02 GROUND RULES -->
+<div class="slide" data-mod="Khởi động">
+<div class="sc">
+  <div class="ey">Ground Rules</div>
+  <h2 style="margin-bottom:16px">Nguyên tắc của buổi học</h2>
+  <div class="g g2">
+    <div class="card blue"><div class="ci">❓</div><h4>Không có câu hỏi nào là dở</h4><p>Hãy hỏi bất cứ lúc nào bạn có thắc mắc. Trong buổi training này, không ai đánh giá câu hỏi của bạn hết</p></div>
+    <div class="card amber"><div class="ci">🔁</div><h4>Làm trước, hiểu sau</h4><p>Bắt đầu bằng thực hành. Có context giúp bạn liên hệ với kiến thức dễ dàng hơn.</p></div>
+    <div class="card green"><div class="ci">✅</div><h4>Sai cũng được</h4><p>Sai giúp ghi nhớ lâu hơn. Có khi việc bạn hiểu sai lại đem đến insights cho Pareto đó.</p></div>
+    <div class="card teal"><div class="ci">💬</div><h4>Chia sẻ thoải mái</h4><p>Nếu bạn có cách tốt hơn, hay gặp các case thực tế liên quan hãy thoải mái sharing.</p></div>
+  </div>
+</div>
+</div>
+
+<!-- 03 ICEBREAKER -->
+<div class="slide" data-mod="Khởi động · Icebreaker">
+<div class="sc">
+  <div class="act-hdr"><span class="act-badge">⚡ ICEBREAKER</span></div>
+  <h2 style="margin-bottom:14px">Ấn tượng đầu tiên của bạn? 👀</h2>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start">
+
+    <!-- LEFT: image slider -->
+    <div>
+      <div id="listing-slider" style="position:relative;border-radius:var(--rlg);overflow:hidden;background:var(--bg);border:1px solid var(--line)">
+        <!-- slides -->
+        <div class="ls-item active" style="display:block">
+          <img src="images/App-listing-pareto.png" alt="App listing overview" style="width:100%;height:auto;display:block;cursor:pointer" onclick="openLightbox(this.src)">
+        </div>
+        <div class="ls-item" style="display:none">
+          <img src="images/App-listing-pareto-1.png" alt="Screenshots / features" style="width:100%;height:auto;display:block;cursor:pointer" onclick="openLightbox(this.src)">
+        </div>
+        <div class="ls-item" style="display:none">
+          <img src="images/App-listing-pareto-2.png" alt="Reviews / ratings" style="width:100%;height:auto;display:block;cursor:pointer" onclick="openLightbox(this.src)">
+        </div>
+        <!-- nav arrows -->
+        <button onclick="lsNav(-1)" style="position:absolute;left:8px;top:50%;transform:translateY(-50%);width:28px;height:28px;border-radius:50%;border:1px solid var(--line);background:rgba(255,255,255,.9);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;z-index:2;box-shadow:var(--sh)">‹</button>
+        <button onclick="lsNav(1)" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);width:28px;height:28px;border-radius:50%;border:1px solid var(--line);background:rgba(255,255,255,.9);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;z-index:2;box-shadow:var(--sh)">›</button>
+      </div>
+      <!-- dots -->
+      <div style="display:flex;gap:5px;justify-content:center;margin-top:8px" id="ls-dots">
+        <div style="width:6px;height:6px;border-radius:50%;background:var(--blue)"></div>
+        <div style="width:6px;height:6px;border-radius:50%;background:var(--line2)"></div>
+        <div style="width:6px;height:6px;border-radius:50%;background:var(--line2)"></div>
+      </div>
+    </div>
+
+    <!-- RIGHT: 3 questions stacked -->
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div class="card">
+        <div style="font-size:18px;margin-bottom:6px">🤔</div>
+        <h4>App này làm gì?</h4>
+        <p style="font-size:13px">Nhìn listing — bạn đoán app solve vấn đề gì cho merchant?</p>
+      </div>
+      <div class="card">
+        <div style="font-size:18px;margin-bottom:6px">💬</div>
+        <h4>Khách hay hỏi gì?</h4>
+        <p style="font-size:13px">Nếu là merchant mới cài, câu đầu tiên bạn sẽ hỏi CS là gì?</p>
+      </div>
+      <div class="card">
+        <div style="font-size:18px;margin-bottom:6px">⭐</div>
+        <h4>Điểm bạn thấy thú vị?</h4>
+        <p style="font-size:13px">Feature hoặc câu mô tả nào trong listing bắt mắt bạn?</p>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="callout info" style="margin-top:12px">
+    <span class="ci">💡</span>
+    <div>Trainer: Không có đáp án đúng sai — để mọi người warm up và trainer hiểu trainee đang nhìn app từ góc độ nào.</div>
+  </div>
+</div>
+</div>
+
+<!-- 04 DISCOUNT FUNCTION (question-first) -->
+<div class="slide" data-mod="Module 1 · General Terms">
+<div class="sc">
+  <div class="ey">Module 1 · General Terms</div>
+  <h2 style="margin-bottom:16px">Bạn nghĩ discount của Pareto khác gì Shopify? 🔧</h2>
+  <div style="border-radius:var(--rlg);overflow:hidden;border:1px solid var(--line);margin-bottom:14px">
+  </div>
+  <p style="margin-bottom:16px;font-size:14px;color:var(--ink2)">Thảo luận nhanh trước khi xem đáp án — theo bạn, Pareto tạo discount kiểu gì? Có giống discount code không?</p>
+  <div id="df-answer" style="display:none">
+    <div class="g g2">
+      <div class="card teal"><div class="ci">🛍️</div><h4 style="color:var(--teal)">Shopify Native Discount</h4><p>Logic tính giảm giá build sẵn trong Shopify. Ổn định, luôn hoạt động với đơn nhỏ–trung bình.</p></div>
+      <div class="card blue"><div class="ci">🚀</div><h4 style="color:var(--blue)">Pareto = Automatic Discount</h4><p>Dùng đúng Shopify function. Tự động apply — <strong>không cần nhập code</strong>.</p></div>
+    </div>
+    <div class="callout danger" style="margin-top:12px"><span class="ci">⚠️</span><div><strong>Pareto KHÔNG phải coupon code</strong> và KHÔNG phải manual discount. Đây là điểm phân biệt quan trọng nhất.</div></div>
+    <div class="callout info"><span class="ci">ℹ️</span><div><strong>Manual discount</strong> (Advanced plan): Pareto tự xử lý logic, bypass Shopify. Dùng khi đơn có <strong>&gt;10 line items</strong>. Nhược: không stack với free shipping/coupon, có thể break khi Shopify update. Chỉ work với Quantity Breaks.</div></div>
+  </div>
+  <button onclick="document.getElementById('df-answer').style.display='block';this.style.display='none'" style="margin-top:14px;background:var(--blue);color:white;border:none;padding:10px 24px;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit">Show đáp án</button>
+</div>
+</div>
+
+<!-- 05 3 GROUPS -->
+<div class="slide" data-mod="Module 1 · 3 nhóm Offer Types">
+<div class="sc">
+  <div class="ey">3 nhóm Offer Types</div>
+  <h2 style="margin-bottom:14px">Tất cả offer chia làm 3 nhóm</h2>
+  <div class="g g3">
+    <div class="card amber"><div class="ci">💸</div><h4 style="color:var(--amber)">Spent-based</h4><p style="font-size:12px;margin-bottom:8px">Trigger bởi số tiền / số lượng mua</p><div style="display:flex;flex-direction:column;gap:4px"><span class="tag amber">Spend &amp; Save Rewards</span><span class="tag amber">VAT-inclusive tiers</span><span class="tag amber">Order Discount</span></div></div>
+    <div class="card teal"><div class="ci">📦</div><h4 style="color:var(--teal)">Product-based</h4><p style="font-size:12px;margin-bottom:8px">Trigger bởi sản phẩm cụ thể trong cart</p><div style="display:flex;flex-direction:column;gap:4px"><span class="tag teal">Clearance Stack (cross-sell)</span><span class="tag teal">All-In-One VIP</span><span class="tag teal">Buy 1 Get 1</span></div></div>
+    <div class="card blue"><div class="ci">🔢</div><h4 style="color:var(--blue)">Quantity-based</h4><p style="font-size:12px;margin-bottom:8px">Trigger bởi số lượng item trong cart</p><div style="display:flex;flex-direction:column;gap:4px"><span class="tag blue">Tiered Discount</span><span class="tag blue">Quick Card Qty Tiers</span><span class="tag blue">Bulk Order Quote</span></div></div>
+  </div>
+  <div class="callout ok" style="margin-top:12px"><span class="ci">💡</span><div><strong>Offer Template</strong> = cấu hình sẵn từ các loại trên. Là điểm xuất phát — merchant chỉnh được sau. <strong>⚠️ Tiered Break</strong> (offer type cũ) đã bỏ. Nếu khách cần → Pro+, liên hệ dev, không khuyến khích.</div></div>
+</div>
+</div>
+
+<!-- 03b ACTION FIRST -->
+<div class="slide" data-mod="Module 1 · Action First">
+<div class="sc">
+  <div class="act-hdr"><span class="act-badge">⚡ ACTION FIRST</span></div>
+  <h2 style="margin-bottom:8px">Thử trước khi bắt đầu 🧪</h2>
+  <p style="margin-bottom:16px;font-size:13px">Hãy install app và làm theo hướng dẫn dưới đây <strong>như 1 merchant không biết gì về app</strong>. Hãy note lại những gì bạn thấy.</p>
+
+  <div style="display:flex;flex-direction:column;gap:10px">
+    <div class="card blue" style="display:flex;gap:12px;align-items:flex-start">
+      <span style="font-size:20px;flex-shrink:0">1</span>
+      <div>
+        <h4>Install app</h4>
+      </div>
+    </div>
+    <div class="card teal" style="display:flex;gap:12px;align-items:flex-start">
+      <span style="font-size:20px;flex-shrink:0">2</span>
+      <div>
+        <h4>Tạo rule và show thành công ở product page</h4>
+      </div>
+    </div>
+    <div class="card amber" style="display:flex;gap:12px;align-items:flex-start">
+      <span style="font-size:20px;flex-shrink:0">3</span>
+      <div>
+        <h4>Ghi lại 2–3 điều bạn thắc mắc</h4>
+        <p style="font-size:13px">Câu hỏi gì nảy ra trong đầu bạn? Hãy chia sẻ thoải mái. Đây đều là những insights vô cùng có giá trị với Pareto đó ạ.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout warn" style="margin-top:12px">
+    <span class="ci">⏰</span>
+    <div>Thời gian tối đa: 10 phút.</div>
+  </div>
+</div>
+</div>
+
+<!-- 06 VOTING -->
+<div class="slide" data-mod="Module 2 · Onboarding">
+<div class="sc">
+  <div class="act-hdr"><span class="act-badge">⚡ VOTING</span></div>
+  <h2 style="margin-bottom:14px">Theo bạn, điều nào đúng? 🙋</h2>
+  <div id="vote-container"></div>
+</div>
+</div>
+
+<!-- 08 SETUP GUIDE -->
+<div class="slide" data-mod="Module 2 · Setup Guide">
+<div class="sc">
+  <div class="ey">Setup Guide · Dashboard</div>
+  <h2 style="margin-bottom:14px">3 bước để campaign đầu tiên hoạt động ✅</h2>
+  <div style="border-radius:var(--rlg);overflow:hidden;border:1px solid var(--line);margin-bottom:12px">
+    <img src="images/Slide8.png" alt="Setup Guide" style="width:100%;height:auto;display:block;cursor:pointer" onclick="openLightbox(this.src)">
+  </div>
+  <div style="display:flex;flex-direction:column;gap:9px">
+    <div class="card teal" style="display:flex;gap:12px;align-items:flex-start"><span style="font-size:20px;flex-shrink:0">1️⃣</span><div><h4>Enable App Embed</h4><p style="font-size:13px">Bật để widget &amp; notice hiển thị. <strong>⚠️ Nếu không enable:</strong> discount vẫn hoạt động (Shopify Discount) — nhưng widget sẽ không hiện.</p></div></div>
+    <div class="card amber" style="display:flex;gap:12px;align-items:flex-start"><span style="font-size:20px;flex-shrink:0">2️⃣</span><div><h4>Add App Block</h4><p style="font-size:13px">Kiểm soát vị trí widget trên product page. Không add block → app tự hiển thị phía trên nút <code>Add to Cart</code>.</p></div></div>
+    <div class="card blue" style="display:flex;gap:12px;align-items:flex-start"><span style="font-size:20px;flex-shrink:0">3️⃣</span><div><h4>Tạo &amp; test campaign đầu tiên</h4><p style="font-size:13px">Tạo 1 campaign đơn giản, xác nhận hiển thị đúng trên storefront.</p></div></div>
+  </div>
+</div>
+</div>
+
+<!-- 07 ONBOARDING FLOW -->
+<div class="slide" data-mod="Module 2 · Onboarding">
+<div class="sc">
+  <div class="ey">Module 2 · Onboarding &amp; Dashboard</div>
+  <h2 style="margin-bottom:14px">Flow sau khi install app 🗺️</h2>
+  <div class="flow">
+    <div class="fn" style="border-color:var(--blue-m);background:var(--blue-l)">📥 Install</div><div class="fa">→</div>
+    <div class="fn">📋 Survey</div><div class="fa">→</div>
+    <div class="fn" style="border-color:var(--violet-m);background:var(--violet-l)">🤖 AI Setup</div><div class="fa">→</div>
+    <div class="fn" style="border-color:var(--teal-m);background:var(--teal-l)">📊 Dashboard</div>
+  </div>
+  <div class="g g2" style="margin:14px 0">
+    <div style="border-radius:var(--rlg);overflow:hidden;border:1px solid var(--line)">
+      <img src="images/Slide9-1.png" alt="Survey screen" style="width:100%;height:auto;display:block;cursor:pointer" onclick="openLightbox(this.src)">
+    </div>
+    <div style="border-radius:var(--rlg);overflow:hidden;border:1px solid var(--line)">
+      <img src="images/Slide9-2.png" alt="AI Setup screen" style="width:100%;height:auto;display:block;cursor:pointer" onclick="openLightbox(this.src)">
+    </div>
+  </div>
+  <div class="g g2">
+    <div class="card"><h4>📋 Survey</h4><ul class="cl"><li>Collect thông tin + mục đích → suggest discount phù hợp</li><li>Email = email nhận thông báo update (đổi → contact CS → CS báo team)</li><li><strong>Skip</strong> → Dashboard | <strong>Continue</strong> → AI setup</li></ul></div>
+    <div class="card"><h4>🤖 AI Setup Flow</h4><ul class="cl"><li>Gõ hoặc chọn text mô tả discount → app suggest template</li><li>Có thể "Create" campaign ngay từ bước này</li><li>User <strong>Skip</strong> → CS nhận alert → chủ động chat hỗ trợ</li></ul></div>
+  </div>
+</div>
+</div>
+
+<!-- 09 TRUE/FALSE -->
+<div class="slide" data-mod="Module 2 · Quiz">
+<div class="sc">
+  <div class="act-hdr"><span class="act-badge">⚡ QUIZ</span><span class="tag teal">True / False</span></div>
+  <h2 style="margin-bottom:14px">Bạn đã nắm được chưa? 🤔</h2>
+  <div class="tf-list" id="tf-list"></div>
+</div>
+</div>
+
+<!-- 10 CAMPAIGN VS DISPLAY NAME -->
+<div class="slide" data-mod="Module 3A · General Settings">
+<div class="sc">
+  <div class="ey">Module 3A · General Settings</div>
+  <h2 style="margin-bottom:14px">Campaign Name vs Display Name 🏷️</h2>
+  <div style="border-radius:var(--rlg);overflow:hidden;border:1px solid var(--line);margin-bottom:14px">
+    <img src="images/Slide-11.png" alt="Campaign Name vs Display Name" style="width:100%;height:auto;display:block;cursor:pointer" onclick="openLightbox(this.src)">
+  </div>
+  <div class="g g2">
+    <div class="card blue"><div class="ci">🗂️</div><h4 style="color:var(--blue)">Campaign Name</h4><p>Tên nội bộ — merchant đặt để dễ quản lý. Có thể hiển thị trong widget.</p></div>
+    <div class="card amber"><div class="ci">🏷️</div><h4 style="color:var(--amber)">Display Name</h4><p>Hiển thị khi discount apply: <strong>cart page, checkout, order</strong>. Tương tự discount code label.</p></div>
+  </div>
+  <div class="callout ok" style="margin-top:12px"><span class="ci">💡</span><div><strong>Display Name trống</strong> → app tự dùng Campaign Name thay thế. Không bao giờ hiển thị trống.</div></div>
+  <div style="border-radius:var(--rlg);overflow:hidden;border:1px solid var(--line);margin-top:14px">
+    <img src="images/Slide-11-bt.png" alt="Nếu khách muốn chỉnh/xóa title này?" style="width:100%;height:auto;display:block;cursor:pointer" onclick="openLightbox(this.src)">
+  </div>
+  <p style="margin-top:10px;font-size:14px;font-weight:600;color:var(--ink)">Nếu khách muốn chỉnh/xóa title này thì chỉnh ở đâu, như thế nào?</p>
+  <button onclick="openLightbox('Slide-11-2.png');this.style.display='none'" style="margin-top:10px;background:var(--blue);color:white;border:none;padding:10px 24px;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit">Show đáp án</button>
+</div>
+</div>
+
+<!-- 11 DISCOUNTED PRODUCTS -->
+<div class="slide" data-mod="Module 3A · Discounted Products">
+<div class="sc">
+  <div class="ey">General Settings · Discounted Products</div>
+  <h2 style="margin-bottom:8px">Chọn sản phẩm nào được discount 📦</h2>
+  <p style="margin-bottom:14px;font-size:13px">Quyết định <strong>scope</strong> của offer: sản phẩm nào sẽ được đếm quantity và nhận discount.</p>
+  <div class="g g2">
+    <div class="card"><h4>🎯 Specific products / variants</h4><p style="font-size:12px">Chọn thủ công từng sản phẩm hoặc variant cụ thể.</p><div style="margin-top:6px"><span class="tag blue">Dùng khi: ít sản phẩm, cần kiểm soát chính xác</span></div></div>
+    <div class="card teal"><h4>🌐 All products</h4><p style="font-size:12px">Áp dụng cho toàn bộ store.</p><div style="margin-top:6px"><span class="tag teal">Dùng khi: promotion toàn store</span></div></div>
+    <div class="card blue"><h4>📁 Specific collections</h4><p style="font-size:12px">Chỉ áp dụng cho sản phẩm thuộc collection được chọn.</p><div style="margin-top:6px"><span class="tag blue">Dùng khi: theo danh mục</span></div></div>
+    <div class="card amber"><h4>🏷️ Group products</h4><p style="font-size:12px">Điều kiện theo vendor, tag, price range. <strong>Linh hoạt nhất</strong> — không cần chọn từng sản phẩm.</p><div style="margin-top:6px"><span class="tag amber">Dùng khi: nhiều sản phẩm cùng thuộc tính</span></div></div>
+  </div>
+  <div class="callout warn" style="margin-top:10px"><span class="ci">⚠️</span><div>Nếu 1 sản phẩm thuộc nhiều collections → quantity được tính <strong>riêng cho từng collection</strong>. Đây là source of bug phổ biến.</div></div>
+</div>
+</div>
+
+<!-- 12 SET QUANTITY CONDITIONS -->
+<div class="slide" data-mod="Module 3A · Set Quantity Conditions">
+<div class="sc">
+  <div class="ey">General Settings · Set Quantity Conditions</div>
+  <h2 style="margin-bottom:8px">Điều kiện được đếm như thế nào? 🔢</h2>
+  <p style="margin-bottom:4px;font-size:13px;color:var(--rose);font-weight:600">⚠️ Đây là nguyên nhân #1 gây lỗi "discount không apply" theo ý của khách trong CS tickets.</p>
+  <div style="border-radius:var(--rlg);overflow:hidden;border:1px solid var(--line);margin:10px 0">
+    <img src="images/Slide-13.png" alt="Set quantity conditions" style="width:100%;height:auto;display:block;cursor:pointer" onclick="openLightbox(this.src)">
+  </div>
+  <div style="display:flex;flex-direction:column;gap:8px">
+    <div class="card blue">
+      <h4 style="color:var(--blue)">Total quantity of all selected products</h4>
+      <p style="font-size:13px">Cộng tổng tất cả sản phẩm lại → so với điều kiện.</p>
+      <div class="bq" style="margin-top:8px;font-size:12px">Ví dụ: mua 2 áo size S + 1 áo size M = <strong>3 items tổng</strong> → đủ điều kiện buy from 3. Khách mua mix màu/size vẫn đủ điều kiện.</div>
+    </div>
+    <div class="card teal">
+      <h4 style="color:var(--teal)">Total quantity of each selected product</h4>
+      <p style="font-size:13px">Tính riêng từng sản phẩm (gộp các variants của cùng 1 product).</p>
+      <div class="bq" style="margin-top:8px;font-size:12px">Ví dụ: mua 3 áo (dù khác size) = 3 → đủ điều kiện cho áo. Quần không ảnh hưởng vào count của áo.</div>
+    </div>
+    <div class="card amber">
+      <h4 style="color:var(--amber)">Total quantity of each product variant</h4>
+      <p style="font-size:13px">Tính riêng từng variant.</p>
+      <div class="bq" style="margin-top:8px;font-size:12px">Ví dụ: áo size S và áo size M đếm <strong>riêng biệt</strong>. Phải mua ≥3 cái cùng 1 variant mới đủ điều kiện.</div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- 13 MATCHING: GENERAL SETTINGS -->
+<div class="slide" data-mod="Module 3A · Bài tập nối cột">
+<div class="sc">
+  <div class="act-hdr"><span class="act-badge">⚡ NỐI CỘT</span><span class="tag blue">General Settings</span></div>
+  <h2 style="margin-bottom:8px">Nối tình huống → Settings đúng</h2>
+  <p style="margin-bottom:14px;font-size:13px">Bấm vào 1 ô bên trái, rồi bấm ô tương ứng bên phải.</p>
+  <div class="match-wrap" id="match-gs"></div>
+  <div class="match-fb" id="match-gs-fb"></div>
+  <button onclick="checkMatch('gs')" style="margin-top:10px;background:var(--blue);color:white;border:none;padding:8px 20px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit">Kiểm tra</button>
+</div>
+</div>
+
+<!-- 14 TARGET CUSTOMER -->
+<div class="slide" data-mod="Module 3A · Target Customer">
+<div class="sc">
+  <div class="ey">General Settings · Target Customer</div>
+  <h2 style="margin-bottom:12px">Ai được thấy discount này? 👤</h2>
+  <div style="border-radius:var(--rlg);overflow:hidden;border:1px solid var(--line);margin-bottom:14px">
+    <img src="images/Slide-15.png" alt="Target Customer settings" style="width:100%;height:auto;display:block;cursor:pointer" onclick="openLightbox(this.src)">
+  </div>
+  <table class="cmp-table">
+    <thead><tr><th>Option</th><th>Ai thấy discount</th><th>Ai KHÔNG thấy</th><th>Plan</th></tr></thead>
+    <tbody>
+      <tr><td>Everyone</td><td>Tất cả</td><td>—</td><td><span class="tag ink">Free</span></td></tr>
+      <tr><td>Logged-in customers</td><td>Đã đăng nhập</td><td>Chưa login → không hiện</td><td><span class="tag blue">Basic+</span></td></tr>
+      <tr><td>Logged-in with tag</td><td>Login + có tag đúng</td><td>Chưa login / sai tag → không hiện</td><td><span class="tag blue">Basic+</span></td></tr>
+      <tr><td>Logged-in without tag</td><td>Login + không có tag này</td><td>Có tag đó (B2B cũng tính là without tag)</td><td><span class="tag blue">Basic+</span></td></tr>
+      <tr><td>Logged-in B2B</td><td>Có company profile trong Shopify</td><td>Chưa login / không có company</td><td><span class="tag violet">Pro+</span></td></tr>
+      <tr><td>D2C (exclude B2B)</td><td>Non-B2B + <strong>chưa login cũng tính D2C</strong></td><td>Có company profile</td><td><span class="tag violet">Pro+</span></td></tr>
+    </tbody>
+  </table>
+  <div class="callout warn" style="margin-top:10px"><span class="ci">⚠️</span><div>Mỗi rule chỉ gắn được <strong>1 tag duy nhất</strong>. Muốn nhiều tag → tạo nhiều rule riêng, mỗi rule 1 tag. B2B = user profile có company trong Shopify.</div></div>
+</div>
+</div>
+
+<!-- 15 QUIZ TARGET CUSTOMER -->
+<div class="slide" data-mod="Module 3A · Quiz Target Customer">
+<div class="sc">
+  <div class="act-hdr"><span class="act-badge">⚡ QUIZ</span><span class="tag violet">Target Customer</span></div>
+  <h2 style="margin-bottom:14px">Chọn đúng Target Customer 👤</h2>
+  <div class="quiz-wrap" id="tc-quiz"></div>
+</div>
+</div>
+
+<!-- 16 SCHEDULE -->
+<div class="slide" data-mod="Module 3A · Schedule">
+<div class="sc">
+  <div class="ey">General Settings · Schedule</div>
+  <h2 style="margin-bottom:14px">Lên lịch campaign 📅</h2>
+  <div style="border-radius:var(--rlg);overflow:hidden;border:1px solid var(--line);margin-bottom:12px">
+    <img src="images/Slide-17.png" alt="Schedule settings" style="width:100%;height:auto;display:block;cursor:pointer" onclick="openLightbox(this.src)">
+  </div>
+  <div class="g g2">
+    <div class="card">
+      <h4>📅 Status flow</h4>
+      <ul class="cl" style="gap:5px">
+        <li>Chưa đến giờ → <strong>Scheduled</strong></li>
+        <li>Đang chạy → <strong>Active</strong></li>
+        <li>Hết giờ → về <strong>Draft</strong></li>
+      </ul>
+    </div>
+    <div class="card blue">
+      <h4 style="color:var(--blue)">🌍 Timezone per campaign</h4>
+      <p style="font-size:13px">Mỗi campaign có thể set <strong>timezone riêng</strong>. Quan trọng với store có khách quốc tế — campaign 12:00 PM ET ≠ 12:00 PM GMT.</p>
+    </div>
+  </div>
+  <div class="card amber" style="margin-top:10px">
+    <h4 style="color:var(--amber)">Apply to countries</h4>
+    <p style="font-size:13px">Chỉ hiển thị discount cho market được chọn. Mặc định: all countries. Dùng khi cần offer theo từng region.</p>
+  </div>
+  <div class="callout warn" style="margin-top:10px"><span class="ci">⚠️</span><div>Nếu 1 sản phẩm vừa thuộc scheduled campaign, vừa thuộc non-scheduled campaign → trong thời gian schedule: apply discount value hơn (khác với trước đây) <strong>cao hơn</strong>.</div></div>
+</div>
+</div>
+
+<!-- MARKET SETTINGS -->
+<div class="slide" data-mod="Module 3A · Market">
+<div class="sc">
+  <div class="ey">General Settings · Market</div>
+  <h2 style="margin-bottom:14px">Apply for each country (Market) 🌍</h2>
+  <div style="border-radius:var(--rlg);overflow:hidden;border:1px solid var(--line);margin-bottom:14px">
+    <img src="images/Market-settings.png" alt="Market settings" style="width:100%;height:auto;display:block;cursor:pointer" onclick="openLightbox(this.src)">
+  </div>
+  <div class="card amber">
+    <h4 style="color:var(--amber)">Market là gì?</h4>
+    <p style="font-size:13px">Shopify Markets cho phép merchant tạo các market riêng cho từng quốc gia/khu vực — mỗi market có currency, pricing, domain riêng. Pareto hỗ trợ <strong>set discount khác nhau cho từng market</strong>.</p>
+  </div>
+  <div class="g g2" style="margin-top:10px">
+    <div class="card">
+      <h4>Ví dụ</h4>
+      <ul class="cl" style="gap:4px">
+        <li>Market US: giảm 10%</li>
+        <li>Market EU: giảm 15% (vì margin cao hơn)</li>
+        <li>Market Asia: không apply discount</li>
+      </ul>
+    </div>
+    <div class="card rose">
+      <h4 style="color:var(--rose)">Lưu ý quan trọng</h4>
+      <ul class="cl" style="gap:4px">
+        <li><span class="tag violet">Advanced plan only</span></li>
+        <li>Mặc định: All countries</li>
+        <li>Nếu khách hỏi "discount không hiện ở nước tôi" → check Market settings</li>
+      </ul>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- OFFER TYPES OVERVIEW -->
+<div class="slide" data-mod="Offer Types · Tổng quan">
+<div class="sc">
+  <div class="ey">Tổng quan Offer Types</div>
+  <h2 style="margin-bottom:14px">Pareto có những loại offer nào? 📋</h2>
+  <div class="g g2">
+    <div class="card blue">
+      <div class="ci">🔢</div>
+      <h4 style="color:var(--blue)">Quantity Breaks</h4>
+      <p style="font-size:12px">Giảm giá theo tier dựa trên <strong>số lượng hoặc giá trị</strong> sản phẩm.</p>
+    </div>
+    <div class="card amber">
+      <div class="ci">⚡</div>
+      <h4 style="color:var(--amber)">One Discount</h4>
+      <p style="font-size:12px">1 offer = nhiều loại discount cùng lúc dựa trên tier: product discount + cross-sell + free gift + order discount + free shipping.</p>
+    </div>
+    <div class="card teal">
+      <div class="ci">🎁</div>
+      <h4 style="color:var(--teal)">Buy X Get Y</h4>
+      <p style="font-size:12px">Mua đủ số lượng/giá trị sản phẩm X → nhận sản phẩm Y được giảm giá hoặc miễn phí.</p>
+    </div>
+    <div class="card green">
+      <div class="ci">💰</div>
+      <h4 style="color:var(--green)">Order Discount</h4>
+      <p style="font-size:12px">Giảm giá <strong>toàn đơn hàng</strong> khi đạt ngưỡng qty/value — áp dụng cả cart kể cả sản phẩm ngoài điều kiện.</p>
+    </div>
+  </div>
+  <div style="margin-top:12px">
+    <div style="font-size:11px;font-weight:700;color:var(--ink3);letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px">BUNDLES — 3 LOẠI</div>
+    <div class="g g3">
+      <div class="card violet">
+        <h4 style="color:var(--violet)">📦 Frequently Bought Together</h4>
+        <p style="font-size:11px">Gom nhóm các sản phẩm thường mua kèm → giảm giá cả nhóm khi mua đủ.</p>
+      </div>
+      <div class="card violet">
+        <h4 style="color:var(--violet)">🎯 Traditional Bundle</h4>
+        <p style="font-size:11px">Tạo 1 sản phẩm cha chứa SP con, combine variants → hiện như 1 product riêng trên store.</p>
+      </div>
+      <div class="card violet">
+        <h4 style="color:var(--violet)">➕ Add-ons</h4>
+        <p style="font-size:11px">Mua sản phẩm chính → SP mua kèm được giảm giá thêm (= One Discount cross-sell).</p>
+      </div>
+    </div>
+  </div>
+  <div class="callout info" style="margin-top:12px"><span class="ci">📌</span><div>Hôm nay ta sẽ đi sâu vào <strong>Quantity Breaks</strong> và <strong>One Discount</strong> — 2 offer type phổ biến nhất và nhiều ticket nhất.</div></div>
+</div>
+</div>
+
+<!-- QB VS ONE DISCOUNT -->
+<div class="slide" data-mod="Offer Types · QB vs One Discount">
+<div class="sc">
+  <div class="ey">So sánh nhanh</div>
+  <h2 style="margin-bottom:14px">Quantity Breaks vs One Discount ⚖️</h2>
+  <table class="cmp-table">
+    <thead><tr><th></th><th>Quantity Breaks</th><th>One Discount</th></tr></thead>
+    <tbody>
+      <tr><td>Điểm chung</td><td colspan="2" style="text-align:center;color:var(--ink3)">Main rule = qty/value tiers · Target customer · Schedule · Countdown</td></tr>
+      <tr><td>Discount type</td><td>Per item, total, fixed, free gift</td><td>Per item, fixed per item (không có total fixed)</td></tr>
+      <tr><td>Sub rules</td><td>❌ Không</td><td>✅ Cross-sell, free gift, order discount, free shipping</td></tr>
+      <tr><td>Exclusion</td><td>✅ Có</td><td>❌ Không</td></tr>
+      <tr><td>Layouts</td><td>5+ layouts (Table, Card, Dynamic, Option Variant, Wholesale)</td><td>2 layouts (QB style, BXGY style)</td></tr>
+      <tr><td>Launch time</td><td>❌</td><td>✅ Schedule go-live time</td></tr>
+      <tr><td>Discount source</td><td>Product price only</td><td>Product price hoặc Compare-at price</td></tr>
+      <tr><td>Multiples</td><td>✅ Không cộng dồn</td><td>✅ Cộng dồn theo bội số</td></tr>
+    </tbody>
+  </table>
+  <div class="g g2" style="margin-top:14px">
+    <div class="card blue">
+      <h4 style="color:var(--blue)">Khi nào dùng QB?</h4>
+      <p style="font-size:12px">Là feature chính, 80% khách vào app nhờ key liên quan đến features này. Chỉ cần giảm giá theo tier, không cần thêm gì — đơn giản, nhiều layout hơn.</p>
+    </div>
+    <div class="card amber">
+      <h4 style="color:var(--amber)">Khi nào dùng One Discount?</h4>
+      <p style="font-size:12px">Cần kết hợp nhiều loại trong 1 tier (giảm giá + quà + free ship), hoặc cần control thời điểm go-live chính xác.</p>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- 18 QB CONCEPT + TEMPLATES -->
+<div class="slide" data-mod="Module 3B · Quantity Breaks">
+<div class="sc">
+  <div class="ey">Module 3B · Quantity Breaks</div>
+  <h2 style="margin-bottom:8px">Quantity Breaks — concept + templates 📊</h2>
+  <p style="margin-bottom:12px;font-size:13px">Setup các mức giảm giá theo <strong>tier</strong> dựa trên quantity hoặc value.</p>
+  <div style="border-radius:var(--rlg);overflow:hidden;border:1px solid var(--line);margin-bottom:12px">
+    <img src="images/Slide-19.png" alt="QB widget" style="width:100%;height:auto;display:block;cursor:pointer" onclick="openLightbox(this.src)">
+  </div>
+  <div style="font-size:11px;font-weight:700;color:var(--ink3);letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px">TEMPLATES QUANTITY BREAKS</div>
+  <div class="g g3">
+    <div class="card"><h4>📋 Tiered Discount</h4><p style="font-size:11px">Table layout. Qty-based. Giảm theo từng tier số lượng.</p></div>
+    <div class="card"><h4>🃏 Quick Card Qty Tiers</h4><p style="font-size:11px">Card layout. Qty-based. Highlight "best value" per unit.</p></div>
+    <div class="card violet"><h4>🏭 Bulk Order Quote</h4><p style="font-size:11px">Wholesale layout. Qty-based. B2B, nhiều SP cùng lúc.</p></div>
+    <div class="card blue"><h4>🔄 Subscription Integration</h4><p style="font-size:11px">Option Variant layout. Kết hợp subscription.</p></div>
+    <div class="card amber"><h4>💰 Spend &amp; Save Rewards</h4><p style="font-size:11px">Table + button. Value-based. Cash-back feel.</p></div>
+    <div class="card teal"><h4>🇪🇺 VAT-inclusive tiers</h4><p style="font-size:11px">Table + VAT column. Value-based. Cho store giá chưa gồm VAT.</p></div>
+    <div class="card green"><h4>⚡ Flex-variant deals</h4><p style="font-size:11px">Dynamic Variant. Qty-based. Chọn mix size/màu để unlock deal.</p></div>
+  </div>
+</div>
+</div>
+
+<!-- 19 GUESS SETTINGS FROM TEMPLATE (slideshow) -->
+<div class="slide" data-mod="Module 3B · Chọn layout">
+<div class="sc">
+  <div class="act-hdr"><span class="act-badge">⚡ QUIZ</span><span class="tag blue">Chọn layout phù hợp</span></div>
+  <h2 style="margin-bottom:6px">Chọn layout nào? 🎨</h2>
+  <p style="font-size:13px;color:var(--ink3);margin-bottom:14px">Câu <span id="gs-cur">1</span> / <span id="gs-total">10</span></p>
+  <div id="gs-slideshow"></div>
+  <div style="display:flex;gap:8px;margin-top:12px">
+    <button onclick="gsPrev()" id="gs-prev-btn" style="background:var(--bg);border:1px solid var(--line2);color:var(--ink3);padding:8px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;display:none">← Trước</button>
+    <button onclick="gsNext()" id="gs-next-btn" style="background:var(--blue);color:white;border:none;padding:8px 18px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;display:none">Tiếp →</button>
+  </div>
+</div>
+</div>
+
+<!-- 20 LAYOUTS OVERVIEW -->
+<div class="slide" data-mod="Module 3B · Layouts Overview">
+<div class="sc">
+  <div class="ey">Quantity Breaks · 5 Layouts</div>
+  <h2 style="margin-bottom:14px">Chọn layout nào? 🎨</h2>
+  <div class="g g2">
+    <div class="card"><h4>📋 Table / Table Horizontal</h4><p style="font-size:12px;margin-bottom:6px">Bảng, không tương tác trực tiếp (chỉ hover). Horizontal khi &gt;3 rule. Có thể thêm Action button (checkbox). <span class="tag ink">Free</span> cơ bản, <span class="tag blue">Basic+</span> custom cột.</p><div style="display:flex;gap:4px;flex-wrap:wrap"><span class="tag amber">Tiered Discount</span><span class="tag amber">VAT-inclusive</span><span class="tag amber">Spend &amp; Save</span></div></div>
+    <div class="card blue"><h4>⚡ Dynamic Variant</h4><p style="font-size:12px;margin-bottom:6px">Work với <strong>button của theme</strong>. Layout duy nhất compatible với <strong>product option apps</strong>. <span class="tag blue">Basic+</span></p><div style="display:flex;gap:4px;flex-wrap:wrap"><span class="tag blue">Flex-variant deals</span></div></div>
+    <div class="card teal"><h4>🃏 Card</h4><p style="font-size:12px;margin-bottom:6px">Click card → điền qty vào quantity box của theme → theme's ATC. <span class="tag blue">Basic+</span></p><div style="display:flex;gap:4px;flex-wrap:wrap"><span class="tag teal">Quick Card Qty Tiers</span></div></div>
+    <div class="card amber"><h4>🔘 Option Variant</h4><p style="font-size:12px;margin-bottom:6px">Button <strong>riêng của layout</strong>, không dùng button theme. Set action: cart page, cart drawer, hoặc link bất kỳ. <span class="tag ink">Free</span></p><div style="display:flex;gap:4px;flex-wrap:wrap"><span class="tag amber">Quantity Breaks</span><span class="tag amber">Subscription Integration</span></div></div>
+    <div class="card violet"><h4>🏭 Wholesale</h4><p style="font-size:12px;margin-bottom:6px">Add nhiều product vào cart cùng lúc. Settings rất sâu. <span class="tag violet">Advanced only</span></p><div style="display:flex;gap:4px;flex-wrap:wrap"><span class="tag violet">Bulk Order Quote</span></div></div>
+  </div>
+</div>
+</div>
+
+<!-- 21 LAYOUTS CHI TIET -->
+<div class="slide" data-mod="Module 3B · Layouts Chi tiết">
+<div class="sc">
+  <div class="ey">Layouts · Chi tiết quan trọng</div>
+  <h2 style="margin-bottom:14px">Điểm cần nhớ 📌</h2>
+  <div style="display:flex;flex-direction:column;gap:9px">
+    <div class="card"><h4>📋 Table — VAT column</h4><p style="font-size:12px">Cột <strong>Price per product (Inc VAT)</strong>: chỉ cộng thêm % VAT để <em>hiển thị</em>, <strong>không</strong> thay đổi giá base, không ảnh hưởng cart/checkout. Dành cho store châu Âu có giá product price chưa gồm VAT.</p></div>
+    <div class="card blue"><h4>⚡ Dynamic Variant — quan trọng</h4><p style="font-size:12px">Work với button theme. <strong>Layout duy nhất</strong> recommend cho store dùng product option apps (Bold, Qikify...). Có thể ẩn quantity box của theme.</p></div>
+    <div class="card amber"><h4>🔘 Option Variant — Display quantity input field</h4><p style="font-size:12px"><strong>Display full variant by quantity</strong>: mỗi qty 1 row để chọn variant — dùng khi qty nhỏ (1, 2, 3). <strong>Display quantity input field</strong>: 1 row + input box — dùng khi qty lớn (5, 10, 20+).</p></div>
+  </div>
+  <div class="g g2" style="margin-top:10px">
+    <div style="border-radius:var(--rlg);overflow:hidden;border:1px solid var(--line)">
+      <img src="images/Slide-22-1.png" alt="Option Variant layouts" style="width:100%;height:auto;display:block;cursor:pointer" onclick="openLightbox(this.src)">
+    </div>
+    <div style="border-radius:var(--rlg);overflow:hidden;border:1px solid var(--line)">
+      <img src="images/Slide-22-2.png" alt="Table layout VAT column" style="width:100%;height:auto;display:block;cursor:pointer" onclick="openLightbox(this.src)">
+    </div>
+  </div>
+  <div class="callout warn" style="margin-top:10px"><span class="ci">⚠️</span><div>Countdown timer trong QB: khi hết giờ chỉ <strong>ẩn widget</strong>, discount vẫn work. Không thể countdown đến end-date của schedule. Countdown chỉ là boost conversion.</div></div>
+</div>
+</div>
+
+<!-- 22 BINGO LAYOUT -->
+<div class="slide" data-mod="Module 3B · Bingo Layout">
+<div class="sc">
+  <div class="act-hdr"><span class="act-badge">⚡ BINGO</span><span class="tag amber">Chọn layout phù hợp</span></div>
+  <h2 style="margin-bottom:6px">Nghe tình huống → đánh ô đúng 🎯</h2>
+  <p style="font-size:13px;margin-bottom:14px">Trainer đọc tình huống, trainee click vào layout phù hợp nhất.</p>
+  <div class="bingo-wrap">
+    <div>
+      <div class="bingo-grid" style="grid-template-columns:repeat(3,1fr);width:260px" id="bingo-grid"></div>
+      <div id="bingo-status"></div>
+    </div>
+    <div class="bingo-panel">
+      <div class="bp-label">TÌNH HUỐNG</div>
+      <div class="bp-text" id="bingo-text">Nhấn "Bắt đầu" để trainer đọc tình huống đầu tiên.</div>
+      <div class="bingo-nav">
+        <button class="bbtn primary" onclick="bingoStart()" id="bingo-start">Bắt đầu</button>
+        <button class="bbtn" onclick="bingoShowAns()" id="bingo-show-ans" style="display:none">Show đáp án</button>
+        <button class="bbtn" onclick="bingoNext()" id="bingo-next" style="display:none">Tiếp →</button>
+      </div>
+      <div class="bingo-ans" id="bingo-answer"></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- 23 TÌNH HUỐNG MULTIPLES -->
+<div class="slide" data-mod="Module 3B · Tình huống thực tế">
+<div class="sc">
+  <div class="act-hdr"><span class="act-badge">⚡ THẢO LUẬN</span><span class="tag rose">Tình huống thực tế</span><span class="timer-tag">3 phút</span></div>
+  <h2 style="margin-bottom:14px">Merchant muốn setup như thế nào? 🤔</h2>
+  <div class="card rose" style="padding:20px">
+    <div style="font-size:15px;font-weight:600;line-height:1.6;color:var(--ink)">
+      Merchant yêu cầu:<br><br>
+      "Tôi muốn cứ mỗi khi khách mua <strong>2 sản phẩm</strong> thì được <strong>tặng 1 gift</strong>.<br>
+      Mua <strong>4 sản phẩm</strong> → cũng tặng <strong>1 gift</strong> (tổng 2 gifts).<br>
+      Mua <strong>6 sản phẩm</strong> → tặng thêm <strong>1 gift</strong> nữa (tổng 3 gifts).<br><br>
+      Cứ mỗi 2 sản phẩm = 1 gift. Không giới hạn."
+    </div>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:10px;margin-top:14px">
+    <div class="card">
+      <h4>❓ Câu hỏi thảo luận</h4>
+      <ul class="cl" style="gap:5px;margin-top:6px">
+        <li>Dùng Quantity Breaks hay One Discount?</li>
+        <li>Setting nào cần bật để gift "nhân lên" theo bội số?</li>
+        <li>Cần mấy tier? Hay chỉ cần 1 tier?</li>
+      </ul>
+    </div>
+  </div>
+  <div class="callout warn" style="margin-top:12px">
+    <span class="ci">⏰</span>
+    <div>3 phút thảo luận nhóm. Đáp án ở slide tiếp theo.</div>
+  </div>
+</div>
+</div>
+
+<!-- 24 MULTIPLES -->
+<div class="slide" data-mod="Module 3B · Multiples">
+<div class="sc">
+  <div class="ey">Multiples — So sánh</div>
+  <h2 style="margin-bottom:14px">Multiples hoạt động như thế nào? ⚠️</h2>
+  <div class="g g2">
+    <div class="card rose">
+      <h4 style="color:var(--rose)">Quantity Breaks Multiples</h4>
+      <ul class="cl" style="gap:5px;margin-top:8px">
+        <li>Trigger mỗi X units (3 → 3, 6, 9, 12...)</li>
+        <li>Chỉ <strong>1 tier duy nhất</strong></li>
+        <li><strong>KHÔNG cộng dồn</strong></li>
+        <li>Mua 3 = mua 6 = mua 9 → cùng discount</li>
+        <li>Chỉ dùng layout <strong>Table</strong></li>
+      </ul>
+    </div>
+    <div class="card amber">
+      <h4 style="color:var(--amber)">Order Discount Multiples</h4>
+      <ul class="cl" style="gap:5px;margin-top:8px">
+        <li>Trigger mỗi X value ($200 → $200, $400...)</li>
+        <li><strong>CÓ cộng dồn</strong> (stack)</li>
+        <li>Mua $400 = giảm 2x | $600 = giảm 3x...</li>
+        <li>Có <strong>max discount cap</strong></li>
+      </ul>
+    </div>
+  </div>
+  <div class="callout info" style="margin-top:12px"><span class="ci">🧪</span><div><strong>Ví dụ QB Multiples:</strong> Buy from 3, $5 off. Mua 6 → vẫn chỉ giảm $5 (không phải $10). <br><strong>Ví dụ OD Multiples:</strong> Buy from $200, $5 off, max $500. Mua $400 → giảm $10. Mua $600 → giảm $15...</div></div>
+</div>
+</div>
+
+<!-- 25 ADVANCED SETTINGS -->
+<div class="slide" data-mod="Module 3B · Advanced Settings">
+<div class="sc">
+  <div class="ey">Quantity Breaks · Advanced Settings (Basic+)</div>
+  <h2 style="margin-bottom:14px">Advanced settings + Visual Swatches 🔧</h2>
+  <div class="g g2">
+    <div class="card">
+      <h4>Variant selector</h4>
+      <ul class="cl" style="gap:4px">
+        <li><strong>Visual swatches</strong>: hiển thị dạng color swatch nếu theme đã setup. Check settings → Advanced → Visual swatches</li>
+        <li><strong>Dropdown list</strong>: mặc định, có thể kèm ảnh nếu theme có swatch</li>
+      </ul>
+    </div>
+    <div class="card blue">
+      <h4>Display options</h4>
+      <ul class="cl" style="gap:4px">
+        <li>Change total price → each unit price</li>
+        <li>Hide if variant is out of stock</li>
+        <li>Hide this offer on product page</li>
+      </ul>
+    </div>
+    <div class="card amber">
+      <h4>Hide theme elements</h4>
+      <ul class="cl" style="gap:4px">
+        <li>Hide theme price</li>
+        <li>Hide theme variant selector</li>
+        <li><strong>Holiday accent</strong> — bật badge seasonal (Christmas, Halloween, Easter...) trên widget. Chỉ thay đổi giao diện, không ảnh hưởng logic discount</li>
+      </ul>
+    </div>
+  </div>
+  <div class="g g2" style="margin-top:12px">
+    <div style="border-radius:var(--rlg);overflow:hidden;border:1px solid var(--line)">
+      <img src="images/Slide-26-1.png" alt="Advanced settings" style="width:100%;height:auto;display:block;cursor:pointer" onclick="openLightbox(this.src)">
+    </div>
+    <div style="border-radius:var(--rlg);overflow:hidden;border:1px solid var(--line)">
+      <img src="images/Slide-26-2.png" alt="Holiday accent" style="width:100%;height:auto;display:block;cursor:pointer" onclick="openLightbox(this.src)">
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- 26 TROUBLESHOOTING -->
+<div class="slide" data-mod="Module 3B · Troubleshooting">
+<div class="sc">
+  <div class="ey">Troubleshooting</div>
+  <h2 style="margin-bottom:14px">Widget không hiện — check theo thứ tự 🔴</h2>
+  <div style="display:flex;flex-direction:column;gap:8px">
+    <div class="card rose" style="display:flex;gap:12px;align-items:flex-start"><span style="font-size:18px;flex-shrink:0;margin-top:2px">1️⃣</span><div><h4 style="color:var(--rose)">Offer status</h4><p style="font-size:13px">Offer có đang Active không? Hay đang ở Draft / Scheduled (chưa đến giờ)?</p></div></div>
+    <div class="card amber" style="display:flex;gap:12px;align-items:flex-start"><span style="font-size:18px;flex-shrink:0;margin-top:2px">2️⃣</span><div><h4 style="color:var(--amber)">App Embed</h4><p style="font-size:13px">App embed có được enable trong theme không? Kiểm tra trong Shopify Admin → Themes → Customize → App embeds.</p></div></div>
+    <div class="card blue" style="display:flex;gap:12px;align-items:flex-start"><span style="font-size:18px;flex-shrink:0;margin-top:2px">3️⃣</span><div><h4 style="color:var(--blue)">App Block</h4><p style="font-size:13px">App block có được add vào đúng theme đang publish không? Nếu không có block → app tự hiện trên Add to Cart (có thể sai vị trí).</p></div></div>
+    <div class="card violet" style="display:flex;gap:12px;align-items:flex-start"><span style="font-size:18px;flex-shrink:0;margin-top:2px">4️⃣</span><div><h4 style="color:var(--violet)">Scope sản phẩm</h4><p style="font-size:13px">Sản phẩm đang xem có thực sự thuộc scope của offer không? Check lại Discounted Products settings.</p></div></div>
+    <div class="card teal" style="display:flex;gap:12px;align-items:flex-start"><span style="font-size:18px;flex-shrink:0;margin-top:2px">5️⃣</span><div><h4 style="color:var(--teal)">Target Customer</h4><p style="font-size:13px">Customer hiện tại có đúng target customer type không? Ví dụ: offer set cho B2B nhưng khách chưa login.</p></div></div>
+    <div class="card" style="display:flex;gap:12px;align-items:flex-start"><span style="font-size:18px;flex-shrink:0;margin-top:2px">6️⃣</span><div><h4>"Hide this offer on product page" bật</h4><p style="font-size:13px">Check Advanced settings trong offer — có bật "Hide this offer on product page" không?</p></div></div>
+  </div>
+</div>
+</div>
+
+<!-- 27 ONE DISCOUNT CONCEPT -->
+<div class="slide" data-mod="Module 3C · One Discount">
+<div class="sc">
+  <div class="ey">Module 3C · One Discount</div>
+  <h2 style="margin-bottom:12px">One Discount — Power Mode ⚡</h2>
+  <div style="border-radius:var(--rlg);overflow:hidden;border:1px solid var(--line);margin-bottom:12px">
+    <img src="images/Slide-30.png" alt="One Discount concept" style="width:100%;height:auto;display:block;cursor:pointer" onclick="openLightbox(this.src)">
+  </div>
+  <div class="bq">"One Discount: <strong> = Quantity break (quantity-based) + các loại offer khác </strong> — dựa trên tier khách chọn."</div>
+  <div class="g g2" style="margin-top:12px">
+    <div class="card blue"><h4 style="color:var(--blue)">1 Main Rule (bắt buộc)</h4><p style="font-size:12px">Luôn là Quantity Breaks. Luôn hiển thị. Discount có thể = 0. <strong>Không có Exclusion</strong>. Không set total fixed price — chỉ fixed price per item.</p></div>
+    <div class="card amber"><h4 style="color:var(--amber)">Tối đa 4 Sub Rules / tier</h4><p style="font-size:12px">Khách click tier nào → nhận <strong>tất cả</strong> ưu đãi của tier đó.</p></div>
+  </div>
+  <div style="margin-top:12px"><div style="font-size:11px;font-weight:700;color:var(--ink3);margin-bottom:7px;letter-spacing:.05em">SUB RULE TYPES</div><div style="display:flex;gap:7px;flex-wrap:wrap"><span class="tag blue">🛍️ Cross-sell</span><span class="tag amber">🎁 Free gift</span><span class="tag green">💰 Order discount</span><span class="tag rose">🚚 Free shipping</span></div></div>
+  <div class="callout info" style="margin-top:10px"><span class="ci">💡</span><div><strong>Discount source</strong>: chọn Product Price hoặc Compare-at Price (chỉ One Discount có option này). Nếu compare-at price sau giảm vẫn &gt; product price → không apply discount, giá vẫn là product price.</div></div>
+</div>
+</div>
+
+<!-- 28 OD SUB RULES + MULTIPLES -->
+<div class="slide" data-mod="Module 3C · Sub Rules + Multiples">
+<div class="sc">
+  <div class="ey">One Discount · Sub Rules + Multiples</div>
+  <h2 style="margin-bottom:14px">Chi tiết Sub Rules &amp; Multiples One Discount</h2>
+  <div class="g g2">
+    <div class="card blue"><h4>🛍️ Cross-sell</h4><p style="font-size:12px">Mua sản phẩm chính + Product B → B giảm giá. Set min/max qty, % hoặc amount.</p></div>
+    <div class="card amber"><h4>🎁 Free gift</h4><p style="font-size:12px"><strong>Same</strong>: +1 cùng loại (qty luôn = 1). <strong>Different</strong>: sản phẩm khác, custom qty. Discount = 0 + gift → gift image hiện trước.</p></div>
+    <div class="card green"><h4>💰 Order discount</h4><p style="font-size:12px">Chọn tier này → toàn đơn được giảm (% hoặc amount).</p></div>
+    <div class="card rose"><h4>🚚 Free shipping</h4><p style="font-size:12px">All countries hoặc selected countries. Chỉ hiện đúng market tương ứng.</p></div>
+  </div>
+  <div class="card" style="margin-top:10px;border-color:var(--violet-m);background:var(--violet-l)">
+    <h4 style="color:var(--violet)">⚡ Multiples trong One Discount</h4>
+    <p style="font-size:13px;margin-top:4px">Multiples trong One Discount <strong>stack theo bội số</strong>: mua n lần → nhận n lần mỗi sub rule. Ví dụ multiples = 2: mua 4 items → nhận 2x cross-sell discount, 2x free gift, 2x order discount. Free shipping: giữ nguyên (không nhân).</p>
+  </div>
+</div>
+</div>
+
+<!-- 29 OD DISPLAY + LAUNCH -->
+<div class="slide" data-mod="Module 3C · Display + Launch Time">
+<div class="sc">
+  <div class="ey">One Discount · Display + Launch Time</div>
+  <h2 style="margin-bottom:14px">Display &amp; Launch Time 🕐</h2>
+  <div class="g g2">
+    <div class="card">
+      <h4>Layout display</h4>
+      <ul class="cl" style="gap:4px">
+        <li><strong>Quantity Breaks</strong>: giống Option Variant nhưng có action button, work với button theme (Dynamic Variant style)</li>
+        <li><strong>Buy X Get Y</strong>: layout khác</li>
+        <li>Nếu discount = 0 VÀ chỉ có gift → gift image hiện trước</li>
+      </ul>
+    </div>
+    <div class="card blue">
+      <h4 style="color:var(--blue)">Launch Time</h4>
+      <ul class="cl" style="gap:4px">
+        <li><strong>Immediately after saved</strong>: live luôn</li>
+        <li><strong>Save as draft</strong>: mặc định</li>
+        <li><strong>Schedule launch time</strong>: hẹn giờ</li>
+      </ul>
+      <p style="font-size:12px;margin-top:8px">Countdown timer One Discount: đếm đến <strong>launch time</strong> (khác QB chỉ boost conversion).</p>
+    </div>
+  </div>
+  <div style="border-radius:var(--rlg);overflow:hidden;border:1px solid var(--line);margin-top:12px">
+    <img src="images/launch-time.png" alt="Launch Time settings" style="width:100%;height:auto;display:block;cursor:pointer" onclick="openLightbox(this.src)">
+  </div>
+</div>
+</div>
+
+<!-- 30 QUIZ QB VS ONE DISCOUNT -->
+<div class="slide" data-mod="Module 3C · Quiz">
+<div class="sc">
+  <div class="act-hdr"><span class="act-badge">⚡ QUIZ</span><span class="tag blue">QB vs One Discount</span></div>
+  <h2 style="margin-bottom:14px">Chọn đúng loại 🤔</h2>
+  <div class="quiz-wrap" id="which-quiz"></div>
+</div>
+</div>
+
+<!-- 31 TICKET OVERVIEW -->
+<div class="slide" data-mod="Module 4 · Real Tickets">
+<div class="sc">
+  <div class="ey">Module 4 · Real Support Cases</div>
+  <h2 style="margin-bottom:14px">Ticket phổ biến nhất 📬</h2>
+  <div class="g g2">
+    <div class="card rose"><h4>🔴 Discount không apply</h4><ul class="cl" style="gap:4px"><li>Automatic discount + đơn &gt;10 line items</li><li>Set quantity conditions sai (each variant vs all)</li><li>Sản phẩm ngoài scope</li><li>Offer Draft / Scheduled chưa đến giờ</li></ul></div>
+    <div class="card amber"><h4>🟡 Widget không hiển thị</h4><ul class="cl" style="gap:4px"><li>App embed chưa enable</li><li>App block chưa add</li><li>Theme không compatible</li><li>"Hide this offer" đang bật</li></ul></div>
+    <div class="card blue"><h4>🔵 Discount sai giá</h4><ul class="cl" style="gap:4px"><li>Currency conversion (multiple markets)</li><li>VAT calculation</li><li>Compare-at price vs product price</li><li>Rounding logic</li></ul></div>
+    <div class="card violet"><h4>🟣 Setup &amp; Customize</h4><ul class="cl" style="gap:4px"><li>Import/export (1000+ products)</li><li>Bulk update display name</li><li>Custom layout / CSS</li><li>3rd party app compatibility</li></ul></div>
+  </div>
+</div>
+</div>
+
+<!-- 32 TICKET QUIZ MCQ -->
+<div class="slide" data-mod="Module 4 · Ticket Quiz">
+<div class="sc">
+  <div class="act-hdr"><span class="act-badge">⚡ TICKET QUIZ</span><span class="tag rose">Real cases</span></div>
+  <h2 style="margin-bottom:14px">Đọc ticket → chọn đáp án 📬</h2>
+  <div class="quiz-wrap" id="ticket-quiz"></div>
+</div>
+</div>
+
+<!-- 33 IMAGE → WHERE TO FIX -->
+<div class="slide" data-mod="Module 4 · Ảnh settings">
+<div class="sc">
+  <div class="act-hdr"><span class="act-badge">⚡ ACTIVITY</span><span class="tag blue">Nhìn ảnh → Vào đâu sửa?</span></div>
+  <h2 style="margin-bottom:14px">Muốn sửa cái này → vào đâu? 🔧</h2>
+  <div id="img-settings-cards"></div>
+</div>
+</div>
+
+<!-- 37 SPINWHEEL -->
+<div class="slide" data-mod="Wrap-Up · Spinwheel Lightning Round">
+<div class="sc">
+  <div class="act-hdr"><span class="act-badge">⚡ SPINWHEEL</span></div>
+  <h2 style="margin-bottom:14px">Quay vòng câu hỏi ⚡</h2>
+  <div id="spin-section">
+    <canvas id="spin-canvas" width="260" height="260"></canvas>
+    <div style="margin-top:12px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+      <button onclick="spinWheel()" id="spin-btn" style="background:var(--blue);color:white;border:none;padding:10px 24px;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit">🎰 Quay!</button>
+      <button onclick="revealSpin()" id="spin-reveal" style="background:var(--bg);border:1px solid var(--line2);color:var(--ink3);padding:10px 16px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;display:none">Show đáp án</button>
+    </div>
+    <div id="spin-question">Bấm "Quay!" để bắt đầu 🎯</div>
+    <div id="spin-answer"></div>
+  </div>
+</div>
+</div>
+
+<!-- 39 FEEDBACK -->
+<div class="slide" data-mod="Kết thúc · Feedback">
+<div class="sc" style="text-align:center">
+  <div style="font-size:48px;margin-bottom:14px">🙏</div>
+  <h1 style="margin-bottom:10px">Cảm ơn bạn đã tham gia!</h1>
+  <p class="lead" style="max-width:440px;margin:0 auto 24px;color:var(--ink2)">Dành 1 phút để để lại feedback — rất có giá trị cho buổi training tiếp theo.</p>
+  <div style="display:flex;gap:20px;justify-content:center;align-items:center;flex-wrap:wrap">
+    <div class="ph-img-slot" style="width:160px;height:160px;flex-shrink:0">
+      <img src="images/Feedback Internal Training_ Quantity App.png" alt="QR Feedback" style="width:100%;height:auto;display:block;cursor:pointer" onclick="openLightbox(this.src)">
+    </div>
+    <div style="text-align:left">
+      <div style="font-size:12px;font-weight:700;color:var(--ink3);letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px">Link feedback</div>
+      <p style="font-size:12px;color:var(--ink3);margin-top:10px">Quét QR hoặc bấm vào link.</p>
+    </div>
+  </div>
+  <div class="bq" style="max-width:440px;margin:24px auto 0;text-align:left">Buổi 2: Order Discount, Buy X Get Y, Bundles, Post-Purchase Upsell, và các case support nâng cao.</div>
+</div>
+</div>
+
+</div><!-- /deck -->
+
+<div id="botnav">
+  <button class="nav-btn" id="btn-prev" onclick="prev()" disabled>&#8592;</button>
+  <div class="dots-row" id="dots-row"></div>
+  <button class="nav-btn" id="btn-next" onclick="next()">&#8594;</button>
+  <div class="kbd-hint"><span class="kbd">←</span><span class="kbd">→</span></div>
+</div>
+
+<div id="lightbox" onclick="closeLightbox()">
+  <button id="lightbox-close" onclick="closeLightbox()">✕</button>
+  <img id="lightbox-img" src="" alt="">
+</div>
+
+<script>
+function openLightbox(src){const lb=document.getElementById('lightbox');document.getElementById('lightbox-img').src=src;lb.classList.add('open')}
+function closeLightbox(){document.getElementById('lightbox').classList.remove('open')}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeLightbox()});
+
+// ── CORE NAV ──────────────────────────────────────────
+const slides=Array.from(document.querySelectorAll('.slide'));
+const TOTAL=slides.length;
+let cur=0;
+function go(n,d=1){
+  if(n<0||n>=TOTAL)return;
+  slides[cur].classList.remove('active');
+  const prev=cur;
+  slides[prev].classList.add('out-l');
+  setTimeout(()=>slides[prev].classList.remove('out-l'),300);
+  cur=n;slides[cur].classList.add('active');
+  upUI();document.getElementById('sidebar').classList.remove('open');
+}
+function next(){go(cur+1,1)}
+function prev(){go(cur-1,-1)}
+function toggleSB(){document.getElementById('sidebar').classList.toggle('open')}
+function upUI(){
+  document.getElementById('pf').style.width=((cur+1)/TOTAL*100)+'%';
+  document.getElementById('tb-num').textContent=(cur+1)+' / '+TOTAL;
+  document.getElementById('tb-mod').textContent=slides[cur].dataset.mod||'';
+  document.getElementById('btn-prev').disabled=cur===0;
+  document.getElementById('btn-next').disabled=cur===TOTAL-1;
+  document.querySelectorAll('.dot').forEach((d,i)=>d.classList.toggle('active',i===cur));
+}
+const dr=document.getElementById('dots-row');
+for(let i=0;i<TOTAL;i++){const d=document.createElement('div');d.className='dot'+(i===0?' active':'');d.onclick=()=>go(i);dr.appendChild(d)}
+document.addEventListener('keydown',e=>{
+  if(e.target.tagName==='TEXTAREA'||e.target.tagName==='INPUT')return;
+  if(e.key==='ArrowRight'||e.key==='ArrowDown')next();
+  if(e.key==='ArrowLeft'||e.key==='ArrowUp')prev();
+});
+
+// ── IMAGE SLIDER (slide 03) ───────────────────────────
+let lsIdx=0;
+function lsNav(dir){
+  const items=document.querySelectorAll('.ls-item');
+  const dots=document.querySelectorAll('#ls-dots div');
+  items[lsIdx].style.display='none';
+  dots[lsIdx].style.background='var(--line2)';dots[lsIdx].style.width='6px';
+  lsIdx=(lsIdx+dir+items.length)%items.length;
+  items[lsIdx].style.display='block';
+  dots[lsIdx].style.background='var(--blue)';dots[lsIdx].style.width='14px';dots[lsIdx].style.borderRadius='3px';
+}
+
+
+// ── VOTING ────────────────────────────────────────────
+const voteData=[
+  {q:'Nếu merchant không enable App Embed, discount sẽ không hoạt động?',opts:['Đúng — cần enable để discount work','Sai — discount vẫn work, chỉ widget không hiện'],correct:1,explain:'Sai. Discount vẫn apply qua Shopify Discount function. App Embed chỉ ảnh hưởng đến widget hiển thị trên storefront.'},
+  {q:'Khi user Skip bước AI Setup, CS cần làm gì?',opts:['Chủ động follow up hướng dẫn khách','Chỉ follow up khi có request rõ ràng từ khách'],correct:1,explain:'Khi User skip AI setup → Product Owner mới nhận alert → Trong trường hợp PO ko trong giờ hành chính, chat này sẽ đẩy về CS, chỉ trong trường hợp request của khách bắn lên rõ ràng, CS mới nên chủ động chat hỗ trợ setup.'},
+  {q:'Không add App Block → widget sẽ không hiện trên product page?',opts:['Đúng — cần add block mới hiện','Sai — widget tự hiện phía trên nút Add to Cart'],correct:1,explain:'Sai. App tự place widget phía trên ATC nếu không có App Block. Nhưng merchant không kiểm soát được vị trí. Add block giúp user chủ động điều chỉnh vị trí trên product page, nếu khách ko add vào vị trí hoặc gặp khó khăn trong setup thì cần GỠ BLOCk và liên hệ dev để custom vị trí (từ plan basic)'},
+  {q:'Manual discount (Advanced plan) có thể dùng chung với Shopify discount coupon code ko?',opts:['Có — compatible','Không — không stack được'],correct:1,explain:'Không stack được. Manual discount không compatible với Shopify free shipping và discount coupon. Đây là nhược điểm chính so với Automatic.'},
+];
+
+const vc=document.getElementById('vote-container');
+const vs={};
+voteData.forEach((vq,vi)=>{
+  const counts=new Array(vq.opts.length).fill(0);
+  vs[vi]={counts,voted:false};
+  const div=document.createElement('div');div.className='vote-q';
+  div.innerHTML=`<div class="vq-text">${vi+1}. ${vq.q}</div><div class="vopts" id="vo-${vi}">${vq.opts.map((o,oi)=>`<div class="vopt" id="vopt-${vi}-${oi}" onclick="castV(${vi},${oi})"><span style="font-size:14px">${oi===0?'👆':'👇'}</span><span style="flex:1">${o}</span><div class="vbar-wrap"><div class="vbar" id="vb-${vi}-${oi}" style="width:0%"></div></div><span class="vcnt" id="vc-${vi}-${oi}">0</span></div>`).join('')}</div><div style="display:flex;gap:8px;align-items:center;margin-top:8px;flex-wrap:wrap"><button class="vrev-btn" onclick="revV(${vi})">Reveal kết quả</button><div class="vexplain" id="ve-${vi}">${vq.explain}</div></div>`;
+  vc.appendChild(div);
+});
+function castV(vi,oi){if(vs[vi].voted)return;vs[vi].voted=true;vs[vi].counts[oi]++;document.getElementById(`vopt-${vi}-${oi}`).classList.add('voted')}
+function revV(vi){
+  const s=vs[vi];
+  document.getElementById(`vo-${vi}`).classList.add('vrs');
+  voteData[vi].opts.forEach((_,oi)=>{
+    const el=document.getElementById(`vopt-${vi}-${oi}`);
+    if(oi===voteData[vi].correct){el.style.borderColor='var(--green-m)';el.style.background='var(--green-l)'}
+    else{el.style.borderColor='var(--rose-m)';el.style.background='var(--rose-l)';el.style.color='var(--rose)'}
+  });
+  document.getElementById(`ve-${vi}`).style.display='block';
+}
+
+// ── TRUE/FALSE ─────────────────────────────────────────
+const tfData=[
+  {s:'Email trong survey có thể tự đổi trong app.',a:false,e:'Sai — liên hệ CS, CS nhờ team đổi.'},
+  {s:'Nếu không enable App Embed, discount hoàn toàn không hoạt động.',a:false,e:'Sai — discount vẫn work. Widget không hiển thị.'},
+  {s:'Không add App Block → widget tự hiện phía trên nút Add to Cart.',a:true,e:'Đúng! App auto-place widget trên ATC button.'},
+  {s:'AI Setup là bước bắt buộc trước khi tạo campaign.',a:false,e:'Sai — có thể Skip và tạo campaign bình thường.'},
+];
+const tfl=document.getElementById('tf-list');
+const tfA={};
+tfData.forEach((it,i)=>{
+  const div=document.createElement('div');div.className='tf-row';
+  div.innerHTML=`<div class="tf-stmt">${i+1}. ${it.s}</div><div class="tf-btns"><button class="tf-btn" onclick="ansTF(${i},true,this)">✓ Đúng</button><button class="tf-btn" onclick="ansTF(${i},false,this)">✗ Sai</button></div><div class="tf-exp" id="te-${i}">💬 ${it.e}</div>`;
+  tfl.appendChild(div);
+});
+function ansTF(i,ans,btn){if(tfA[i])return;tfA[i]=true;const ok=tfData[i].a===ans;btn.classList.add(ok?'correct':'wrong');document.getElementById('te-'+i).classList.add('show')}
+
+// ── MATCH: GENERAL SETTINGS ───────────────────────────
+const matchGS={
+  lefts:['Sản phẩm thuộc nhiều collections, khách yc nếu shoppers mua mix các sản phẩm ở nhiều collection → discount không apply; khách mua đủ 4 items chung 1 collections mới được apply','Khách muốn nếu shoppers mua 2 áo size S + 1 size M = 3 items không đủ điều kiện; mua 3 item size S mới đủ điều kiện; áo có 2 variant option là color và size','Merchant bán 1000 sản phẩm cùng vendor "ABC" muốn 1 rule cho tất cả','Khách muốn shoppers bắt buộc phải mua ít nhất 1 sản phẩm thuộc collection bàn, 1 sản phẩm thuộc collection ghế mới được giảm giá'],
+  rights:['→ Set Quantity Conditions: each collection','→ Set Quantity Conditions: each variant','→ Discounted Products: Group products (by vendor)','→ App hiện tại chưa hỗ trợ'],
+  pairs:[0,1,2,3]
+};
+buildMatch('match-gs',matchGS,'gs');
+
+const matchLayout={
+  lefts:['Store dùng Bold Product Options','Wholesale B2B, order nhiều SP cùng lúc','Click card → số lượng tự điền vào qty box của theme','Button riêng, có thể mở cart drawer khi click'],
+  rights:['→ Dynamic Variant','→ Wholesale','→ Card','→ Option Variant'],
+  pairs:[0,1,2,3]
+};
+buildMatch('match-layout',matchLayout,'layout');
+
+function buildMatch(id,data,key){
+  const el=document.getElementById(id);if(!el)return;
+  const shuffledL=[...data.lefts].map((l,i)=>({text:l,origIdx:i})).sort(()=>Math.random()-.5);
+  const shuffledR=[...data.rights].map((r,i)=>({text:r,origIdx:i})).sort(()=>Math.random()-.5);
+  el.innerHTML=`<div class="match-col"><div class="match-col-label">Tình huống</div>${shuffledL.map((l,i)=>`<div class="match-item" id="ml-${key}-${i}" data-orig="${l.origIdx}" onclick="selectMatch('${key}','l',${i})">${l.text}</div>`).join('')}</div><div class="match-col"><div class="match-col-label">Setting</div>${shuffledR.map((r,i)=>`<div class="match-item" id="mr-${key}-${i}" data-orig="${r.origIdx}" onclick="selectMatch('${key}','r',${i})">${r.text}</div>`).join('')}</div>`;
+}
+const matchSel={};
+const matchDone={};
+function selectMatch(key,side,i){
+  if(!matchSel[key])matchSel[key]={};
+  if(!matchDone[key])matchDone[key]={l:{},r:{}};
+  // ignore if already paired
+  if(matchDone[key][side][i])return;
+  // deselect previous of same side
+  const prev=matchSel[key][side];
+  if(prev!==undefined){document.getElementById(`m${side}-${key}-${prev}`).classList.remove('selected')}
+  // toggle if clicking same item
+  if(prev===i){delete matchSel[key][side];return}
+  matchSel[key][side]=i;
+  document.getElementById(`m${side}-${key}-${i}`).classList.add('selected');
+  // if both sides selected, create pair
+  if(matchSel[key].l!==undefined&&matchSel[key].r!==undefined){
+    const li=matchSel[key].l,ri=matchSel[key].r;
+    const lEl=document.getElementById(`ml-${key}-${li}`);
+    const rEl=document.getElementById(`mr-${key}-${ri}`);
+    lEl.classList.remove('selected');rEl.classList.remove('selected');
+    lEl.style.opacity='.5';lEl.style.pointerEvents='none';
+    rEl.style.opacity='.5';rEl.style.pointerEvents='none';
+    // add pair number badge
+    const pairNum=Object.keys(matchDone[key].l).length+1;
+    const badge='<span style="display:inline-block;background:var(--blue);color:white;border-radius:50%;width:18px;height:18px;font-size:10px;font-weight:700;line-height:18px;text-align:center;margin-right:6px;flex-shrink:0">'+pairNum+'</span>';
+    lEl.insertAdjacentHTML('afterbegin',badge);rEl.insertAdjacentHTML('afterbegin',badge);
+    lEl.style.opacity='1';rEl.style.opacity='1';
+    matchDone[key].l[li]=ri;matchDone[key].r[ri]=li;
+    delete matchSel[key].l;delete matchSel[key].r;
+  }
+}
+function checkMatch(key){
+  const data=key==='gs'?matchGS:matchLayout;
+  const done=matchDone[key]||{l:{}};
+  let ok=0,total=data.lefts.length;
+  // check all pairs
+  Object.keys(done.l).forEach(li=>{
+    const ri=done.l[li];
+    const lEl=document.getElementById(`ml-${key}-${li}`);
+    const rEl=document.getElementById(`mr-${key}-${ri}`);
+    const lOrig=parseInt(lEl.dataset.orig);
+    const rOrig=parseInt(rEl.dataset.orig);
+    const correct=data.pairs[lOrig]===rOrig;
+    lEl.style.opacity='1';lEl.style.pointerEvents='auto';
+    rEl.style.opacity='1';rEl.style.pointerEvents='auto';
+    lEl.classList.add(correct?'matched-ok':'matched-bad');
+    rEl.classList.add(correct?'matched-ok':'matched-bad');
+    if(correct)ok++;
+  });
+  const fb=document.getElementById(`match-${key}-fb`);
+  if(fb)fb.textContent=ok===total?`🎉 Hoàn hảo! ${ok}/${total}`:`${ok}/${total} đúng`;
+  if(fb)fb.style.color=ok===total?'var(--green)':'var(--amber)';
+}
+
+// ── TARGET CUSTOMER QUIZ ──────────────────────────────
+const tcQuizData=[
+  {
+    msg:`Merchant: "I want to offer 15% off exclusively to my wholesale buyers. Regular customers should not see this offer at all."`,
+    q:'Chọn Target Customer phù hợp nhất:',
+    opts:['Everyone','Logged-in customers','Logged-in B2B customers','D2C customers (exclude B2B)'],
+    c:2,e:'Logged-in B2B customers — chỉ khách có company profile trong Shopify thấy. Khách chưa login hoặc không phải B2B không thấy.'
+  },
+  {
+    msg:`CS ticket: "KH muốn set discount cho khách VIP của họ. Khách VIP được tag là 'vip' trong Shopify customer profile."`,
+    q:'Target Customer nào?',
+    opts:['Everyone','Logged-in customers with tag','D2C customers','Customers without tag'],
+    c:1,e:'Logged-in customers with tag — set tag = "vip". Chỉ khách đã login VÀ có tag "vip" mới thấy.'
+  },
+  {
+    msg:`Merchant muốn: tất cả mọi người truy cập store đều thấy offer này, kể cả khách chưa có tài khoản.`,
+    q:'Target Customer phù hợp nhất:',
+    opts:['D2C customers','Logged-in customers','Everyone','Customers without tag'],
+    c:2,e:'Everyone — không yêu cầu login. Cả guest và logged-in đều thấy.'
+  },
+  {
+    msg:`CS ticket: "Khách setup offer cho D2C nhưng khách hàng của họ (chưa login) không thấy discount widget."`,
+    q:'Nguyên nhân có thể là gì?',
+    opts:['D2C không apply cho guest — chỉ logged-in','D2C apply cho cả guest (chưa login = tính là D2C) — nguyên nhân khác','App embed chưa enable','Schedule chưa đến giờ'],
+    c:1,e:'D2C APPLY cho guest! Chưa login = tính là D2C. Vậy nguyên nhân widget không hiện phải là thứ khác (embed, block, offer status...).'
+  },
+];
+const tcqEl=document.getElementById('tc-quiz');
+const tcqA={};
+tcQuizData.forEach((it,i)=>{
+  const div=document.createElement('div');div.className='qcard';
+  div.innerHTML=`<div class="ticket-msg">${it.msg}</div><div class="qq">${it.q}</div><div class="qopts" id="tcqo-${i}">${it.opts.map((o,oi)=>`<div class="qopt" onclick="ansTCQ(${i},${oi},this)"><span class="ok-k">${String.fromCharCode(65+oi)}</span>${o}</div>`).join('')}</div><div class="qfb" id="tcqf-${i}"></div>`;
+  tcqEl.appendChild(div);
+});
+function ansTCQ(i,oi,el){if(tcqA[i])return;tcqA[i]=true;const ok=oi===tcQuizData[i].c;el.classList.add(ok?'correct':'wrong');if(!ok)document.querySelectorAll(`#tcqo-${i} .qopt`)[tcQuizData[i].c].classList.add('correct');const fb=document.getElementById('tcqf-'+i);fb.textContent=(ok?'✅ ':'❌ ')+tcQuizData[i].e;fb.style.color=ok?'var(--green)':'var(--rose)'}
+
+// ── GUESS SETTINGS / LAYOUT QUIZ (slideshow) ────────
+const guessData=[
+  {q:'Merchant bán vải theo mét. Muốn hiển thị bảng tier giảm giá đơn giản: 2–5m, 6–10m, 11m+. Không cần tương tác phức tạp.',opts:['Table','Dynamic Variant','Card','Option Variant','Wholesale'],c:0,e:'Table — bảng tiêu chuẩn, không tương tác trực tiếp, phù hợp hiển thị nhiều tier dạng đơn giản.'},
+  {q:'Store dùng Bold Product Options để custom field option trên product page. Merchant muốn discount work đúng với nút ATC đã được Bold customize.',opts:['Table','Dynamic Variant','Card','Option Variant','Wholesale'],c:1,e:'Dynamic Variant — layout duy nhất compatible với product option apps (Bold, Qikify...). Work với button của theme.'},
+  {q:'Merchant muốn khi khách click vào mức giá, số lượng tự điền vào quantity box của theme, rồi dùng nút Add to Cart của theme.',opts:['Table','Dynamic Variant','Card','Option Variant','Wholesale'],c:2,e:'Card — click card → fill qty vào quantity box của theme → dùng theme ATC button.'},
+  {q:'Merchant muốn khi khách chọn tier, tự add vào cart drawer (side cart) mà không redirect sang cart page. Cần button riêng.',opts:['Table','Dynamic Variant','Card','Option Variant','Wholesale'],c:3,e:'Option Variant — button riêng của layout, set action = "Add to cart & open side cart".'},
+  {q:'Wholesale store B2B. Khách cần đặt hàng nhiều loại sản phẩm khác nhau cùng lúc, mỗi loại 1 số lượng riêng.',opts:['Table','Dynamic Variant','Card','Option Variant','Wholesale'],c:4,e:'Wholesale — add nhiều product vào cart cùng lúc. Advanced plan only.'},
+  {q:'Store châu Âu có giá product chưa gồm VAT 20%. Khách muốn thấy cột giá đã gồm VAT trong bảng tier để biết thực trả bao nhiêu.',opts:['Table + bật cột VAT','Dynamic Variant','Card','Option Variant','Wholesale'],c:0,e:'Table + bật cột "Price per product (Inc VAT)" trong Column settings, nhập % VAT cố định.'},
+  {q:'Merchant muốn khách chọn mix size/màu tự do — mua 3 cái bất kỳ variant nào cũng được giảm 15%. Store dùng Qikify Product Options.',opts:['Table','Dynamic Variant','Card','Option Variant','Wholesale'],c:1,e:'Dynamic Variant — cho phép khách chọn variant tự do (mix size/màu), compatible với product option apps.'},
+  {q:'Merchant có 3 tier discount và muốn hiển thị dạng bảng ngang vì mỗi tier có nhiều thông tin cần hiện.',opts:['Table','Table Horizontal','Card','Option Variant','Wholesale'],c:1,e:'Table Horizontal — dùng khi có >3 rules hoặc cần hiển thị nhiều cột thông tin theo chiều ngang.'},
+  {q:'Merchant muốn mỗi tier hiển thị số lượng cụ thể để chọn variant (ví dụ: Buy 1 → chọn size, Buy 2 → chọn 2 size). Quantity nhỏ (1, 2, 3).',opts:['Table','Dynamic Variant','Card','Option Variant (full variant by qty)','Wholesale'],c:3,e:'Option Variant với "Display full variant by quantity" — mỗi qty 1 row để chọn variant. Dùng khi qty nhỏ.'},
+  {q:'Merchant muốn tier hiển thị với input box để nhập số lượng lớn (10, 20, 50+), không cần liệt kê từng qty.',opts:['Table','Dynamic Variant','Card','Option Variant (quantity input field)','Wholesale'],c:3,e:'Option Variant với "Display quantity input field" — 1 row + input box. Dùng khi qty lớn (5, 10, 20+).'},
+];
+document.getElementById('gs-total').textContent=guessData.length;
+const gsEl=document.getElementById('gs-slideshow');
+const gsA={};
+let gsIdx=0;
+guessData.forEach((it,i)=>{
+  const div=document.createElement('div');div.className='qcard';div.id='gs-card-'+i;
+  div.style.display=i===0?'block':'none';
+  div.innerHTML=`<div class="qq">${it.q}</div><div class="qopts" id="gso-${i}">${it.opts.map((o,oi)=>`<div class="qopt" onclick="ansGS(${i},${oi},this)"><span class="ok-k">${String.fromCharCode(65+oi)}</span>${o}</div>`).join('')}</div><div class="qfb" id="gsf-${i}"></div>`;
+  gsEl.appendChild(div);
+});
+document.getElementById('gs-next-btn').style.display='inline-block';
+function ansGS(i,oi,el){if(gsA[i])return;gsA[i]=true;const ok=oi===guessData[i].c;el.classList.add(ok?'correct':'wrong');if(!ok)document.querySelectorAll(`#gso-${i} .qopt`)[guessData[i].c].classList.add('correct');const fb=document.getElementById('gsf-'+i);fb.textContent=(ok?'✅ ':'❌ ')+guessData[i].e;fb.style.color=ok?'var(--green)':'var(--rose)'}
+function gsNav(dir){
+  document.getElementById('gs-card-'+gsIdx).style.display='none';
+  gsIdx=Math.max(0,Math.min(guessData.length-1,gsIdx+dir));
+  document.getElementById('gs-card-'+gsIdx).style.display='block';
+  document.getElementById('gs-cur').textContent=gsIdx+1;
+  document.getElementById('gs-prev-btn').style.display=gsIdx>0?'inline-block':'none';
+  document.getElementById('gs-next-btn').style.display=gsIdx<guessData.length-1?'inline-block':'none';
+}
+function gsNext(){gsNav(1)}
+function gsPrev(){gsNav(-1)}
+
+// ── BINGO ─────────────────────────────────────────────
+const bingoLayouts=['Table','Table Horizontal','Dynamic Variant','Card','Option Variant','Wholesale','Old Tiered Pricing'];
+const bingoScens=[
+  {text:'Store dùng Bold Product Options để thêm custom engrave. Merchant muốn discount work đúng với button "Add to Cart" đã được customize bởi Bold.',answer:'Dynamic Variant — layout duy nhất compatible với product option apps (Bold, Qikify...)'},
+  {text:'Wholesale store B2B. Cần đặt hàng nhiều loại sản phẩm khác nhau cùng lúc với price breaks.',answer:'Wholesale — add nhiều product vào cart cùng lúc, Advanced plan only'},
+  {text:'Merchant muốn hiển thị 4 tier discount dạng bảng. Kèm cột giá đã gồm VAT. Store giá product chưa gồm VAT, ra checkout mới tính.',answer:'Table (hoặc Table Horizontal) — bật cột Price per product (Inc VAT), nhập % VAT cố định'},
+  {text:'Khách muốn khi click vào mức giá, tự add vào cart drawer và không redirect sang cart page.',answer:'Option Variant — button riêng, set action "Add to cart & open side cart"'},
+  {text:'Merchant muốn khi click vào widget, số lượng tự điền vào quantity box của theme, rồi dùng button ATC của theme.',answer:'Card — click card → fill qty vào quantity box → theme ATC'},
+  {text:'Merchant cần mix variant (size S + size M) đều tính vào điều kiện quantity break.',answer:'Set Quantity Conditions: Total quantity of all products (không phải layout!)'},
+  {text:'Merchant muốn ẩn variant selector của theme, thay bằng color swatches trong widget app.',answer:'Advanced Settings → Hide theme variant + bật Visual swatches'},
+];
+let bIdx=-1;
+const bg=document.getElementById('bingo-grid');
+bingoLayouts.forEach(t=>{
+  const c=document.createElement('div');c.className='bc';c.textContent=t;
+  c.onclick=()=>{c.classList.toggle('marked');document.getElementById('bingo-status').textContent=Array.from(document.querySelectorAll('.bc.marked')).length+' ô đã đánh dấu'};
+  bg.appendChild(c);
+});
+function bingoStart(){
+  document.getElementById('bingo-start').style.display='none';
+  document.getElementById('bingo-show-ans').style.display='inline-block';
+  document.getElementById('bingo-next').style.display='inline-block';
+  bingoNext();
+}
+function bingoNext(){
+  if(bIdx>=bingoScens.length-1)return;
+  bIdx=bIdx+1;
+  document.getElementById('bingo-text').textContent=bingoScens[bIdx].text;
+  const a=document.getElementById('bingo-answer');
+  a.classList.remove('show','wrong-ans');a.textContent='';
+  if(bIdx>=bingoScens.length-1){
+    document.getElementById('bingo-next').style.display='none';
+    document.getElementById('bingo-status').textContent='🎉 Hết câu hỏi!';
+  }
+}
+function bingoShowAns(){
+  const a=document.getElementById('bingo-answer');
+  a.textContent='✅ '+bingoScens[bIdx].answer;
+  a.classList.add('show');
+}
+
+// ── WHICH QUIZ (QB vs One Discount) ──────────────────
+const whichData=[
+  {q:'Merchant muốn 3 tier giảm giá theo quantity. Không cần thêm gì.',opts:['Quantity Breaks','One Discount','Cả 2 đều được'],c:2,e:'Cả 2 đều được! QB đơn giản hơn, One Discount cũng làm được nhưng overkill. Nếu không cần sub rules thì dùng QB cho gọn.'},
+  {q:'Merchant muốn: mỗi tier vừa giảm giá vừa tặng kèm 1 gift khác nhau.',opts:['Quantity Breaks','One Discount','Cả 2 đều được'],c:1,e:'One Discount — QB không có sub rules. Cần gift đi kèm từng tier → phải dùng One Discount.'},
+  {q:'1 tier có gift tặng kèm nhưng KHÔNG giảm giá sản phẩm (discount = 0).',opts:['Quantity Breaks','One Discount','Cả 2 đều được'],c:2,e:'Cả 2 đều được! QB có free gift option khi discount = 0. One Discount cũng support. QB thì tier chỉ có gift, One Discount thì main rule discount = 0 + gift sub rule.'},
+  {q:'Merchant muốn: mua 10+ → giảm 20%, chỉ cho B2B customers.',opts:['Quantity Breaks','One Discount','Cả 2 đều được'],c:2,e:'Cả 2 đều được — cả QB và One Discount đều có Target Customer setting. Dùng QB cho đơn giản.'},
+  {q:'Mua sản phẩm chính + mua thêm add-on → add-on giảm 30%.',opts:['Quantity Breaks','One Discount','Cả 2 đều được'],c:1,e:'One Discount với Cross-sell sub rule — QB không support cross-sell discount.'},
+];
+const wq=document.getElementById('which-quiz');
+const wA={};
+whichData.forEach((it,i)=>{
+  const div=document.createElement('div');div.className='qcard';
+  div.innerHTML=`<div class="qq">${i+1}. ${it.q}</div><div class="qopts" id="wqo-${i}">${it.opts.map((o,oi)=>`<div class="qopt" onclick="ansW(${i},${oi},this)"><span class="ok-k">${String.fromCharCode(65+oi)}</span>${o}</div>`).join('')}</div><div class="qfb" id="wqf-${i}"></div>`;
+  wq.appendChild(div);
+});
+function ansW(i,oi,el){if(wA[i])return;wA[i]=true;const ok=oi===whichData[i].c;el.classList.add(ok?'correct':'wrong');if(!ok)document.querySelectorAll(`#wqo-${i} .qopt`)[whichData[i].c].classList.add('correct');const fb=document.getElementById('wqf-'+i);fb.textContent=(ok?'✅ ':'❌ ')+whichData[i].e;fb.style.color=ok?'var(--green)':'var(--rose)'}
+
+// ── TICKET QUIZ MCQ ───────────────────────────────────
+const ticketQuiz=[
+  {msg:`"They reached out that their customers have been having issues with discounts not appearing when they meet the quantity break criteria. This usually happens on large orders that have dozens of items."`,q:'Nguyên nhân khả năng cao nhất:',opts:['App embed chưa enable','Automatic discount + đơn hàng có >10 line items','Offer đang ở trạng thái Draft','Set quantity conditions sai'],c:1,e:'Automatic discount không work tốt với đơn >10 line items. Cần đổi sang Manual discount (Advanced plan).'},
+  {msg:`"KH set discount apply theo all variants, nhưng nó đang apply theo quantity của each variant."`,q:'Cần check và sửa setting nào?',opts:['Display settings → Layout','General settings → Set Quantity Conditions','Target customer settings','Schedule → Apply to countries'],c:1,e:'Set Quantity Conditions — đổi từ "Total quantity of each product variant" sang "Total quantity of all selected products".'},
+  {msg:`"The discount is not applied when a customer chooses a different currency instead of their default GBP."`,q:'Đây là issue liên quan đến:',opts:['App embed settings','Shopify Markets / multi-currency','Target customer settings','Schedule đã hết hạn'],c:1,e:'Multi-currency/Shopify Markets — discount logic có thể bị ảnh hưởng khi switch currency. Cần check Shopify Markets integration.'},
+];
+const tqEl=document.getElementById('ticket-quiz');
+const tqA={};
+ticketQuiz.forEach((it,i)=>{
+  const div=document.createElement('div');div.className='qcard';
+  div.innerHTML=`<div class="ticket-msg">${it.msg}</div><div class="qq">${it.q}</div><div class="qopts" id="tqo-${i}">${it.opts.map((o,oi)=>`<div class="qopt" onclick="ansTQ(${i},${oi},this)"><span class="ok-k">${String.fromCharCode(65+oi)}</span>${o}</div>`).join('')}</div><div class="qfb" id="tqf-${i}"></div>`;
+  tqEl.appendChild(div);
+});
+function ansTQ(i,oi,el){if(tqA[i])return;tqA[i]=true;const ok=oi===ticketQuiz[i].c;el.classList.add(ok?'correct':'wrong');if(!ok)document.querySelectorAll(`#tqo-${i} .qopt`)[ticketQuiz[i].c].classList.add('correct');const fb=document.getElementById('tqf-'+i);fb.textContent=(ok?'✅ ':'❌ ')+ticketQuiz[i].e;fb.style.color=ok?'var(--green)':'var(--rose)'}
+
+// ── IMAGE → WHERE TO FIX ──────────────────────────────
+const imgSettings=[
+  {img:'widget-sai-cho.png',q:'"Why is my widget showing up in this position?"',ans:'Vì add block sai chỗ. Hướng dẫn khách add block lại đúng vị trí, hoặc nếu không add được thì gỡ add block, confirm lại vị trí khách muốn để và báo dev custom.'},
+  {img:'tier-table.png',q:'Tôi muốn button ở table quantity ở vị trí như ảnh này, tôi settings như thế nào?',ans:'Check plan khách — khách cần ở plan Basic trở lên mới dùng được feature này ở Table layout. Vào Display Settings → Layout: Table → check chọn ô Action button.'},
+  {img:'time-count.png',q:'Tại sao đợi một thời gian widget tôi biến mất?',ans:'Vì đã hết countdown timer — widget sẽ tự ẩn khi timer về 00:00. Discount vẫn work, chỉ widget ẩn (trừ khi bật "Hide & disable discount" ở Advanced plan).'},
+];
+const imgSetEl=document.getElementById('img-settings-cards');
+imgSettings.forEach((it,i)=>{
+  const div=document.createElement('div');div.className='qcard';div.style.marginBottom='12px';
+  div.innerHTML=`<div style="border-radius:var(--rlg);overflow:hidden;border:1px solid var(--line);margin-bottom:10px"><img src="${it.img}" alt="" style="width:100%;height:auto;display:block;cursor:pointer" onclick="openLightbox(this.src)"></div><div class="ticket-q">❓ ${it.q}</div><textarea class="ticket-ta" placeholder="Bạn sẽ trả lời khách như thế nào?"></textarea><button class="show-ans-btn" onclick="revImg(this,'isa-${i}')">Show đáp án</button><div class="ticket-ans" id="isa-${i}">✅ ${it.ans}</div>`;
+  imgSetEl.appendChild(div);
+});
+
+function revImg(btn,id){document.getElementById(id).classList.add('show');btn.style.display='none'}
+
+// ── SPINWHEEL ─────────────────────────────────────────
+const spinQs=[
+  {q:'Display name để trống → cái gì hiển thị ở checkout?',a:'→ Campaign name tự động thay thế.'},
+  {q:'Chưa login, offer set là "D2C only" → có thấy discount không?',a:'→ Có! Chưa login = tính là D2C.'},
+  {q:'QB Multiples bật → có mấy tier? Cộng dồn không?',a:'→ Chỉ 1 tier. KHÔNG cộng dồn.'},
+  {q:'App Embed tắt → discount apply không?',a:'→ Có! Discount vẫn work. Widget không hiện.'},
+  {q:'One Discount — click Tier 2 → nhận sub rules của tier nào?',a:'→ Chỉ Tier 2. Không cộng Tier 1.'},
+  {q:'Timer hết → widget ẩn → discount còn work không?',a:'→ Có! Trừ khi bật "Hide & disable discount" (Advanced plan + Manual).'},
+  {q:'Layout nào work với product option apps (Bold, Qikify...)?',a:'→ Dynamic Variant — layout duy nhất.'},
+  {q:'Muốn add nhiều sản phẩm khác nhau vào cart cùng lúc → layout nào?',a:'→ Wholesale (Advanced plan only).'},
+  {q:'Set qty conditions: each variant vs all products — khác nhau thế nào?',a:'→ Each variant: đếm riêng từng SKU. All products: cộng tổng tất cả.'},
+  {q:'Old Tiered Pricing giờ còn dùng được không?',a:'→ Đã bỏ. Cần Pro+, liên hệ dev, không khuyến khích.'},
+];
+const colors=['#0953D3','#0E9E89','#7C3AED','#D97706','#E11D48','#059669','#0953D3','#0E9E89','#7C3AED','#D97706'];
+const canvas=document.getElementById('spin-canvas');
+const ctx=canvas.getContext('2d');
+let spinAngle=0;let spinVel=0;let spinning=false;let currentQ=0;
+
+function drawWheel(angle){
+  const cx=130,cy=130,r=118;
+  ctx.clearRect(0,0,260,260);
+  spinQs.forEach((_,i)=>{
+    const a1=angle+i*(2*Math.PI/spinQs.length);
+    const a2=a1+(2*Math.PI/spinQs.length);
+    ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,r,a1,a2);ctx.closePath();
+    ctx.fillStyle=colors[i%colors.length];ctx.fill();
+    ctx.strokeStyle='white';ctx.lineWidth=2;ctx.stroke();
+    ctx.save();ctx.translate(cx,cy);ctx.rotate(a1+(2*Math.PI/spinQs.length)/2);
+    ctx.textAlign='right';ctx.fillStyle='white';ctx.font='bold 10px Inter';
+    ctx.fillText((i+1).toString(),r-8,4);ctx.restore();
+  });
+  // center circle
+  ctx.beginPath();ctx.arc(cx,cy,16,0,2*Math.PI);ctx.fillStyle='white';ctx.fill();
+  ctx.fillStyle=colors[0];ctx.font='bold 12px Inter';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('P',cx,cy);
+  // pointer
+  ctx.beginPath();ctx.moveTo(cx+r+8,cy);ctx.lineTo(cx+r-2,cy-8);ctx.lineTo(cx+r-2,cy+8);ctx.closePath();
+  ctx.fillStyle='#111827';ctx.fill();
+}
+
+function spinWheel(){
+  if(spinning)return;
+  spinning=true;
+  document.getElementById('spin-reveal').style.display='none';
+  document.getElementById('spin-answer').classList.remove('show');
+  document.getElementById('spin-answer').textContent='';
+  document.getElementById('spin-question').textContent='🎰 Đang quay...';
+  spinVel=0.25+Math.random()*0.2;
+  function anim(){
+    spinAngle+=spinVel;spinVel*=0.985;
+    drawWheel(spinAngle);
+    if(spinVel>0.003){requestAnimationFrame(anim)}
+    else{
+      spinning=false;
+      const norm=((spinAngle%(2*Math.PI))+2*Math.PI)%(2*Math.PI);
+      const idx=Math.floor(((2*Math.PI-norm)%(2*Math.PI))/(2*Math.PI/spinQs.length))%spinQs.length;
+      currentQ=idx;
+      document.getElementById('spin-question').textContent=spinQs[idx].q;
+      document.getElementById('spin-reveal').style.display='inline-block';
+    }
+  }
+  requestAnimationFrame(anim);
+}
+function revealSpin(){
+  const a=document.getElementById('spin-answer');
+  a.textContent=spinQs[currentQ].a;a.classList.add('show');
+  document.getElementById('spin-reveal').style.display='none';
+}
+drawWheel(0);
+
+upUI();
+</script>
+</body>
+</html>
