@@ -24,17 +24,8 @@
 html,body{height:100%;font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);overflow:hidden;-webkit-font-smoothing:antialiased;font-size:15px}
 
 /* LANG TOGGLE */
-.lang-vi,.lang-en{display:none}
-body.lang-vi .lang-vi{display:inline}
-body.lang-en .lang-en{display:inline}
-body.lang-vi .lang-vi-block{display:block}
-body.lang-en .lang-en-block{display:block}
-body.lang-vi .lang-en-block{display:none}
-body.lang-en .lang-vi-block{display:none}
-body.lang-vi .lang-vi-flex{display:flex}
-body.lang-en .lang-en-flex{display:flex}
-body.lang-vi .lang-en-flex{display:none}
-body.lang-en .lang-vi-flex{display:none}
+body.lang-vi .lang-en{display:none}
+body.lang-en .lang-vi{display:none}
 #lang-toggle{flex-shrink:0;padding:3px 8px;border-radius:6px;border:1px solid var(--line);background:var(--white);font-size:11px;font-weight:700;cursor:pointer;color:var(--ink3);font-family:inherit;transition:all .15s}
 #lang-toggle:hover{border-color:var(--blue);color:var(--blue)}
 
