@@ -1,0 +1,1569 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>P: Quantity Breaks & Discounts · CS Training Day 3</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --blue:#0953D3;--blue-l:#EEF4FF;--blue-m:#B3CEFF;
+  --teal:#0E9E89;--teal-l:#E8FAF7;--teal-m:#7FD9CE;
+  --grad:linear-gradient(150deg,#0953D3 8%,#8BDCCB 100%);
+  --ink:#111827;--ink2:#374151;--ink3:#6B7280;--ink4:#9CA3AF;
+  --bg:#F9FAFB;--white:#fff;--line:#E5E7EB;--line2:#D1D5DB;
+  --amber:#D97706;--amber-l:#FFFBEB;--amber-m:#FDE68A;
+  --rose:#E11D48;--rose-l:#FFF1F2;--rose-m:#FECDD3;
+  --violet:#7C3AED;--violet-l:#F5F3FF;--violet-m:#DDD6FE;
+  --green:#059669;--green-l:#ECFDF5;--green-m:#A7F3D0;
+  --r:10px;--rlg:14px;
+  --sh:0 1px 3px rgba(0,0,0,.07),0 1px 2px rgba(0,0,0,.05);
+  --shmd:0 4px 12px rgba(0,0,0,.08),0 2px 4px rgba(0,0,0,.04);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);overflow:hidden;-webkit-font-smoothing:antialiased;font-size:15px}
+
+/* TOPBAR */
+#topbar{position:fixed;top:0;left:0;right:0;z-index:300;height:50px;background:var(--white);border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 16px;gap:12px}
+.tb-logo{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.tb-logo .lp{width:28px;height:28px;border-radius:7px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:white;flex-shrink:0}
+.tb-logo .ln{font-size:13px;font-weight:700;color:var(--blue);letter-spacing:-.01em;white-space:nowrap}
+.tb-sep{width:1px;height:16px;background:var(--line2);flex-shrink:0}
+#tb-mod{font-size:12px;color:var(--ink3);font-weight:500;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#tb-num{font-size:12px;color:var(--ink4);font-weight:600;flex-shrink:0;font-variant-numeric:tabular-nums}
+#menu-btn{flex-shrink:0;width:32px;height:32px;border-radius:8px;border:1px solid var(--line);background:var(--white);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--ink3);font-size:14px;transition:all .15s}
+#menu-btn:hover{border-color:var(--blue);color:var(--blue)}
+#lang-btn{flex-shrink:0;width:32px;height:32px;border-radius:8px;border:1px solid var(--line);background:var(--white);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--ink3);font-size:12px;font-weight:700;transition:all .15s;font-family:inherit}
+#lang-btn:hover{border-color:var(--blue);color:var(--blue)}
+
+/* DAY NAV */
+#day-nav{position:fixed;top:50px;left:0;right:0;z-index:298;height:36px;background:var(--bg);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:center;gap:8px;padding:0 16px}
+.day-pill{padding:4px 16px;border-radius:20px;font-size:12px;font-weight:600;color:var(--ink3);text-decoration:none;border:1px solid var(--line2);background:var(--white);transition:all .15s;cursor:pointer}
+.day-pill:hover{border-color:var(--blue);color:var(--blue)}
+.day-pill.active{background:var(--blue);color:white;border-color:var(--blue)}
+
+/* BILINGUAL */
+body.lang-vi .lang-en{display:none}
+body.lang-en .lang-vi{display:none}
+
+/* PROGRESS */
+#prog{position:fixed;top:86px;left:0;right:0;height:2px;background:var(--line);z-index:297}
+#pf{height:100%;background:var(--grad);transition:width .3s ease;border-radius:0 2px 2px 0}
+
+/* SIDEBAR */
+#sidebar{position:fixed;top:86px;left:0;bottom:0;width:240px;background:var(--white);border-right:1px solid var(--line);overflow-y:auto;z-index:200;padding:10px 0;transform:translateX(-100%);transition:transform .25s ease}
+#sidebar.open{transform:translateX(0)}
+.sb-sec{padding:10px 14px 3px;font-size:10px;font-weight:700;color:var(--ink4);letter-spacing:.08em;text-transform:uppercase}
+.sb-item{padding:7px 14px;font-size:13px;color:var(--ink2);cursor:pointer;transition:all .15s;border-left:2px solid transparent}
+.sb-item:hover{background:var(--bg);color:var(--ink)}
+.sb-item.cur{color:var(--blue);border-left-color:var(--blue);background:var(--blue-l);font-weight:500}
+
+/* DECK */
+#deck{position:fixed;top:86px;left:0;right:0;bottom:56px;overflow:hidden}
+.slide{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:20px 28px;opacity:0;pointer-events:none;transform:translateX(32px);transition:opacity .28s ease,transform .28s ease}
+.slide.active{opacity:1;pointer-events:all;transform:translateX(0)}
+.slide.out-l{transform:translateX(-32px);opacity:0}
+.sc{width:100%;max-width:880px;max-height:calc(100vh - 150px);overflow-y:auto}
+.sc::-webkit-scrollbar{width:3px}
+.sc::-webkit-scrollbar-thumb{background:var(--line2);border-radius:3px}
+
+/* TYPOGRAPHY */
+.ey{font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--blue);display:flex;align-items:center;gap:6px;margin-bottom:10px}
+.ey::before{content:'';width:14px;height:2px;background:currentColor;border-radius:2px;flex-shrink:0}
+h1{font-size:clamp(22px,3vw,40px);font-weight:800;line-height:1.12;letter-spacing:-.02em}
+h2{font-size:clamp(17px,2.3vw,28px);font-weight:700;line-height:1.18;letter-spacing:-.015em}
+h3{font-size:16px;font-weight:600;margin-bottom:7px}
+p{font-size:14px;line-height:1.65;color:var(--ink2)}
+.lead{font-size:16px;color:var(--ink2);line-height:1.6}
+strong{font-weight:600;color:var(--ink)}
+code{font-family:ui-monospace,monospace;font-size:12px;background:var(--bg);border:1px solid var(--line);border-radius:4px;padding:1px 5px;color:var(--violet)}
+
+/* GRID / CARDS */
+.g{display:grid;gap:12px;margin-top:14px}
+.g2{grid-template-columns:repeat(2,1fr)}
+.g3{grid-template-columns:repeat(3,1fr)}
+.g4{grid-template-columns:repeat(4,1fr)}
+.card{background:var(--white);border:1px solid var(--line);border-radius:var(--rlg);padding:15px 17px;box-shadow:var(--sh)}
+.card h4{font-size:13px;font-weight:600;margin-bottom:5px}
+.card p{font-size:13px;margin:0}
+.card .ci{font-size:22px;margin-bottom:8px}
+.card.blue{border-color:var(--blue-m);background:var(--blue-l)}
+.card.teal{border-color:var(--teal-m);background:var(--teal-l)}
+.card.amber{border-color:var(--amber-m);background:var(--amber-l)}
+.card.rose{border-color:var(--rose-m);background:var(--rose-l)}
+.card.violet{border-color:var(--violet-m);background:var(--violet-l)}
+.card.green{border-color:var(--green-m);background:var(--green-l)}
+
+/* TAGS */
+.tag{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;line-height:1.6}
+.tag.blue{background:var(--blue-l);color:var(--blue);border:1px solid var(--blue-m)}
+.tag.teal{background:var(--teal-l);color:var(--teal);border:1px solid var(--teal-m)}
+.tag.amber{background:var(--amber-l);color:var(--amber);border:1px solid var(--amber-m)}
+.tag.rose{background:var(--rose-l);color:var(--rose);border:1px solid var(--rose-m)}
+.tag.violet{background:var(--violet-l);color:var(--violet);border:1px solid var(--violet-m)}
+.tag.green{background:var(--green-l);color:var(--green);border:1px solid var(--green-m)}
+.tag.ink{background:var(--bg);color:var(--ink3);border:1px solid var(--line2)}
+
+/* CALLOUTS */
+.callout{border-radius:var(--r);padding:10px 14px;display:flex;gap:8px;align-items:flex-start;font-size:13px;line-height:1.55;margin-top:10px}
+.callout .ci{flex-shrink:0;font-size:15px;margin-top:1px}
+.callout.info{background:var(--blue-l);border:1px solid var(--blue-m);color:#1e3a8a}
+.callout.warn{background:var(--amber-l);border:1px solid var(--amber-m);color:#78350f}
+.callout.ok{background:var(--green-l);border:1px solid var(--green-m);color:#065f46}
+.callout.danger{background:var(--rose-l);border:1px solid var(--rose-m);color:#881337}
+
+/* BLOCKQUOTE */
+.bq{border-left:3px solid var(--blue);background:var(--blue-l);border-radius:0 var(--r) var(--r) 0;padding:12px 16px;margin:12px 0;font-size:14px;color:#1e40af;line-height:1.6}
+
+/* CHECKLIST */
+.cl{list-style:none;display:flex;flex-direction:column;gap:7px;margin-top:8px}
+.cl li{display:flex;gap:7px;align-items:flex-start;font-size:13px;color:var(--ink2);line-height:1.5}
+.cl li::before{content:'\2192';color:var(--blue);font-weight:700;flex-shrink:0}
+
+/* IMAGE PLACEHOLDER */
+.ph{border-radius:var(--rlg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:16px;text-align:center;min-height:100px}
+.ph.blue{background:var(--blue-l);border:1.5px dashed var(--blue-m);color:#3b5fc0}
+.ph.teal{background:var(--teal-l);border:1.5px dashed var(--teal-m);color:#0f766e}
+.ph.amber{background:var(--amber-l);border:1.5px dashed var(--amber-m);color:#b45309}
+.ph.violet{background:var(--violet-l);border:1.5px dashed var(--violet-m);color:#6d28d9}
+.ph.rose{background:var(--rose-l);border:1.5px dashed var(--rose-m);color:#be123c}
+.ph-img-slot{width:100%;border-radius:var(--r);overflow:hidden;background:var(--bg);border:1px solid var(--line);min-height:90px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px;color:var(--ink4);font-size:12px;font-weight:500}
+.ph-img-slot img{width:100%;height:auto;display:block;border-radius:var(--r)}
+.ph-img-slot .ph-icon{font-size:24px;opacity:.5}
+.ph-img-slot .ph-label{font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;opacity:.5}
+.ph-img-slot .ph-desc{font-size:11px;max-width:260px;text-align:center;line-height:1.4}
+
+/* ACTIVITY */
+.act-hdr{display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.act-badge{display:inline-flex;align-items:center;gap:4px;background:var(--amber-l);border:1px solid var(--amber-m);color:var(--amber);font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;letter-spacing:.04em}
+.timer-tag{background:var(--bg);border:1px solid var(--line2);color:var(--ink3);font-size:11px;font-weight:600;padding:3px 8px;border-radius:20px}
+
+/* FLOW */
+.flow{display:flex;align-items:center;flex-wrap:wrap;gap:0;margin-top:14px}
+.fn{background:var(--white);border:1px solid var(--line);border-radius:var(--r);padding:8px 14px;font-size:12px;font-weight:500;box-shadow:var(--sh);text-align:center;min-width:88px}
+.fa{color:var(--ink4);font-size:16px;padding:0 5px;flex-shrink:0}
+
+/* TABLE */
+.cmp-table{width:100%;border-collapse:collapse;margin-top:14px;font-size:13px}
+.cmp-table th{padding:8px 12px;text-align:left;font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink3);border-bottom:2px solid var(--line)}
+.cmp-table td{padding:9px 12px;border-bottom:1px solid var(--line);color:var(--ink2);vertical-align:top}
+.cmp-table tr:last-child td{border-bottom:none}
+.cmp-table td:first-child{font-weight:600;color:var(--ink);white-space:nowrap}
+
+/* QUIZ */
+.quiz-wrap{display:flex;flex-direction:column;gap:14px}
+.qcard{background:var(--white);border:1px solid var(--line);border-radius:var(--rlg);padding:15px 17px;box-shadow:var(--sh)}
+.qq{font-size:14px;font-weight:600;margin-bottom:11px;line-height:1.45}
+.qopts{display:flex;flex-direction:column;gap:7px}
+.qopt{display:flex;align-items:center;gap:9px;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:9px 13px;font-size:13px;cursor:pointer;transition:all .15s}
+.qopt:hover{border-color:var(--blue);background:var(--blue-l)}
+.qopt .ok-k{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--line2);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;color:var(--ink3)}
+.qopt.correct{border-color:var(--green-m);background:var(--green-l);color:var(--green)}
+.qopt.correct .ok-k{border-color:var(--green);color:var(--green)}
+.qopt.wrong{border-color:var(--rose-m);background:var(--rose-l);color:var(--rose)}
+.qopt.wrong .ok-k{border-color:var(--rose);color:var(--rose)}
+.qfb{margin-top:8px;font-size:12px;font-weight:500;min-height:16px}
+
+/* MATCH */
+.match-wrap{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:14px}
+.match-col{display:flex;flex-direction:column;gap:8px}
+.match-col-label{font-size:11px;font-weight:700;color:var(--ink3);letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px}
+.match-item{background:var(--white);border:2px solid var(--line);border-radius:8px;padding:10px 14px;font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;line-height:1.4}
+.match-item:hover{border-color:var(--blue)}
+.match-item.selected{border-color:var(--blue);background:var(--blue-l);color:var(--blue)}
+.match-item.matched-ok{border-color:var(--green-m);background:var(--green-l);color:var(--green);cursor:default}
+.match-item.matched-bad{border-color:var(--rose-m);background:var(--rose-l);color:var(--rose)}
+.match-fb{margin-top:10px;font-size:13px;font-weight:600;min-height:16px;text-align:center}
+
+/* TF */
+.tf-list{display:flex;flex-direction:column;gap:10px}
+.tf-row{background:var(--white);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px;box-shadow:var(--sh)}
+.tf-stmt{font-size:13px;font-weight:500;margin-bottom:8px;line-height:1.4}
+.tf-btns{display:flex;gap:7px}
+.tf-btn{padding:5px 16px;border-radius:7px;border:1px solid var(--line);background:var(--bg);font-size:12px;font-weight:600;cursor:pointer;color:var(--ink2);font-family:inherit;transition:all .15s}
+.tf-btn:hover{border-color:var(--blue);color:var(--blue)}
+.tf-btn.correct{background:var(--green-l);border-color:var(--green-m);color:var(--green)}
+.tf-btn.wrong{background:var(--rose-l);border-color:var(--rose-m);color:var(--rose)}
+.tf-exp{font-size:12px;color:var(--ink3);margin-top:7px;padding-top:7px;border-top:1px solid var(--line);display:none;line-height:1.5}
+.tf-exp.show{display:block}
+
+/* VOTING */
+.vote-q{background:var(--white);border:1px solid var(--line);border-radius:var(--rlg);padding:16px 18px;box-shadow:var(--sh);margin-bottom:12px}
+.vq-text{font-size:15px;font-weight:600;margin-bottom:13px;line-height:1.4}
+.vopts{display:flex;flex-direction:column;gap:8px}
+.vopt{display:flex;align-items:center;gap:10px;cursor:pointer;padding:9px 13px;border-radius:8px;border:1.5px solid var(--line);background:var(--bg);transition:all .15s;font-size:13px}
+.vopt:hover{border-color:var(--blue);background:var(--blue-l)}
+.vopt.voted{border-color:var(--blue);background:var(--blue-l);color:var(--blue);font-weight:500}
+.vbar-wrap{flex:1;height:7px;background:var(--line);border-radius:4px;overflow:hidden;display:none}
+.vbar{height:100%;background:var(--blue);border-radius:4px;transition:width .5s ease}
+.vcnt{font-size:11px;font-weight:700;color:var(--ink3);min-width:26px;text-align:right;display:none}
+.vrs .vbar-wrap,.vrs .vcnt{display:none}
+.vrev-btn{background:var(--blue);color:white;border:none;border-radius:7px;padding:7px 16px;font-size:12px;font-weight:700;cursor:pointer;margin-top:8px;font-family:inherit;transition:background .15s}
+.vrev-btn:hover{background:#0842b0}
+.vexplain{font-size:12px;color:var(--ink2);font-weight:600;display:none;margin-top:6px;line-height:1.5}
+
+/* TICKET */
+.ticket-msg{font-family:ui-monospace,monospace;font-size:12px;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:11px;color:var(--ink2);line-height:1.6;margin-bottom:11px;white-space:pre-wrap}
+.ticket-q{font-size:13px;font-weight:600;margin-bottom:8px;color:var(--ink)}
+.ticket-ta{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:8px;color:var(--ink);font-family:inherit;font-size:13px;padding:8px 10px;resize:none;min-height:60px;outline:none;transition:border-color .15s;line-height:1.5}
+.ticket-ta:focus{border-color:var(--blue)}
+.show-ans-btn{margin-top:7px;background:var(--bg);border:1px solid var(--line2);color:var(--ink3);font-size:12px;font-weight:600;padding:4px 12px;border-radius:6px;cursor:pointer;font-family:inherit;transition:all .15s}
+.show-ans-btn:hover{border-color:var(--blue);color:var(--blue)}
+.ticket-ans{margin-top:8px;font-size:13px;color:var(--green);font-weight:600;display:none;padding-top:8px;border-top:1px solid var(--line);line-height:1.5}
+.ticket-ans.show{display:block}
+
+/* EXIT TICKET */
+.exit-ticket{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
+.et-card{background:var(--white);border:1px solid var(--line);border-radius:var(--rlg);padding:14px;box-shadow:var(--sh)}
+.et-icon{font-size:20px;margin-bottom:5px}
+.et-label{font-size:11px;font-weight:700;color:var(--ink3);display:block;margin-bottom:7px;text-transform:uppercase;letter-spacing:.04em}
+.et-card textarea{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:7px;color:var(--ink);font-family:inherit;font-size:12px;padding:8px 10px;resize:none;min-height:65px;outline:none;transition:border-color .15s;line-height:1.5}
+.et-card textarea:focus{border-color:var(--blue)}
+
+/* SPINWHEEL */
+#spin-section{text-align:center}
+#spin-canvas{border-radius:50%;box-shadow:var(--shmd)}
+#spin-question{margin:16px auto 0;max-width:500px;background:var(--white);border:1px solid var(--line);border-radius:var(--rlg);padding:16px 20px;font-size:15px;font-weight:600;line-height:1.4;min-height:60px;display:flex;align-items:center;justify-content:center;text-align:center;box-shadow:var(--sh)}
+#spin-answer{margin-top:10px;max-width:500px;margin-left:auto;margin-right:auto;font-size:14px;color:var(--green);font-weight:600;display:none;background:var(--green-l);border:1px solid var(--green-m);border-radius:var(--r);padding:10px 14px;line-height:1.5}
+#spin-answer.show{display:block}
+
+/* BOTNAV */
+#botnav{position:fixed;bottom:0;left:0;right:0;height:56px;background:var(--white);border-top:1px solid var(--line);display:flex;align-items:center;justify-content:center;gap:12px;z-index:300}
+.nav-btn{width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:var(--white);color:var(--ink2);font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:var(--sh);transition:all .15s}
+.nav-btn:hover:not(:disabled){border-color:var(--blue);color:var(--blue);box-shadow:var(--shmd)}
+.nav-btn:disabled{opacity:.3;cursor:not-allowed;box-shadow:none}
+.dots-row{display:flex;gap:4px;align-items:center}
+.dot{width:4px;height:4px;border-radius:50%;background:var(--line2);cursor:pointer;transition:all .2s}
+.dot.active{background:var(--blue);width:14px;border-radius:3px}
+.kbd-hint{position:absolute;right:14px;font-size:10px;color:var(--ink4);display:flex;gap:4px;align-items:center}
+.kbd{background:var(--bg);border:1px solid var(--line2);border-radius:3px;padding:1px 5px;font-size:9px;font-weight:700;color:var(--ink3)}
+
+/* LIGHTBOX */
+#lightbox{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.85);display:none;align-items:center;justify-content:center;cursor:zoom-out}
+#lightbox.open{display:flex}
+#lightbox img{max-width:92vw;max-height:92vh;border-radius:8px;box-shadow:0 8px 40px rgba(0,0,0,.4);object-fit:contain}
+#lightbox-close{position:absolute;top:16px;right:20px;width:36px;height:36px;border-radius:50%;border:none;background:rgba(255,255,255,.15);color:white;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s}
+#lightbox-close:hover{background:rgba(255,255,255,.3)}
+
+/* RESPONSIVE */
+@media(max-width:860px){.g3,.g4{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){
+  #topbar{padding:0 10px;gap:8px}
+  .tb-logo .ln{display:none}
+  #tb-num{display:none}
+  .slide{padding:10px 12px 6px}
+  h1{font-size:20px}h2{font-size:17px}
+  .g2,.g3,.g4,.exit-ticket,.match-wrap{grid-template-columns:1fr}
+  #botnav{height:52px}
+  .nav-btn{width:34px;height:34px}
+  .kbd-hint{display:none}
+}
+</style>
+</head>
+<body class="lang-vi">
+
+<div id="topbar">
+  <button id="menu-btn" onclick="toggleSB()">&#9776;</button>
+  <div class="tb-sep"></div>
+  <div class="tb-logo">
+    <div class="lp">P</div>
+    <span class="ln">Quantity Breaks &amp; Discounts</span>
+  </div>
+  <div class="tb-sep"></div>
+  <span id="tb-mod">Bundles Overview</span>
+  <span id="tb-num">1 / 36</span>
+  <button id="lang-btn" onclick="toggleLang()"><span id="lang-label">EN</span></button>
+</div>
+
+<div id="day-nav">
+  <a href="pareto_training_day1_v4.html" class="day-pill">Day 1</a>
+  <a href="pareto_training_day2.html" class="day-pill">Day 2</a>
+  <a href="pareto_training_day3.html" class="day-pill active">Day 3</a>
+  <a href="pareto_training_day4.html" class="day-pill">Day 4</a>
+</div>
+
+<div id="prog"><div id="pf"></div></div>
+
+<div id="sidebar">
+  <div class="sb-sec"><span class="lang-vi">Module 8 &middot; Bundles</span><span class="lang-en">Module 8 &middot; Bundles</span></div>
+  <div class="sb-item" onclick="go(0)">01 &middot; <span class="lang-vi">Trang bìa</span><span class="lang-en">Title</span></div>
+  <div class="sb-item" onclick="go(1)">02 &middot; <span class="lang-vi">3 loại Bundle</span><span class="lang-en">3 Bundle Types</span></div>
+  <div class="sb-item" onclick="go(2)">03 &middot; <span class="lang-vi">Voting: Bundle nào?</span><span class="lang-en">Voting: Which Bundle?</span></div>
+  <div class="sb-sec"><span class="lang-vi">Module 8A &middot; FBT</span><span class="lang-en">Module 8A &middot; FBT</span></div>
+  <div class="sb-item" onclick="go(3)">04 &middot; <span class="lang-vi">FBT Concept</span><span class="lang-en">FBT Concept</span></div>
+  <div class="sb-item" onclick="go(4)">05 &middot; <span class="lang-vi">Loại giảm giá</span><span class="lang-en">Discount Types</span></div>
+  <div class="sb-item" onclick="go(5)">06 &middot; <span class="lang-vi">Cài đặt hiển thị</span><span class="lang-en">Display Settings</span></div>
+  <div class="sb-item" onclick="go(6)">07 &middot; <span class="lang-vi">Cài đặt nâng cao</span><span class="lang-en">Advanced Settings</span></div>
+  <div class="sb-item" onclick="go(7)">08 &middot; <span class="lang-vi">Quiz: FBT</span><span class="lang-en">Quiz: FBT</span></div>
+  <div class="sb-item" onclick="go(8)">09 &middot; <span class="lang-vi">Broken-Setup: FBT</span><span class="lang-en">Broken-Setup: FBT</span></div>
+  <div class="sb-sec"><span class="lang-vi">Module 8B &middot; Product Bundle</span><span class="lang-en">Module 8B &middot; Product Bundle</span></div>
+  <div class="sb-item" onclick="go(9)">10 &middot; <span class="lang-vi">Product Bundle Concept</span><span class="lang-en">Product Bundle Concept</span></div>
+  <div class="sb-item" onclick="go(10)">11 &middot; <span class="lang-vi">Giới hạn Shopify</span><span class="lang-en">Shopify Limitations</span></div>
+  <div class="sb-item" onclick="go(11)">12 &middot; <span class="lang-vi">Thiết lập</span><span class="lang-en">Setting Up</span></div>
+  <div class="sb-item" onclick="go(12)">13 &middot; <span class="lang-vi">Schedule, Display, Target</span><span class="lang-en">Schedule, Display, Target</span></div>
+  <div class="sb-item" onclick="go(13)">14 &middot; <span class="lang-vi">Đúng/Sai: Product Bundle</span><span class="lang-en">True/False: Product Bundle</span></div>
+  <div class="sb-item" onclick="go(14)">15 &middot; <span class="lang-vi">Broken-Setup: Product Bundle</span><span class="lang-en">Broken-Setup: Product Bundle</span></div>
+  <div class="sb-sec"><span class="lang-vi">Module 8C &middot; Single Bundle</span><span class="lang-en">Module 8C &middot; Single Bundle</span></div>
+  <div class="sb-item" onclick="go(15)">16 &middot; <span class="lang-vi">Single Bundle Concept</span><span class="lang-en">Single Bundle Concept</span></div>
+  <div class="sb-item" onclick="go(16)">17 &middot; <span class="lang-vi">Cài đặt Single Bundle</span><span class="lang-en">Single Bundle Settings</span></div>
+  <div class="sb-item" onclick="go(17)">18 &middot; <span class="lang-vi">Nối cột: 3 loại Bundle</span><span class="lang-en">Matching: 3 Bundle Types</span></div>
+  <div class="sb-sec"><span class="lang-vi">Module 9 &middot; Checkout Upsell</span><span class="lang-en">Module 9 &middot; Checkout Upsell</span></div>
+  <div class="sb-item" onclick="go(18)">19 &middot; <span class="lang-vi">Checkout Upsell</span><span class="lang-en">Checkout Upsell Title</span></div>
+  <div class="sb-item" onclick="go(19)">20 &middot; <span class="lang-vi">3 Trang</span><span class="lang-en">3 Pages</span></div>
+  <div class="sb-item" onclick="go(20)">21 &middot; <span class="lang-vi">Logic gợi ý</span><span class="lang-en">Suggest Logic</span></div>
+  <div class="sb-item" onclick="go(21)">22 &middot; <span class="lang-vi">Thiết lập</span><span class="lang-en">Setup</span></div>
+  <div class="sb-item" onclick="go(22)">23 &middot; <span class="lang-vi">Countdown Timer</span><span class="lang-en">Countdown Timer</span></div>
+  <div class="sb-item" onclick="go(23)">24 &middot; <span class="lang-vi">Quiz: Checkout Upsell</span><span class="lang-en">Quiz: Checkout Upsell</span></div>
+  <div class="sb-item" onclick="go(24)">25 &middot; <span class="lang-vi">Broken-Setup: Checkout Upsell</span><span class="lang-en">Broken-Setup: Checkout Upsell</span></div>
+  <div class="sb-sec"><span class="lang-vi">Module 10 &middot; Boost Conversion</span><span class="lang-en">Module 10 &middot; Boost Conversion</span></div>
+  <div class="sb-item" onclick="go(25)">26 &middot; <span class="lang-vi">Boost Conversion</span><span class="lang-en">Boost Conversion Title</span></div>
+  <div class="sb-item" onclick="go(26)">27 &middot; <span class="lang-vi">Hiển thị giá giảm</span><span class="lang-en">Show Discounted Price</span></div>
+  <div class="sb-item" onclick="go(27)">28 &middot; <span class="lang-vi">Banner Widget</span><span class="lang-en">Banner Widget</span></div>
+  <div class="sb-item" onclick="go(28)">29 &middot; <span class="lang-vi">Popup Widget</span><span class="lang-en">Popup Widget</span></div>
+  <div class="sb-item" onclick="go(29)">30 &middot; <span class="lang-vi">Hiển thị trên Collection Page</span><span class="lang-en">Show on Collection Page</span></div>
+  <div class="sb-item" onclick="go(30)">31 &middot; <span class="lang-vi">Tự động dịch</span><span class="lang-en">Auto Translate</span></div>
+  <div class="sb-item" onclick="go(31)">32 &middot; <span class="lang-vi">Đúng/Sai: Boost Conversion</span><span class="lang-en">True/False: Boost Conversion</span></div>
+  <div class="sb-sec"><span class="lang-vi">Tổng kết</span><span class="lang-en">Wrap-up</span></div>
+  <div class="sb-item" onclick="go(32)">33 &middot; <span class="lang-vi">So sánh loại Bundle</span><span class="lang-en">Bundle Types Comparison</span></div>
+  <div class="sb-item" onclick="go(33)">34 &middot; <span class="lang-vi">Cheat Sheet</span><span class="lang-en">Cheat Sheet</span></div>
+  <div class="sb-item" onclick="go(34)">35 &middot; <span class="lang-vi">Spinwheel</span><span class="lang-en">Spinwheel</span></div>
+  <div class="sb-item" onclick="go(35)">36 &middot; <span class="lang-vi">Phản hồi</span><span class="lang-en">Feedback</span></div>
+</div>
+
+<div id="deck">
+
+<!-- SLIDE 01 — TITLE -->
+<div class="slide active" data-mod="Bundles Overview">
+<div class="sc" style="text-align:center">
+  <div style="width:68px;height:68px;border-radius:16px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:800;color:white;margin:0 auto 18px">P</div>
+  <div class="ey" style="justify-content:center;margin-bottom:12px">CS TRAINING &middot; DAY 3</div>
+  <h1 style="margin-bottom:14px">
+    <span class="lang-vi">Bundles &middot; Checkout Upsell &middot;<br><span style="background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent">Boost Conversion</span></span>
+    <span class="lang-en">Bundles &middot; Checkout Upsell &middot;<br><span style="background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent">Boost Conversion</span></span>
+  </h1>
+  <p class="lead" style="max-width:500px;margin:0 auto 20px">
+    <span class="lang-vi">Day 1: QB + One Discount &middot; Day 2: CS Essentials + Order Discount + Buy X Get Y &middot; <strong>Day 3: Bundles, Checkout Upsell, Boost Conversion</strong></span>
+    <span class="lang-en">Day 1: QB + One Discount &middot; Day 2: CS Essentials + Order Discount + Buy X Get Y &middot; <strong>Day 3: Bundles, Checkout Upsell, Boost Conversion</strong></span>
+  </p>
+  <div style="display:flex;gap:7px;justify-content:center;flex-wrap:wrap">
+    <span class="tag blue"><span class="lang-vi">3 loại Bundle</span><span class="lang-en">3 Bundle Types</span></span>
+    <span class="tag teal"><span class="lang-vi">Checkout Upsell</span><span class="lang-en">Checkout Upsell</span></span>
+    <span class="tag amber"><span class="lang-vi">Boost Conversion</span><span class="lang-en">Boost Conversion</span></span>
+  </div>
+</div>
+</div>
+
+<!-- SLIDE 02 — 3 BUNDLE TYPES OVERVIEW -->
+<div class="slide" data-mod="Bundles Overview">
+<div class="sc">
+  <div class="ey"><span class="lang-vi">MODULE 8 &middot; BUNDLES</span><span class="lang-en">MODULE 8 &middot; BUNDLES</span></div>
+  <h2 style="margin-bottom:16px"><span class="lang-vi">3 loại Bundle</span><span class="lang-en">3 Bundle Types</span></h2>
+  <div class="g g3">
+    <div class="card blue">
+      <div class="ci">&#129309;</div>
+      <h4><span class="lang-vi">Frequently Bought Together (FBT)</span><span class="lang-en">Frequently Bought Together (FBT)</span></h4>
+      <p><span class="lang-vi">Sản phẩm thường mua cùng nhau. Khách mua cả set &rarr; được giảm giá nhóm. Định nghĩa sản phẩm trong bundle group.</span><span class="lang-en">Products that go well together. Customer buys the set &rarr; gets group discount. Define products in bundle group.</span></p>
+    </div>
+    <div class="card teal">
+      <div class="ci">&#128230;</div>
+      <h4><span class="lang-vi">Product Bundle (Truyền thống)</span><span class="lang-en">Product Bundle (Traditional)</span></h4>
+      <p><span class="lang-vi">Sản phẩm cha chứa sản phẩm con. Tạo MỘT sản phẩm mới trong Shopify. Hiển thị như 1 sản phẩm trên store. Có giới hạn tùy chỉnh (Shopify limit).</span><span class="lang-en">Parent product containing child products. Creates a NEW product in Shopify. Shows as single product on store. Limited customization (Shopify limit).</span></p>
+    </div>
+    <div class="card amber">
+      <div class="ci">&#127873;</div>
+      <h4><span class="lang-vi">Single Bundle</span><span class="lang-en">Single Bundle</span></h4>
+      <p><span class="lang-vi">Nhiều sản phẩm kết hợp. Một discount, một hành động add-to-cart.</span><span class="lang-en">Multiple products combined. One discount, one add-to-cart action.</span></p>
+    </div>
+  </div>
+  <div class="callout info" style="margin-top:16px">
+    <span class="ci">&#128161;</span>
+    <span>
+      <span class="lang-vi"><strong>Nhớ:</strong> FBT = khách chọn sản phẩm riêng lẻ &rarr; mua cùng nhau. Product Bundle = 1 sản phẩm trên store chứa nhiều sản phẩm con. Single Bundle = đơn giản nhất, gộm nhiều SP thành 1.</span>
+      <span class="lang-en"><strong>Remember:</strong> FBT = customer picks individual products &rarr; buys together. Product Bundle = 1 product on store containing child products. Single Bundle = simplest, combines multiple products into one.</span>
+    </span>
+  </div>
+</div>
+</div>
+
+<!-- SLIDE 03 — VOTING: WHICH BUNDLE TYPE? -->
+<div class="slide" data-mod="Bundles Overview &middot; Voting">
+<div class="sc">
+  <div class="act-hdr"><span class="act-badge"><span class="lang-vi">&#9889; VOTING</span><span class="lang-en">&#9889; VOTING</span></span></div>
+  <h2 style="margin-bottom:14px"><span class="lang-vi">Bundle nào cho tình huống này?</span><span class="lang-en">Which bundle type for this scenario?</span></h2>
+  <div id="vote-container"></div>
+</div>
+</div>
+
+<!-- SLIDE 04 — FBT CONCEPT -->
+<div class="slide" data-mod="Module 8A &middot; FBT">
+<div class="sc">
+  <div class="ey"><span class="lang-vi">MODULE 8A &middot; FBT</span><span class="lang-en">MODULE 8A &middot; FBT</span></div>
+  <h2 style="margin-bottom:14px"><span class="lang-vi">Frequently Bought Together &mdash; Khái niệm</span><span class="lang-en">Frequently Bought Together &mdash; Concept</span></h2>
+  <p><span class="lang-vi">Định nghĩa nhóm sản phẩm trigger discount khi mua cùng nhau. Khách phải mua TẤT CẢ sản phẩm trong nhóm mới được giảm giá.</span><span class="lang-en">Define product groups that trigger discounts when bought together. Customer must buy ALL products in the group to get the discount.</span></p>
+  <div class="ph-img-slot" style="margin-top:14px;min-height:160px">
+    <div class="ph-icon">&#128444;&#65039;</div>
+    <div class="ph-label">SCREENSHOT</div>
+    <div class="ph-desc"><span class="lang-vi">Màn hình FBT setup &mdash; chọn sản phẩm vào bundle group</span><span class="lang-en">FBT setup screen &mdash; selecting products for bundle group</span></div>
+  </div>
+  <div class="callout info" style="margin-top:12px">
+    <span class="ci">&#128161;</span>
+    <span>
+      <span class="lang-vi"><strong>Điểm chính:</strong> Khách phải mua TẤT CẢ sản phẩm trong bundle group mới được discount. Mua 2/3 sản phẩm &rarr; KHÔNG được giảm.</span>
+      <span class="lang-en"><strong>Key point:</strong> Customer must buy ALL products in the bundle group to get the discount. Buying 2 out of 3 products &rarr; NO discount.</span>
+    </span>
+  </div>
+</div>
+</div>
+
+<!-- SLIDE 05 — FBT DISCOUNT TYPES -->
+<div class="slide" data-mod="Module 8A &middot; FBT &middot; Discount Types">
+<div class="sc">
+  <div class="ey"><span class="lang-vi">FBT &middot; LOẠI GIẢM GIÁ</span><span class="lang-en">FBT &middot; DISCOUNT TYPES</span></div>
+  <h2 style="margin-bottom:16px"><span class="lang-vi">Các loại giảm giá FBT</span><span class="lang-en">FBT Discount Types</span></h2>
+  <div class="g g3">
+    <div class="card blue">
+      <div class="ci">&#37;</div>
+      <h4><span class="lang-vi">% off bundle</span><span class="lang-en">% off bundle</span></h4>
+      <p><span class="lang-vi">Giảm theo phần trăm trên tổng giá bundle. VD: 10% off khi mua cả 3 sản phẩm.</span><span class="lang-en">Percentage off the total bundle price. E.g. 10% off when buying all 3 products.</span></p>
+    </div>
+    <div class="card teal">
+      <div class="ci">&#36;</div>
+      <h4><span class="lang-vi">$ off bundle</span><span class="lang-en">$ off bundle</span></h4>
+      <p><span class="lang-vi">Giảm một số tiền cố định trên tổng bundle. VD: Giảm $20 khi mua cả set.</span><span class="lang-en">Fixed amount off the total bundle. E.g. $20 off when buying the set.</span></p>
+    </div>
+    <div class="card amber">
+      <div class="ci">&#127991;&#65039;</div>
+      <h4><span class="lang-vi">Giá cố định cho bundle</span><span class="lang-en">Fixed price for bundle</span></h4>
+      <p><span class="lang-vi">Đặt giá cố định cho cả bundle. VD: Cả 3 sản phẩm chỉ $99.</span><span class="lang-en">Set a fixed price for the entire bundle. E.g. All 3 products for just $99.</span></p>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- SLIDE 06 — FBT DISPLAY SETTINGS -->
+<div class="slide" data-mod="Module 8A &middot; FBT &middot; Display">
+<div class="sc">
+  <div class="ey"><span class="lang-vi">FBT &middot; CÀI ĐẶT HIỂN THỊ</span><span class="lang-en">FBT &middot; DISPLAY SETTINGS</span></div>
+  <h2 style="margin-bottom:16px"><span class="lang-vi">Cài đặt hiển thị</span><span class="lang-en">Display Settings</span></h2>
+  <div class="g g2">
+    <div class="card">
+      <div class="ci">&#128196;</div>
+      <h4><span class="lang-vi">Product Page Layout</span><span class="lang-en">Product Page Layout</span></h4>
+      <p><span class="lang-vi">Hiển thị widget FBT trên product page. Tùy chỉnh vị trí và giao diện.</span><span class="lang-en">Display FBT widget on product page. Customize position and appearance.</span></p>
+    </div>
+    <div class="card">
+      <div class="ci">&#128172;</div>
+      <h4><span class="lang-vi">Popup Suggestions</span><span class="lang-en">Popup Suggestions</span></h4>
+      <p><span class="lang-vi">Auto (tự động gợi ý) hoặc Manual (tự chọn sản phẩm gợi ý).</span><span class="lang-en">Auto (automatic suggestions) or Manual (manually select suggested products).</span></p>
+    </div>
+    <div class="card">
+      <div class="ci">&#128722;</div>
+      <h4><span class="lang-vi">Thông báo trên Cart</span><span class="lang-en">Cart Page Notifications</span></h4>
+      <p><span class="lang-vi">Thông báo trên cart: Mua thêm, Nhận quà, Đổi quà. Tùy chỉnh text và điều kiện.</span><span class="lang-en">Cart notifications: Buy more, Get gift, Change gift. Customize text and conditions.</span></p>
+    </div>
+    <div class="card">
+      <div class="ci">&#127876;</div>
+      <h4><span class="lang-vi">Holiday Accent &amp; Text</span><span class="lang-en">Holiday Accent &amp; Text</span></h4>
+      <p><span class="lang-vi">Tùy chỉnh text widget giảm giá. Thêm accent ngày lễ (Christmas, Black Friday...).</span><span class="lang-en">Customize discount widget text. Add holiday accents (Christmas, Black Friday...).</span></p>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- SLIDE 07 — FBT ADVANCED SETTINGS -->
+<div class="slide" data-mod="Module 8A &middot; FBT &middot; Advanced">
+<div class="sc">
+  <div class="ey"><span class="lang-vi">FBT &middot; CÀI ĐẶT NÂNG CAO</span><span class="lang-en">FBT &middot; ADVANCED SETTINGS</span></div>
+  <h2 style="margin-bottom:14px"><span class="lang-vi">Cài đặt nâng cao</span><span class="lang-en">Advanced Settings</span></h2>
+  <p style="margin-bottom:14px"><span class="lang-vi">Tương tự như QB (Day 1) &mdash; các options sau có thể áp dụng:</span><span class="lang-en">Same as QB (Day 1) &mdash; the following options can be applied:</span></p>
+  <div class="g g2">
+    <div class="card"><div class="ci">&#128065;&#8205;&#128488;&#65039;</div><h4><span class="lang-vi">Ẩn offer</span><span class="lang-en">Hide offer</span></h4><p><span class="lang-vi">Ẩn widget nhưng giữ discount hoạt động.</span><span class="lang-en">Hide widget but keep discount working.</span></p></div>
+    <div class="card"><div class="ci">&#128176;</div><h4><span class="lang-vi">Ẩn giá</span><span class="lang-en">Hide price</span></h4><p><span class="lang-vi">Ẩn hiển thị giá trên widget.</span><span class="lang-en">Hide price display on widget.</span></p></div>
+    <div class="card"><div class="ci">&#127912;</div><h4><span class="lang-vi">Ẩn variant</span><span class="lang-en">Hide variant</span></h4><p><span class="lang-vi">Ẩn variant selector của theme.</span><span class="lang-en">Hide theme variant selector.</span></p></div>
+    <div class="card"><div class="ci">&#127912;</div><h4><span class="lang-vi">Visual swatches</span><span class="lang-en">Visual swatches</span></h4><p><span class="lang-vi">Hiển thị swatches màu/size thay cho dropdown.</span><span class="lang-en">Show color/size swatches instead of dropdowns.</span></p></div>
+  </div>
+</div>
+</div>
+
+<!-- SLIDE 08 — QUIZ: FBT -->
+<div class="slide" data-mod="Module 8A &middot; FBT &middot; Quiz">
+<div class="sc">
+  <div class="act-hdr"><span class="act-badge"><span class="lang-vi">&#9889; QUIZ</span><span class="lang-en">&#9889; QUIZ</span></span></div>
+  <h2 style="margin-bottom:14px"><span class="lang-vi">Quiz: FBT Setup</span><span class="lang-en">Quiz: FBT Setup</span></h2>
+  <div class="quiz-wrap" id="quiz-fbt"></div>
+</div>
+</div>
+
+<!-- SLIDE 09 — BROKEN-SETUP: FBT -->
+<div class="slide" data-mod="Module 8A &middot; FBT &middot; Broken-Setup">
+<div class="sc">
+  <div class="act-hdr"><span class="act-badge"><span class="lang-vi">&#128295; CHẨN ĐOÁN LỖI</span><span class="lang-en">&#128295; BROKEN-SETUP DIAGNOSIS</span></span></div>
+  <h2 style="margin-bottom:14px"><span class="lang-vi">FBT: Bundle discount không apply</span><span class="lang-en">FBT: Bundle discount doesn't apply</span></h2>
+  <div class="ticket-msg">
+    <span class="lang-vi">"Merchant nói: Discount của bundle không apply khi khách chỉ mua 2 trong 3 sản phẩm của bundle."</span>
+    <span class="lang-en">"Merchant says: Bundle discount doesn't apply when customer only buys 2 out of 3 bundle products."</span>
+  </div>
+  <div class="ticket-q"><span class="lang-vi">&#10067; Nguyên nhân là gì? Bạn sẽ trả lời khách thế nào?</span><span class="lang-en">&#10067; What's the cause? How would you respond?</span></div>
+  <textarea class="ticket-ta" placeholder="Type your answer..."></textarea>
+  <button class="show-ans-btn" onclick="this.nextElementSibling.classList.add('show');this.style.display='none'"><span class="lang-vi">Xem đáp án</span><span class="lang-en">Show answer</span></button>
+  <div class="ticket-ans">
+    <span class="lang-vi">&#9989; Khách PHẢI mua TẤT CẢ sản phẩm trong bundle group mới được discount. Đây là cơ chế FBT &mdash; mua 2/3 sản phẩm không đủ điều kiện. Giải thích cho merchant rằng FBT yêu cầu mua toàn bộ nhóm sản phẩm.</span>
+    <span class="lang-en">&#9989; Customer MUST buy ALL products in the bundle group to get the discount. This is how FBT works &mdash; buying 2 out of 3 products doesn't qualify. Explain to merchant that FBT requires purchasing the entire product group.</span>
+  </div>
+</div>
+</div>
+
+<!-- SLIDE 10 — PRODUCT BUNDLE CONCEPT -->
+<div class="slide" data-mod="Module 8B &middot; Product Bundle">
+<div class="sc">
+  <div class="ey"><span class="lang-vi">MODULE 8B &middot; PRODUCT BUNDLE</span><span class="lang-en">MODULE 8B &middot; PRODUCT BUNDLE</span></div>
+  <h2 style="margin-bottom:14px"><span class="lang-vi">Product Bundle (Truyền thống)</span><span class="lang-en">Product Bundle (Traditional)</span></h2>
+  <p><span class="lang-vi">Tạo sản phẩm cha với sản phẩm con. Kết hợp variant. Hiển thị như MỘT sản phẩm trên store.</span><span class="lang-en">Creates a parent product with child products. Combines variants. Shows as ONE product on store.</span></p>
+  <div class="ph-img-slot" style="margin-top:14px;min-height:160px">
+    <div class="ph-icon">&#128444;&#65039;</div>
+    <div class="ph-label">SCREENSHOT</div>
+    <div class="ph-desc"><span class="lang-vi">Product Bundle trên storefront &mdash; 1 sản phẩm chứa nhiều sản phẩm con</span><span class="lang-en">Product Bundle on storefront &mdash; 1 product containing multiple child products</span></div>
+  </div>
+  <div class="flow" style="margin-top:16px">
+    <div class="fn"><span class="lang-vi">Chọn SP con</span><span class="lang-en">Select child products</span></div>
+    <span class="fa">&rarr;</span>
+    <div class="fn"><span class="lang-vi">Kết hợp variants</span><span class="lang-en">Combine variants</span></div>
+    <span class="fa">&rarr;</span>
+    <div class="fn"><span class="lang-vi">Tạo SP mới trong Shopify</span><span class="lang-en">Create new product in Shopify</span></div>
+    <span class="fa">&rarr;</span>
+    <div class="fn"><span class="lang-vi">Hiển thị như 1 SP</span><span class="lang-en">Shows as 1 product</span></div>
+  </div>
+</div>
+</div>
+
+<!-- SLIDE 11 — SHOPIFY LIMITATIONS -->
+<div class="slide" data-mod="Module 8B &middot; Product Bundle &middot; Limitations">
+<div class="sc">
+  <div class="ey"><span class="lang-vi">PRODUCT BUNDLE &middot; GIỚI HẠN SHOPIFY</span><span class="lang-en">PRODUCT BUNDLE &middot; SHOPIFY LIMITATIONS</span></div>
+  <h2 style="margin-bottom:14px"><span class="lang-vi">Giới hạn của Shopify</span><span class="lang-en">Shopify Limitations</span></h2>
+  <div class="callout danger" style="margin-top:0">
+    <span class="ci">&#9888;&#65039;</span>
+    <span>
+      <span class="lang-vi"><strong>Quan trọng!</strong> Shopify giới hạn số lượng variant combination. Không thể tùy chỉnh quá nhiều sản phẩm trong 1 Product Bundle. Nếu vượt giới hạn &rarr; không tạo được bundle hoặc variant bị sai.</span>
+      <span class="lang-en"><strong>Important!</strong> Shopify limits the number of variant combinations. Can't customize too many products in a single Product Bundle. If limit exceeded &rarr; can't create bundle or variants will be wrong.</span>
+    </span>
+  </div>
+  <div class="g g2" style="margin-top:16px">
+    <div class="card rose">
+      <div class="ci">&#128679;</div>
+      <h4><span class="lang-vi">Variant Limit</span><span class="lang-en">Variant Limit</span></h4>
+      <p><span class="lang-vi">Shopify cho phép tối đa 100 variants mỗi sản phẩm. Bundle với nhiều SP con có nhiều option sẽ nhanh chóng vượt limit.</span><span class="lang-en">Shopify allows max 100 variants per product. Bundles with many child products having many options will quickly exceed this limit.</span></p>
+    </div>
+    <div class="card amber">
+      <div class="ci">&#128221;</div>
+      <h4><span class="lang-vi">Option Limit</span><span class="lang-en">Option Limit</span></h4>
+      <p><span class="lang-vi">Shopify cho phép tối đa 3 option mỗi sản phẩm. Product Bundle kết hợp options của các SP con &rarr; dễ vượt giới hạn.</span><span class="lang-en">Shopify allows max 3 options per product. Product Bundle combines options from child products &rarr; easy to exceed limit.</span></p>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- SLIDE 12 — SETTING UP PRODUCT BUNDLE -->
+<div class="slide" data-mod="Module 8B &middot; Product Bundle &middot; Setup">
+<div class="sc">
+  <div class="ey"><span class="lang-vi">PRODUCT BUNDLE &middot; THIẾT LẬP</span><span class="lang-en">PRODUCT BUNDLE &middot; SETTING UP</span></div>
+  <h2 style="margin-bottom:16px"><span class="lang-vi">Cách thiết lập Product Bundle</span><span class="lang-en">How to Set Up Product Bundle</span></h2>
+  <div class="g g2">
+    <div class="card blue">
+      <h4><span class="lang-vi">Bước 1: Chọn sản phẩm con</span><span class="lang-en">Step 1: Select child products</span></h4>
+      <p><span class="lang-vi">Chọn các sản phẩm sẽ kết hợp thành bundle.</span><span class="lang-en">Choose products to combine into the bundle.</span></p>
+    </div>
+    <div class="card teal">
+      <h4><span class="lang-vi">Bước 2: Đặt loại giảm giá</span><span class="lang-en">Step 2: Set discount type</span></h4>
+      <p><span class="lang-vi">% off, $ off, hoặc Fixed price.</span><span class="lang-en">% off, $ off, or Fixed price.</span></p>
+    </div>
+    <div class="card amber">
+      <h4><span class="lang-vi">Bước 3: Thông tin bundle</span><span class="lang-en">Step 3: Bundle info</span></h4>
+      <p><span class="lang-vi">Title, Description, Images cho sản phẩm bundle mới.</span><span class="lang-en">Title, Description, Images for the new bundle product.</span></p>
+    </div>
+    <div class="card green">
+      <h4><span class="lang-vi">Bước 4: Xuất bản</span><span class="lang-en">Step 4: Publish</span></h4>
+      <p><span class="lang-vi">Sản phẩm mới sẽ được tạo trong Shopify Products.</span><span class="lang-en">A new product will be created in Shopify Products.</span></p>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- SLIDE 13 — SCHEDULE, DISPLAY, TARGET CUSTOMER -->
+<div class="slide" data-mod="Module 8B &middot; Product Bundle &middot; Shared Settings">
+<div class="sc">
+  <div class="ey"><span class="lang-vi">PRODUCT BUNDLE &middot; CÀI ĐẶT CHUNG</span><span class="lang-en">PRODUCT BUNDLE &middot; SHARED SETTINGS</span></div>
+  <h2 style="margin-bottom:14px"><span class="lang-vi">Schedule, Display, Target Customer</span><span class="lang-en">Schedule, Display, Target Customer</span></h2>
+  <p style="margin-bottom:14px"><span class="lang-vi">Các settings này tương tự Day 1 (QB). Xem lại Day 1 slides 15&ndash;18 để ôn lại.</span><span class="lang-en">These settings follow the same patterns from Day 1 (QB). Review Day 1 slides 15&ndash;18 for a refresher.</span></p>
+  <div class="g g3">
+    <div class="card">
+      <div class="ci">&#128197;</div>
+      <h4>Schedule</h4>
+      <p><span class="lang-vi">Đặt ngày bắt đầu/kết thúc, giờ chạy offer.</span><span class="lang-en">Set start/end dates, offer active hours.</span></p>
+    </div>
+    <div class="card">
+      <div class="ci">&#128396;&#65039;</div>
+      <h4>Display</h4>
+      <p><span class="lang-vi">Tùy chỉnh giao diện hiển thị trên store.</span><span class="lang-en">Customize display appearance on store.</span></p>
+    </div>
+    <div class="card">
+      <div class="ci">&#128101;</div>
+      <h4>Target Customer</h4>
+      <p><span class="lang-vi">Everyone, Logged-in, B2B, Tagged customers...</span><span class="lang-en">Everyone, Logged-in, B2B, Tagged customers...</span></p>
+    </div>
+  </div>
+  <div class="callout info" style="margin-top:12px">
+    <span class="ci">&#128161;</span>
+    <span><span class="lang-vi">Đây là các shared patterns &mdash; áp dụng giống nhau cho hầu hết các loại offer trong app.</span><span class="lang-en">These are shared patterns &mdash; apply the same way across most offer types in the app.</span></span>
+  </div>
+</div>
+</div>
+
+<!-- SLIDE 14 — TRUE/FALSE: PRODUCT BUNDLE -->
+<div class="slide" data-mod="Module 8B &middot; Product Bundle &middot; T/F">
+<div class="sc">
+  <div class="act-hdr"><span class="act-badge"><span class="lang-vi">&#9889; ĐÚNG / SAI</span><span class="lang-en">&#9889; TRUE / FALSE</span></span></div>
+  <h2 style="margin-bottom:14px"><span class="lang-vi">Đúng hay Sai: Product Bundle</span><span class="lang-en">True/False: Product Bundle</span></h2>
+  <div class="tf-list" id="tf-pb"></div>
+</div>
+</div>
+
+<!-- SLIDE 15 — BROKEN-SETUP: PRODUCT BUNDLE -->
+<div class="slide" data-mod="Module 8B &middot; Product Bundle &middot; Broken-Setup">
+<div class="sc">
+  <div class="act-hdr"><span class="act-badge"><span class="lang-vi">&#128295; CHẨN ĐOÁN LỖI</span><span class="lang-en">&#128295; BROKEN-SETUP DIAGNOSIS</span></span></div>
+  <h2 style="margin-bottom:14px"><span class="lang-vi">Product Bundle: Variant bị sai</span><span class="lang-en">Product Bundle: Wrong variants</span></h2>
+  <div class="ticket-msg">
+    <span class="lang-vi">"Bundle product hiển thị nhưng variants bị sai. Khách chọn size M nhưng checkout lại là size S."</span>
+    <span class="lang-en">"Bundle product shows but variants are wrong. Customer selects size M but checkout shows size S."</span>
+  </div>
+  <div class="ticket-q"><span class="lang-vi">&#10067; Nguyên nhân là gì? Bạn sẽ trả lời khách thế nào?</span><span class="lang-en">&#10067; What's the cause? How would you respond?</span></div>
+  <textarea class="ticket-ta" placeholder="Type your answer..."></textarea>
+  <button class="show-ans-btn" onclick="this.nextElementSibling.classList.add('show');this.style.display='none'"><span class="lang-vi">Xem đáp án</span><span class="lang-en">Show answer</span></button>
+  <div class="ticket-ans">
+    <span class="lang-vi">&#9989; Shopify giới hạn variant combinations (100 variants, 3 options). Khi vượt giới hạn, variants sẽ bị sai hoặc không tạo được. Giải pháp: Giảm số lượng SP con hoặc options, hoặc chuyển sang dùng Single Bundle / FBT thay vì Product Bundle.</span>
+    <span class="lang-en">&#9989; Shopify limits variant combinations (100 variants, 3 options). When exceeded, variants will be wrong or can't be created. Solution: Reduce number of child products or options, or switch to Single Bundle / FBT instead of Product Bundle.</span>
+  </div>
+</div>
+</div>
+
+<!-- SLIDE 16 — SINGLE BUNDLE CONCEPT -->
+<div class="slide" data-mod="Module 8C &middot; Single Bundle">
+<div class="sc">
+  <div class="ey"><span class="lang-vi">MODULE 8C &middot; SINGLE BUNDLE</span><span class="lang-en">MODULE 8C &middot; SINGLE BUNDLE</span></div>
+  <h2 style="margin-bottom:14px"><span class="lang-vi">Single Bundle &mdash; Khái niệm</span><span class="lang-en">Single Bundle &mdash; Concept</span></h2>
+  <p><span class="lang-vi">Đơn giản hơn Product Bundle. Chọn nhiều sản phẩm &rarr; Đặt discount &rarr; Nhập thông tin bundle. Không tạo sản phẩm mới trong Shopify.</span><span class="lang-en">Simpler than Product Bundle. Select multiple products &rarr; Set discount &rarr; Enter bundle info. Does NOT create a new product in Shopify.</span></p>
+  <div class="flow" style="margin-top:16px">
+    <div class="fn"><span class="lang-vi">Chọn nhiều SP</span><span class="lang-en">Select products</span></div>
+    <span class="fa">&rarr;</span>
+    <div class="fn"><span class="lang-vi">Đặt discount</span><span class="lang-en">Set discount</span></div>
+    <span class="fa">&rarr;</span>
+    <div class="fn"><span class="lang-vi">Nhập thông tin</span><span class="lang-en">Enter bundle info</span></div>
+    <span class="fa">&rarr;</span>
+    <div class="fn"><span class="lang-vi">1 click add-to-cart</span><span class="lang-en">1 click add-to-cart</span></div>
+  </div>
+  <div class="callout ok" style="margin-top:16px">
+    <span class="ci">&#9989;</span>
+    <span><span class="lang-vi"><strong>Ưu điểm:</strong> Không bị giới hạn variant của Shopify vì không tạo sản phẩm mới. Đơn giản hơn Product Bundle.</span><span class="lang-en"><strong>Advantage:</strong> Not limited by Shopify's variant limits since it doesn't create a new product. Simpler than Product Bundle.</span></span>
+  </div>
+</div>
+</div>
+
+<!-- SLIDE 17 — SINGLE BUNDLE SETTINGS -->
+<div class="slide" data-mod="Module 8C &middot; Single Bundle &middot; Settings">
+<div class="sc">
+  <div class="ey"><span class="lang-vi">SINGLE BUNDLE &middot; CÀI ĐẶT</span><span class="lang-en">SINGLE BUNDLE &middot; SETTINGS</span></div>
+  <h2 style="margin-bottom:16px"><span class="lang-vi">Các thiết lập Single Bundle</span><span class="lang-en">Single Bundle Settings</span></h2>
+  <div class="g g2">
+    <div class="card blue">
+      <h4><span class="lang-vi">Loại giảm giá</span><span class="lang-en">Discount Types</span></h4>
+      <p><span class="lang-vi">Tương tự FBT: % off, $ off, Fixed price.</span><span class="lang-en">Same as FBT: % off, $ off, Fixed price.</span></p>
+    </div>
+    <div class="card teal">
+      <h4>Schedule</h4>
+      <p><span class="lang-vi">Đặt lịch chạy/kết thúc offer. Shared pattern.</span><span class="lang-en">Schedule start/end. Shared pattern.</span></p>
+    </div>
+    <div class="card amber">
+      <h4>Display</h4>
+      <p><span class="lang-vi">Tùy chỉnh giao diện widget trên storefront.</span><span class="lang-en">Customize widget appearance on storefront.</span></p>
+    </div>
+    <div class="card green">
+      <h4>Checkout Upsell</h4>
+      <p><span class="lang-vi">Hiển thị gợi ý upsell lúc checkout.</span><span class="lang-en">Show upsell suggestions at checkout.</span></p>
+    </div>
+    <div class="card violet">
+      <h4>Target Customer</h4>
+      <p><span class="lang-vi">Chọn nhóm khách hàng áp dụng.</span><span class="lang-en">Select target customer group.</span></p>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- SLIDE 18 — MATCHING: 3 BUNDLE TYPES -->
+<div class="slide" data-mod="Module 8C &middot; Single Bundle &middot; Matching">
+<div class="sc">
+  <div class="act-hdr"><span class="act-badge"><span class="lang-vi">&#9889; NỐI CỘT</span><span class="lang-en">&#9889; MATCHING</span></span></div>
+  <h2 style="margin-bottom:6px"><span class="lang-vi">Nối tình huống với loại Bundle</span><span class="lang-en">Match Scenario to Bundle Type</span></h2>
+  <p style="margin-bottom:4px;font-size:13px;color:var(--ink3)"><span class="lang-vi">Click 1 bên trái, rồi click 1 bên phải để nối cặp. Nối hết 6 cặp rồi bấm "Kiểm tra".</span><span class="lang-en">Click one on the left, then one on the right to pair. Match all 6 pairs then press "Check".</span></p>
+  <div class="match-wrap" id="match-bundles"></div>
+  <div style="text-align:center;margin-top:10px">
+    <button class="vrev-btn" onclick="checkMatch('bundles')"><span class="lang-vi">Kiểm tra</span><span class="lang-en">Check</span></button>
+    <div class="match-fb" id="match-bundles-fb"></div>
+  </div>
+</div>
+</div>
+
+<!-- SLIDE 19 — CHECKOUT UPSELL TITLE -->
+<div class="slide" data-mod="Module 9 &middot; Checkout Upsell">
+<div class="sc" style="text-align:center">
+  <div class="ey" style="justify-content:center"><span class="lang-vi">MODULE 9</span><span class="lang-en">MODULE 9</span></div>
+  <h1 style="margin-bottom:14px"><span class="lang-vi">Checkout Upsell</span><span class="lang-en">Checkout Upsell</span></h1>
+  <p class="lead" style="max-width:500px;margin:0 auto">
+    <span class="lang-vi">Tăng giá trị đơn hàng bằng cách gợi ý thêm sản phẩm ở các trang checkout, thank you, và order status.</span>
+    <span class="lang-en">Increase order value by suggesting additional products on checkout, thank you, and order status pages.</span>
+  </p>
+</div>
+</div>
+
+<!-- SLIDE 20 — 3 PAGES -->
+<div class="slide" data-mod="Module 9 &middot; Checkout Upsell &middot; 3 Pages">
+<div class="sc">
+  <div class="ey"><span class="lang-vi">CHECKOUT UPSELL &middot; 3 TRANG</span><span class="lang-en">CHECKOUT UPSELL &middot; 3 PAGES</span></div>
+  <h2 style="margin-bottom:16px"><span class="lang-vi">3 Trang hiển thị Upsell</span><span class="lang-en">3 Upsell Display Pages</span></h2>
+  <div class="g g3">
+    <div class="card rose">
+      <div class="ci">&#128179;</div>
+      <h4><span class="lang-vi">Checkout Page</span><span class="lang-en">Checkout Page</span></h4>
+      <p><span class="lang-vi"><strong>Shopify Plus ONLY!</strong> Cần enable + add block vào theme.</span><span class="lang-en"><strong>Shopify Plus ONLY!</strong> Need to enable + add block to theme.</span></p>
+    </div>
+    <div class="card green">
+      <div class="ci">&#127881;</div>
+      <h4><span class="lang-vi">Thank You Page</span><span class="lang-en">Thank You Page</span></h4>
+      <p><span class="lang-vi">Hiển thị upsell sau khi khách đặt hàng. Cần enable + add block vào theme.</span><span class="lang-en">Display upsell after customer places order. Need to enable + add block to theme.</span></p>
+    </div>
+    <div class="card blue">
+      <div class="ci">&#128230;</div>
+      <h4><span class="lang-vi">Order Status Page</span><span class="lang-en">Order Status Page</span></h4>
+      <p><span class="lang-vi">Hiển thị upsell trên trang trạng thái đơn hàng. Cần enable + add block vào theme.</span><span class="lang-en">Display upsell on order status page. Need to enable + add block to theme.</span></p>
+    </div>
+  </div>
+  <div class="callout danger" style="margin-top:14px">
+    <span class="ci">&#9888;&#65039;</span>
+    <span><span class="lang-vi"><strong>Lưu ý:</strong> Checkout page chỉ dành cho Shopify Plus. Thank You page và Order Status page dùng được trên mọi plan.</span><span class="lang-en"><strong>Note:</strong> Checkout page is Shopify Plus ONLY. Thank You page and Order Status page work on all plans.</span></span>
+  </div>
+</div>
+</div>
+
+<!-- SLIDE 21 — SUGGEST LOGIC -->
+<div class="slide" data-mod="Module 9 &middot; Checkout Upsell &middot; Logic">
+<div class="sc">
+  <div class="ey"><span class="lang-vi">CHECKOUT UPSELL &middot; LOGIC GỢI Ý</span><span class="lang-en">CHECKOUT UPSELL &middot; SUGGEST LOGIC</span></div>
+  <h2 style="margin-bottom:14px"><span class="lang-vi">Logic gợi ý hoạt động thế nào?</span><span class="lang-en">How Does Suggest Logic Work?</span></h2>
+  <p style="margin-bottom:14px"><span class="lang-vi">Nếu cart có sản phẩm có discount rule &rarr; gợi ý tier tiếp theo.</span><span class="lang-en">If cart has product with discount rule &rarr; suggest next tier.</span></p>
+  <div class="flow">
+    <div class="fn" style="background:var(--blue-l);border-color:var(--blue-m)"><span class="lang-vi">Rule 1 đạt</span><span class="lang-en">Rule 1 met</span></div>
+    <span class="fa">&rarr;</span>
+    <div class="fn"><span class="lang-vi">Gợi ý Rule 2</span><span class="lang-en">Suggest Rule 2</span></div>
+    <span class="fa">&rarr;</span>
+    <div class="fn" style="background:var(--teal-l);border-color:var(--teal-m)"><span class="lang-vi">Rule 2 đạt</span><span class="lang-en">Rule 2 met</span></div>
+    <span class="fa">&rarr;</span>
+    <div class="fn"><span class="lang-vi">Gợi ý Rule 3</span><span class="lang-en">Suggest Rule 3</span></div>
+    <span class="fa">&rarr;</span>
+    <div class="fn" style="background:var(--green-l);border-color:var(--green-m)"><span class="lang-vi">Tất cả rules đạt</span><span class="lang-en">All rules met</span></div>
+    <span class="fa">&rarr;</span>
+    <div class="fn"><span class="lang-vi">Không gợi ý</span><span class="lang-en">No suggestion</span></div>
+  </div>
+  <div class="callout info" style="margin-top:14px">
+    <span class="ci">&#128161;</span>
+    <span><span class="lang-vi"><strong>Nhiều sản phẩm có discount?</strong> Ưu tiên theo thứ tự sản phẩm được thêm vào cart.</span><span class="lang-en"><strong>Multiple products with discounts?</strong> Priority by order products were added to cart.</span></span>
+  </div>
+</div>
+</div>
+
+<!-- SLIDE 22 — SETUP -->
+<div class="slide" data-mod="Module 9 &middot; Checkout Upsell &middot; Setup">
+<div class="sc">
+  <div class="ey"><span class="lang-vi">CHECKOUT UPSELL &middot; THIẾT LẬP</span><span class="lang-en">CHECKOUT UPSELL &middot; SETUP</span></div>
+  <h2 style="margin-bottom:14px"><span class="lang-vi">Cách thiết lập Checkout Upsell</span><span class="lang-en">How to Set Up Checkout Upsell</span></h2>
+  <div class="flow" style="margin-bottom:14px">
+    <div class="fn"><span class="lang-vi">Enable trong Settings</span><span class="lang-en">Enable in Settings</span></div>
+    <span class="fa">&rarr;</span>
+    <div class="fn"><span class="lang-vi">Add app block vào theme</span><span class="lang-en">Add app block to theme</span></div>
+    <span class="fa">&rarr;</span>
+    <div class="fn"><span class="lang-vi">Hoàn tất!</span><span class="lang-en">Done!</span></div>
+  </div>
+  <div class="ph-img-slot" style="min-height:160px">
+    <div class="ph-icon">&#128444;&#65039;</div>
+    <div class="ph-label">SCREENSHOT</div>
+    <div class="ph-desc"><span class="lang-vi">Màn hình setup Checkout Upsell &mdash; enable và add block</span><span class="lang-en">Checkout Upsell setup screen &mdash; enable and add block</span></div>
+  </div>
+</div>
+</div>
+
+<!-- SLIDE 23 — COUNTDOWN TIMER -->
+<div class="slide" data-mod="Module 9 &middot; Checkout Upsell &middot; Timer">
+<div class="sc">
+  <div class="ey"><span class="lang-vi">CHECKOUT UPSELL &middot; COUNTDOWN TIMER</span><span class="lang-en">CHECKOUT UPSELL &middot; COUNTDOWN TIMER</span></div>
+  <h2 style="margin-bottom:14px"><span class="lang-vi">Countdown Timer</span><span class="lang-en">Countdown Timer</span></h2>
+  <div class="callout warn">
+    <span class="ci">&#9888;&#65039;</span>
+    <span><span class="lang-vi"><strong>Lưu ý quan trọng:</strong> Timer chỉ ẨN widget khi hết giờ &mdash; function (discount) vẫn hoạt động bình thường! Widget bị ẩn nhưng khách vẫn được giảm giá.</span><span class="lang-en"><strong>Important:</strong> Timer only HIDES the widget when time runs out &mdash; the function (discount) still works! Widget is hidden but customer still gets the discount.</span></span>
+  </div>
+  <div class="g g2" style="margin-top:14px">
+    <div class="card">
+      <h4><span class="lang-vi">Layout Settings</span><span class="lang-en">Layout Settings</span></h4>
+      <p><span class="lang-vi">Thay đổi text, hiện/ẩn thông tin, tùy chỉnh giao diện countdown.</span><span class="lang-en">Change text, show/hide info, customize countdown appearance.</span></p>
+    </div>
+    <div class="card">
+      <h4><span class="lang-vi">Hành vi khi hết giờ</span><span class="lang-en">Behavior when timer ends</span></h4>
+      <p><span class="lang-vi">Widget ẩn &rarr; discount vẫn work. Muốn tắt discount khi hết giờ &rarr; cần Advanced plan + Manual discount.</span><span class="lang-en">Widget hides &rarr; discount still works. Want to disable discount when timer ends &rarr; need Advanced plan + Manual discount.</span></p>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- SLIDE 24 — QUIZ: CHECKOUT UPSELL -->
+<div class="slide" data-mod="Module 9 &middot; Checkout Upsell &middot; Quiz">
+<div class="sc">
+  <div class="act-hdr"><span class="act-badge"><span class="lang-vi">&#9889; QUIZ</span><span class="lang-en">&#9889; QUIZ</span></span></div>
+  <h2 style="margin-bottom:14px"><span class="lang-vi">Quiz: Checkout Upsell</span><span class="lang-en">Quiz: Checkout Upsell</span></h2>
+  <div class="quiz-wrap" id="quiz-cu"></div>
+</div>
+</div>
+
+<!-- SLIDE 25 — BROKEN-SETUP: CHECKOUT UPSELL -->
+<div class="slide" data-mod="Module 9 &middot; Checkout Upsell &middot; Broken-Setup">
+<div class="sc">
+  <div class="act-hdr"><span class="act-badge"><span class="lang-vi">&#128295; CHẨN ĐOÁN LỖI</span><span class="lang-en">&#128295; BROKEN-SETUP DIAGNOSIS</span></span></div>
+  <h2 style="margin-bottom:14px"><span class="lang-vi">Checkout Upsell không hiển thị</span><span class="lang-en">Checkout Upsell not showing</span></h2>
+  <div class="ticket-msg">
+    <span class="lang-vi">"Merchant nói: Đã setup Checkout Upsell nhưng không thấy hiển thị gì ở trang checkout."</span>
+    <span class="lang-en">"Merchant says: Set up Checkout Upsell but nothing shows on the checkout page."</span>
+  </div>
+  <div class="ticket-q"><span class="lang-vi">&#10067; Kiểm tra những gì? Bạn sẽ trả lời khách thế nào?</span><span class="lang-en">&#10067; What to check? How would you respond?</span></div>
+  <textarea class="ticket-ta" placeholder="Type your answer..."></textarea>
+  <button class="show-ans-btn" onclick="this.nextElementSibling.classList.add('show');this.style.display='none'"><span class="lang-vi">Xem đáp án</span><span class="lang-en">Show answer</span></button>
+  <div class="ticket-ans">
+    <span class="lang-vi">&#9989; Kiểm tra 3 điều:<br>1. <strong>Shopify Plus</strong> &mdash; Checkout page chỉ dành cho Shopify Plus. Nếu không phải Plus, chỉ dùng được Thank You page và Order Status page.<br>2. <strong>Block đã add đúng theme</strong> &mdash; Kiểm tra block đã được add vào đúng theme đang active.<br>3. <strong>Sản phẩm trong cart có discount rule</strong> &mdash; Cần ít nhất 1 sản phẩm trong cart có discount rule để trigger gợi ý.</span>
+    <span class="lang-en">&#9989; Check 3 things:<br>1. <strong>Shopify Plus required</strong> &mdash; Checkout page is Shopify Plus ONLY. If not Plus, can only use Thank You page and Order Status page.<br>2. <strong>Block added to correct theme</strong> &mdash; Verify block is added to the currently active theme.<br>3. <strong>Product in cart has discount rule</strong> &mdash; Need at least one product in cart with a discount rule to trigger suggestion.</span>
+  </div>
+</div>
+</div>
+
+<!-- SLIDE 26 — BOOST CONVERSION TITLE -->
+<div class="slide" data-mod="Module 10 &middot; Boost Conversion">
+<div class="sc" style="text-align:center">
+  <div class="ey" style="justify-content:center"><span class="lang-vi">MODULE 10</span><span class="lang-en">MODULE 10</span></div>
+  <h1 style="margin-bottom:14px"><span class="lang-vi">Boost Conversion<br><span style="background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent">Features</span></span><span class="lang-en">Boost Conversion<br><span style="background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent">Features</span></span></h1>
+  <p class="lead" style="max-width:500px;margin:0 auto"><span class="lang-vi">Các tính năng giúp tăng tỷ lệ chuyển đổi và tạo cảm giác gấp rút cho khách hàng.</span><span class="lang-en">Features that increase conversion rate and create urgency for customers.</span></p>
+</div>
+</div>
+
+<!-- SLIDE 27 — SHOW DISCOUNTED PRICE -->
+<div class="slide" data-mod="Module 10 &middot; Boost Conversion &middot; Discounted Price">
+<div class="sc">
+  <div class="ey"><span class="lang-vi">BOOST CONVERSION &middot; HIỂN THỊ GIÁ GIẢM</span><span class="lang-en">BOOST CONVERSION &middot; SHOW DISCOUNTED PRICE</span></div>
+  <h2 style="margin-bottom:14px"><span class="lang-vi">Hiển thị giá đã giảm</span><span class="lang-en">Show Discounted Price</span></h2>
+  <p><span class="lang-vi">Thay đổi hiển thị giá sản phẩm trên product page để hiện giá đã giảm. Tạo cảm giác gấp rút và khuyến khích mua hàng.</span><span class="lang-en">Changes product price display on product page to show discounted price. Drives urgency and encourages purchase.</span></p>
+  <div class="ph-img-slot" style="margin-top:14px;min-height:120px">
+    <div class="ph-icon">&#128444;&#65039;</div>
+    <div class="ph-label">SCREENSHOT</div>
+    <div class="ph-desc"><span class="lang-vi">Giá gốc bị gạch, giá giảm hiện bên cạnh</span><span class="lang-en">Original price crossed out, discounted price shown next to it</span></div>
+  </div>
+  <div class="callout ok" style="margin-top:12px">
+    <span class="ci">&#128200;</span>
+    <span><span class="lang-vi"><strong>Hiệu quả:</strong> Khách thấy giá giảm ngay trên product page &rarr; tăng urgency &rarr; tăng conversion.</span><span class="lang-en"><strong>Impact:</strong> Customer sees discounted price right on product page &rarr; increases urgency &rarr; boosts conversion.</span></span>
+  </div>
+</div>
+</div>
+
+<!-- SLIDE 28 — BANNER WIDGET -->
+<div class="slide" data-mod="Module 10 &middot; Boost Conversion &middot; Banner">
+<div class="sc">
+  <div class="ey"><span class="lang-vi">BOOST CONVERSION &middot; BANNER WIDGET</span><span class="lang-en">BOOST CONVERSION &middot; BANNER WIDGET</span></div>
+  <h2 style="margin-bottom:14px"><span class="lang-vi">Banner Widget</span><span class="lang-en">Banner Widget</span></h2>
+  <p><span class="lang-vi">Banner hiển thị ở đầu trang store, liên kết với campaign cụ thể. Khi khách truy cập vào sản phẩm của campaign sẽ thấy banner.</span><span class="lang-en">Banner displayed at the top of the store, linked to a specific campaign. When shopper navigates to campaign products, the banner appears.</span></p>
+  <div class="ph-img-slot" style="margin-top:14px;min-height:100px">
+    <div class="ph-icon">&#128444;&#65039;</div>
+    <div class="ph-label">SCREENSHOT</div>
+    <div class="ph-desc"><span class="lang-vi">Banner widget ở đầu trang store với thông tin campaign</span><span class="lang-en">Banner widget at top of store with campaign info</span></div>
+  </div>
+</div>
+</div>
+
+<!-- SLIDE 29 — POPUP WIDGET -->
+<div class="slide" data-mod="Module 10 &middot; Boost Conversion &middot; Popup">
+<div class="sc">
+  <div class="ey"><span class="lang-vi">BOOST CONVERSION &middot; POPUP WIDGET</span><span class="lang-en">BOOST CONVERSION &middot; POPUP WIDGET</span></div>
+  <h2 style="margin-bottom:14px"><span class="lang-vi">Popup Widget</span><span class="lang-en">Popup Widget</span></h2>
+  <p><span class="lang-vi">Tương tự Banner nhưng dạng popup. Hiển thị thông tin khuyến mãi dạng popup overlay trên storefront.</span><span class="lang-en">Same as Banner but in popup format. Displays promotion information as a popup overlay on the storefront.</span></p>
+  <div class="g g2" style="margin-top:14px">
+    <div class="card blue">
+      <h4><span class="lang-vi">Giống Banner</span><span class="lang-en">Same as Banner</span></h4>
+      <p><span class="lang-vi">Liên kết với campaign cụ thể, cùng cơ chế trigger.</span><span class="lang-en">Linked to specific campaign, same trigger mechanism.</span></p>
+    </div>
+    <div class="card amber">
+      <h4><span class="lang-vi">Dạng Popup</span><span class="lang-en">Popup Format</span></h4>
+      <p><span class="lang-vi">Hiển thị dạng overlay, thu hút chú ý hơn banner.</span><span class="lang-en">Displayed as overlay, more attention-grabbing than banner.</span></p>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- SLIDE 30 — SHOW ON COLLECTION PAGE -->
+<div class="slide" data-mod="Module 10 &middot; Boost Conversion &middot; Collection Page">
+<div class="sc">
+  <div class="ey"><span class="lang-vi">BOOST CONVERSION &middot; COLLECTION PAGE</span><span class="lang-en">BOOST CONVERSION &middot; COLLECTION PAGE</span></div>
+  <h2 style="margin-bottom:14px"><span class="lang-vi">Hiển thị trên Collection Page</span><span class="lang-en">Show on Collection Page</span></h2>
+  <p><span class="lang-vi">Hiển thị bảng quantity breaks trên collection page. Khách thấy được thông tin giảm giá ngay từ trang danh sách sản phẩm.</span><span class="lang-en">Displays quantity breaks table on collection page. Customer can see discount info right from the product listing page.</span></p>
+  <div class="ph-img-slot" style="margin-top:14px;min-height:140px">
+    <div class="ph-icon">&#128444;&#65039;</div>
+    <div class="ph-label">SCREENSHOT</div>
+    <div class="ph-desc"><span class="lang-vi">Bảng quantity breaks hiển thị trên collection page dưới mỗi sản phẩm</span><span class="lang-en">Quantity breaks table displayed on collection page under each product</span></div>
+  </div>
+</div>
+</div>
+
+<!-- SLIDE 31 — AUTO TRANSLATE -->
+<div class="slide" data-mod="Module 10 &middot; Boost Conversion &middot; Auto Translate">
+<div class="sc">
+  <div class="ey"><span class="lang-vi">BOOST CONVERSION &middot; TỰ ĐỘNG DỊCH</span><span class="lang-en">BOOST CONVERSION &middot; AUTO TRANSLATE</span></div>
+  <h2 style="margin-bottom:14px"><span class="lang-vi">Tự động dịch ngôn ngữ</span><span class="lang-en">Auto Translate</span></h2>
+  <p><span class="lang-vi">App tự động dịch widget dựa trên ngôn ngữ của store. Tuy nhiên có một lưu ý quan trọng!</span><span class="lang-en">App automatically translates widget based on store language. However, there's an important caveat!</span></p>
+  <div class="callout warn" style="margin-top:14px">
+    <span class="ci">&#9888;&#65039;</span>
+    <span>
+      <span class="lang-vi"><strong>Lưu ý quan trọng:</strong> Ngôn ngữ MẶC ĐỊNH của store phải được merchant tự dịch &mdash; app chỉ tự động xử lý các ngôn ngữ PHỤ. Ví dụ: store mặc định là tiếng Pháp &rarr; merchant phải tự dịch tiếng Pháp. App chỉ auto-translate khi khách chuyển sang ngôn ngữ khác (Anh, Đức...).</span>
+      <span class="lang-en"><strong>Important caveat:</strong> The DEFAULT language must be translated by the merchant manually &mdash; the app only handles SECONDARY languages automatically. Example: store default is French &rarr; merchant must translate French manually. App only auto-translates when customer switches to another language (English, German...).</span>
+    </span>
+  </div>
+</div>
+</div>
+
+<!-- SLIDE 32 — TRUE/FALSE: BOOST CONVERSION -->
+<div class="slide" data-mod="Module 10 &middot; Boost Conversion &middot; T/F">
+<div class="sc">
+  <div class="act-hdr"><span class="act-badge"><span class="lang-vi">&#9889; ĐÚNG / SAI</span><span class="lang-en">&#9889; TRUE / FALSE</span></span></div>
+  <h2 style="margin-bottom:14px"><span class="lang-vi">Đúng hay Sai: Boost Conversion</span><span class="lang-en">True/False: Boost Conversion</span></h2>
+  <div class="tf-list" id="tf-bc"></div>
+</div>
+</div>
+
+<!-- SLIDE 33 — COMPARISON TABLE -->
+<div class="slide" data-mod="Wrap-up &middot; Comparison">
+<div class="sc">
+  <div class="ey"><span class="lang-vi">TỔNG KẾT &middot; SO SÁNH</span><span class="lang-en">WRAP-UP &middot; COMPARISON</span></div>
+  <h2 style="margin-bottom:14px"><span class="lang-vi">So sánh 3 loại Bundle</span><span class="lang-en">All 3 Bundle Types Comparison</span></h2>
+  <table class="cmp-table">
+    <tr>
+      <th></th>
+      <th>FBT</th>
+      <th><span class="lang-vi">Product Bundle</span><span class="lang-en">Product Bundle</span></th>
+      <th><span class="lang-vi">Single Bundle</span><span class="lang-en">Single Bundle</span></th>
+    </tr>
+    <tr>
+      <td>Trigger</td>
+      <td><span class="lang-vi">Mua tất cả SP trong group</span><span class="lang-en">Buy all products in group</span></td>
+      <td><span class="lang-vi">Mua 1 SP (parent) trên store</span><span class="lang-en">Buy 1 product (parent) on store</span></td>
+      <td><span class="lang-vi">Click 1 nút add-to-cart</span><span class="lang-en">Click 1 add-to-cart button</span></td>
+    </tr>
+    <tr>
+      <td><span class="lang-vi">Giảm giá</span><span class="lang-en">Discount</span></td>
+      <td>%, $, Fixed price</td>
+      <td>%, $, Fixed price</td>
+      <td>%, $, Fixed price</td>
+    </tr>
+    <tr>
+      <td><span class="lang-vi">Hiển thị</span><span class="lang-en">Display</span></td>
+      <td><span class="lang-vi">Widget trên product page + popup + cart</span><span class="lang-en">Widget on product page + popup + cart</span></td>
+      <td><span class="lang-vi">1 SP mới trên store</span><span class="lang-en">1 new product on store</span></td>
+      <td><span class="lang-vi">Widget trên product page</span><span class="lang-en">Widget on product page</span></td>
+    </tr>
+    <tr>
+      <td><span class="lang-vi">Giới hạn</span><span class="lang-en">Limitations</span></td>
+      <td><span class="lang-vi">Phải mua tất cả SP</span><span class="lang-en">Must buy all products</span></td>
+      <td><span class="lang-vi">Shopify variant/option limit</span><span class="lang-en">Shopify variant/option limit</span></td>
+      <td><span class="lang-vi">Ít giới hạn nhất</span><span class="lang-en">Fewest limitations</span></td>
+    </tr>
+  </table>
+</div>
+</div>
+
+<!-- SLIDE 34 — CHEAT SHEET -->
+<div class="slide" data-mod="Wrap-up &middot; Cheat Sheet">
+<div class="sc">
+  <div class="ey"><span class="lang-vi">TỔNG KẾT &middot; CHEAT SHEET</span><span class="lang-en">WRAP-UP &middot; CHEAT SHEET</span></div>
+  <h2 style="margin-bottom:16px"><span class="lang-vi">Quick Reference Cheat Sheet</span><span class="lang-en">Quick Reference Cheat Sheet</span></h2>
+  <div class="g g3">
+    <div class="card blue">
+      <h4><span class="lang-vi">Bundles</span><span class="lang-en">Bundles</span></h4>
+      <ul class="cl">
+        <li><span class="lang-vi">FBT: phải mua tất cả SP</span><span class="lang-en">FBT: must buy all products</span></li>
+        <li><span class="lang-vi">Product Bundle: tạo SP mới (Shopify limit)</span><span class="lang-en">Product Bundle: creates new product (Shopify limit)</span></li>
+        <li><span class="lang-vi">Single Bundle: đơn giản nhất, 1 click</span><span class="lang-en">Single Bundle: simplest, 1 click</span></li>
+        <li><span class="lang-vi">Tất cả có: %, $, Fixed price</span><span class="lang-en">All have: %, $, Fixed price</span></li>
+      </ul>
+    </div>
+    <div class="card teal">
+      <h4><span class="lang-vi">Checkout Upsell</span><span class="lang-en">Checkout Upsell</span></h4>
+      <ul class="cl">
+        <li><span class="lang-vi">Checkout page = Shopify Plus ONLY</span><span class="lang-en">Checkout page = Shopify Plus ONLY</span></li>
+        <li><span class="lang-vi">Cần enable + add block vào theme</span><span class="lang-en">Need enable + add block to theme</span></li>
+        <li><span class="lang-vi">Logic: gợi ý tier tiếp theo</span><span class="lang-en">Logic: suggest next tier</span></li>
+        <li><span class="lang-vi">Timer ẩn widget, KHÔNG tắt discount</span><span class="lang-en">Timer hides widget, does NOT disable discount</span></li>
+      </ul>
+    </div>
+    <div class="card amber">
+      <h4><span class="lang-vi">Boost Conversion</span><span class="lang-en">Boost Conversion</span></h4>
+      <ul class="cl">
+        <li><span class="lang-vi">Hiển thị giá giảm: tăng urgency</span><span class="lang-en">Show Discounted Price: drives urgency</span></li>
+        <li><span class="lang-vi">Banner / Popup: liên kết campaign</span><span class="lang-en">Banner / Popup: linked to campaign</span></li>
+        <li><span class="lang-vi">Collection page: hiện bảng QB</span><span class="lang-en">Collection page: show QB table</span></li>
+        <li><span class="lang-vi">Tự động dịch: ngôn ngữ mặc định phải tự dịch</span><span class="lang-en">Auto Translate: default language must be translated manually</span></li>
+      </ul>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- SLIDE 35 — SPINWHEEL -->
+<div class="slide" data-mod="Wrap-up &middot; Spinwheel">
+<div class="sc">
+  <div class="act-hdr"><span class="act-badge"><span class="lang-vi">&#9889; SPINWHEEL LIGHTNING ROUND</span><span class="lang-en">&#9889; SPINWHEEL LIGHTNING ROUND</span></span></div>
+  <div id="spin-section">
+    <canvas id="spin-canvas" width="260" height="260"></canvas>
+    <div style="margin-top:10px">
+      <button class="vrev-btn" onclick="spinWheel()"><span class="lang-vi">&#127922; Quay!</span><span class="lang-en">&#127922; Spin!</span></button>
+      <button class="vrev-btn" id="spin-reveal" style="display:none;background:var(--green)" onclick="revealSpin()"><span class="lang-vi">Xem đáp án</span><span class="lang-en">Reveal answer</span></button>
+    </div>
+    <div id="spin-question"><span class="lang-vi">Bấm "Quay!" để bắt đầu</span><span class="lang-en">Press "Spin!" to start</span></div>
+    <div id="spin-answer"></div>
+  </div>
+</div>
+</div>
+
+<!-- SLIDE 36 — FEEDBACK -->
+<div class="slide" data-mod="Wrap-up &middot; Feedback">
+<div class="sc" style="text-align:center">
+  <div class="ey" style="justify-content:center"><span class="lang-vi">KẾT THÚC DAY 3</span><span class="lang-en">END OF DAY 3</span></div>
+  <h1 style="margin-bottom:12px"><span class="lang-vi">Phản hồi &amp; Day 4 Preview</span><span class="lang-en">Feedback &amp; Day 4 Preview</span></h1>
+  <p class="lead" style="max-width:500px;margin:0 auto 20px"><span class="lang-vi"><strong>Day 4:</strong> App Configurations, Advanced Topics, Troubleshooting Mastery</span><span class="lang-en"><strong>Day 4:</strong> App Configurations, Advanced Topics, Troubleshooting Mastery</span></p>
+  <div class="exit-ticket">
+    <div class="et-card">
+      <div class="et-icon">&#128161;</div>
+      <span class="et-label"><span class="lang-vi">Điều học được nhất</span><span class="lang-en">Key takeaway</span></span>
+      <textarea placeholder="..."></textarea>
+    </div>
+    <div class="et-card">
+      <div class="et-icon">&#10067;</div>
+      <span class="et-label"><span class="lang-vi">Còn thắc mắc gì?</span><span class="lang-en">Any questions?</span></span>
+      <textarea placeholder="..."></textarea>
+    </div>
+    <div class="et-card">
+      <div class="et-icon">&#11088;</div>
+      <span class="et-label"><span class="lang-vi">Góp ý buổi học</span><span class="lang-en">Session feedback</span></span>
+      <textarea placeholder="..."></textarea>
+    </div>
+  </div>
+</div>
+</div>
+
+</div><!-- /deck -->
+
+<!-- BOTNAV -->
+<div id="botnav">
+  <button class="nav-btn" id="btn-prev" onclick="prev()" disabled>&#8592;</button>
+  <div class="dots-row" id="dots-row"></div>
+  <button class="nav-btn" id="btn-next" onclick="next()">&#8594;</button>
+  <div class="kbd-hint"><span class="kbd">&#8592;</span><span class="kbd">&#8594;</span></div>
+</div>
+
+<!-- LIGHTBOX -->
+<div id="lightbox" onclick="closeLightbox()">
+  <button id="lightbox-close" onclick="closeLightbox()">&times;</button>
+  <img id="lightbox-img" src="" alt="">
+</div>
+
+<script>
+// ── LANGUAGE TOGGLE + PERSISTENCE ────────────────────────
+function toggleLang(){
+  const b=document.body;
+  const isVI=b.classList.contains('lang-vi');
+  b.classList.remove(isVI?'lang-vi':'lang-en');
+  b.classList.add(isVI?'lang-en':'lang-vi');
+  localStorage.setItem('pareto_training_lang',isVI?'en':'vi');
+  document.getElementById('lang-label').textContent=isVI?'VI':'EN';
+  rebuildAll();
+}
+(function(){
+  const saved=localStorage.getItem('pareto_training_lang')||'vi';
+  document.body.classList.remove('lang-vi','lang-en');
+  document.body.classList.add('lang-'+saved);
+  const lbl=document.getElementById('lang-label');
+  if(lbl) lbl.textContent=saved==='en'?'VI':'EN';
+})();
+
+// ── NAVIGATION ───────────────────────────────────────────
+const slides=document.querySelectorAll('.slide');
+const TOTAL=slides.length;
+let cur=0;
+function go(n){
+  if(n<0||n>=TOTAL)return;
+  slides[cur].classList.remove('active');
+  const prev=cur;
+  slides[prev].classList.add('out-l');
+  setTimeout(()=>slides[prev].classList.remove('out-l'),300);
+  cur=n;slides[cur].classList.add('active');
+  upUI();document.getElementById('sidebar').classList.remove('open');
+}
+function next(){go(cur+1)}
+function prev(){go(cur-1)}
+function toggleSB(){document.getElementById('sidebar').classList.toggle('open')}
+function upUI(){
+  document.getElementById('pf').style.width=((cur+1)/TOTAL*100)+'%';
+  document.getElementById('tb-num').textContent=(cur+1)+' / '+TOTAL;
+  document.getElementById('tb-mod').textContent=slides[cur].dataset.mod||'';
+  document.getElementById('btn-prev').disabled=cur===0;
+  document.getElementById('btn-next').disabled=cur===TOTAL-1;
+  document.querySelectorAll('.dot').forEach((d,i)=>d.classList.toggle('active',i===cur));
+  document.querySelectorAll('.sb-item').forEach((s,i)=>s.classList.toggle('cur',i===cur));
+}
+const dr=document.getElementById('dots-row');
+for(let i=0;i<TOTAL;i++){const d=document.createElement('div');d.className='dot'+(i===0?' active':'');d.onclick=()=>go(i);dr.appendChild(d)}
+document.addEventListener('keydown',e=>{
+  if(e.target.tagName==='TEXTAREA'||e.target.tagName==='INPUT')return;
+  if(e.key==='ArrowRight'||e.key==='ArrowDown')next();
+  if(e.key==='ArrowLeft'||e.key==='ArrowUp')prev();
+});
+
+// ── LIGHTBOX ─────────────────────────────────────────────
+function openLightbox(src){const lb=document.getElementById('lightbox');document.getElementById('lightbox-img').src=src;lb.classList.add('open')}
+function closeLightbox(){document.getElementById('lightbox').classList.remove('open')}
+
+// ── VOTING (Slide 03) ───────────────────────────────────
+const voteData=[
+  {
+    q_vi:'Merchant bán skincare set: sữa rửa mặt + toner + kem dưỡng. Khách mua cả 3 được giảm 15%.',
+    q_en:'Merchant sells skincare set: cleanser + toner + moisturizer. Buy all 3 get 15% off.',
+    opts_vi:['Frequently Bought Together','Product Bundle','Single Bundle'],
+    opts_en:['Frequently Bought Together','Product Bundle','Single Bundle'],
+    correct:0,
+    explain_vi:'FBT — sản phẩm thường mua cùng nhau, khách mua cả set được giảm giá nhóm.',
+    explain_en:'FBT — products commonly bought together, customer buys the set and gets group discount.'
+  },
+  {
+    q_vi:'Merchant muốn tạo 1 sản phẩm "Gift Box" trên store gồm 5 item khác nhau, hiển thị như 1 sản phẩm duy nhất.',
+    q_en:'Merchant wants to create a "Gift Box" product on store containing 5 different items, displayed as 1 product.',
+    opts_vi:['Frequently Bought Together','Product Bundle','Single Bundle'],
+    opts_en:['Frequently Bought Together','Product Bundle','Single Bundle'],
+    correct:1,
+    explain_vi:'Product Bundle — tạo sản phẩm cha chứa sản phẩm con, hiển thị như 1 SP trên store.',
+    explain_en:'Product Bundle — creates parent product containing child products, shows as 1 product on store.'
+  },
+  {
+    q_vi:'Merchant muốn khách chỉ cần bấm 1 nút là add được 3 sản phẩm vào cart với discount, không cần tạo sản phẩm mới.',
+    q_en:'Merchant wants customer to click 1 button to add 3 products to cart with discount, no new product needed.',
+    opts_vi:['Frequently Bought Together','Product Bundle','Single Bundle'],
+    opts_en:['Frequently Bought Together','Product Bundle','Single Bundle'],
+    correct:2,
+    explain_vi:'Single Bundle — 1 click add-to-cart, đơn giản, không tạo SP mới trong Shopify.',
+    explain_en:'Single Bundle — 1 click add-to-cart, simple, doesn\'t create new product in Shopify.'
+  }
+];
+
+function buildVoting(){
+  const vc=document.getElementById('vote-container');
+  vc.innerHTML='';
+  const isVi=document.body.classList.contains('lang-vi');
+  voteData.forEach((vq,vi)=>{
+    const q=isVi?vq.q_vi:vq.q_en;
+    const opts=isVi?vq.opts_vi:vq.opts_en;
+    const explain=isVi?vq.explain_vi:vq.explain_en;
+    const div=document.createElement('div');div.className='vote-q';
+    div.innerHTML=`<div class="vq-text">${vi+1}. ${q}</div><div class="vopts" id="vo-${vi}">${opts.map((o,oi)=>`<div class="vopt" id="vopt-${vi}-${oi}" onclick="castV(${vi},${oi})"><span style="font-size:14px">${['&#129309;','&#128230;','&#127873;'][oi]}</span><span style="flex:1">${o}</span></div>`).join('')}</div><div style="display:flex;gap:8px;align-items:center;margin-top:8px;flex-wrap:wrap"><button class="vrev-btn" onclick="revV(${vi})">${isVi?'Xem kết quả':'Reveal result'}</button><div class="vexplain" id="ve-${vi}">${explain}</div></div>`;
+    vc.appendChild(div);
+  });
+}
+const vs={};
+function castV(vi,oi){if(vs[vi])return;vs[vi]=true;document.getElementById(`vopt-${vi}-${oi}`).classList.add('voted')}
+function revV(vi){
+  const isVi=document.body.classList.contains('lang-vi');
+  voteData[vi].opts_vi.forEach((_,oi)=>{
+    const el=document.getElementById(`vopt-${vi}-${oi}`);
+    if(oi===voteData[vi].correct){el.style.borderColor='var(--green-m)';el.style.background='var(--green-l)'}
+    else{el.style.borderColor='var(--rose-m)';el.style.background='var(--rose-l)';el.style.color='var(--rose)'}
+  });
+  document.getElementById(`ve-${vi}`).style.display='block';
+}
+
+// ── QUIZ: FBT (Slide 08) ────────────────────────────────
+const quizFbtData=[
+  {
+    q_vi:'Merchant setup FBT với 3 sản phẩm. Khách chỉ mua 2 sản phẩm. Discount có apply không?',
+    q_en:'Merchant sets up FBT with 3 products. Customer only buys 2 products. Does the discount apply?',
+    opts_vi:['Có, discount apply theo tỷ lệ','Không, phải mua tất cả sản phẩm trong bundle group','Có, nhưng chỉ giảm 50%','Tùy vào cài đặt'],
+    opts_en:['Yes, discount applies proportionally','No, must buy all products in the bundle group','Yes, but only 50% off','Depends on settings'],
+    c:1,
+    e_vi:'Không! Khách PHẢI mua TẤT CẢ sản phẩm trong FBT bundle group mới được discount.',
+    e_en:'No! Customer MUST buy ALL products in the FBT bundle group to get the discount.'
+  },
+  {
+    q_vi:'FBT có những loại discount nào?',
+    q_en:'What discount types does FBT support?',
+    opts_vi:['Chỉ có % off','% off và $ off','% off, $ off, và Fixed price','Chỉ có Fixed price'],
+    opts_en:['Only % off','% off and $ off','% off, $ off, and Fixed price','Only Fixed price'],
+    c:2,
+    e_vi:'FBT hỗ trợ 3 loại: % off bundle, $ off bundle, và Fixed price for bundle.',
+    e_en:'FBT supports 3 types: % off bundle, $ off bundle, and Fixed price for bundle.'
+  },
+  {
+    q_vi:'FBT popup suggestion có mấy chế độ?',
+    q_en:'How many modes does FBT popup suggestion have?',
+    opts_vi:['1 — chỉ auto','2 — auto và manual','3 — auto, manual, và hybrid','Không có popup'],
+    opts_en:['1 — auto only','2 — auto and manual','3 — auto, manual, and hybrid','No popup feature'],
+    c:1,
+    e_vi:'2 chế độ: Auto (tự động gợi ý) và Manual (tự chọn sản phẩm gợi ý).',
+    e_en:'2 modes: Auto (automatic suggestions) and Manual (manually select suggested products).'
+  }
+];
+
+function buildQuizFbt(){
+  const el=document.getElementById('quiz-fbt');
+  el.innerHTML='';
+  const isVi=document.body.classList.contains('lang-vi');
+  quizFbtData.forEach((it,i)=>{
+    const q=isVi?it.q_vi:it.q_en;
+    const opts=isVi?it.opts_vi:it.opts_en;
+    const exp=isVi?it.e_vi:it.e_en;
+    const div=document.createElement('div');div.className='qcard';
+    div.innerHTML=`<div class="qq">${i+1}. ${q}</div><div class="qopts" id="qfbt-${i}">${opts.map((o,oi)=>`<div class="qopt" onclick="ansQuiz('fbt',${i},${oi},this)"><span class="ok-k">${String.fromCharCode(65+oi)}</span>${o}</div>`).join('')}</div><div class="qfb" id="qfbt-fb-${i}" data-exp="${exp.replace(/"/g,'&quot;')}"></div>`;
+    el.appendChild(div);
+  });
+}
+const quizAns={};
+function ansQuiz(key,i,oi,el){
+  const k=key+'-'+i;
+  if(quizAns[k])return;quizAns[k]=true;
+  const data=key==='fbt'?quizFbtData:quizCuData;
+  const ok=oi===data[i].c;
+  el.classList.add(ok?'correct':'wrong');
+  if(!ok)document.querySelectorAll(`#q${key}-${i} .qopt`)[data[i].c].classList.add('correct');
+  const fb=document.getElementById(`q${key}-fb-${i}`);
+  fb.textContent=(ok?'OK: ':'X: ')+fb.dataset.exp;
+  fb.style.color=ok?'var(--green)':'var(--rose)';
+}
+
+// ── QUIZ: CHECKOUT UPSELL (Slide 24) ────────────────────
+const quizCuData=[
+  {
+    q_vi:'Checkout page upsell có thể dùng trên mọi Shopify plan?',
+    q_en:'Can checkout page upsell be used on any Shopify plan?',
+    opts_vi:['Có, tất cả plan','Không, chỉ Shopify Plus','Chỉ Basic trở lên','Chỉ Advanced trở lên'],
+    opts_en:['Yes, all plans','No, Shopify Plus only','Basic and above','Advanced and above'],
+    c:1,
+    e_vi:'Checkout page chỉ dành cho Shopify Plus. Thank You và Order Status page dùng được trên mọi plan.',
+    e_en:'Checkout page is Shopify Plus ONLY. Thank You and Order Status pages work on all plans.'
+  },
+  {
+    q_vi:'Khi countdown timer hết giờ, chuyện gì xảy ra?',
+    q_en:'When countdown timer runs out, what happens?',
+    opts_vi:['Discount bị tắt','Widget ẩn nhưng discount vẫn work','Cả widget và discount đều tắt','Không có gì thay đổi'],
+    opts_en:['Discount is disabled','Widget hides but discount still works','Both widget and discount are disabled','Nothing changes'],
+    c:1,
+    e_vi:'Widget ẩn nhưng discount vẫn hoạt động bình thường. Muốn tắt discount cần Advanced plan + Manual discount.',
+    e_en:'Widget hides but discount still works normally. To disable discount, need Advanced plan + Manual discount.'
+  },
+  {
+    q_vi:'Cart có 2 sản phẩm đều có discount rule. Sản phẩm nào được ưu tiên gợi ý upsell?',
+    q_en:'Cart has 2 products both with discount rules. Which product gets upsell priority?',
+    opts_vi:['Sản phẩm có giá cao hơn','Sản phẩm được thêm vào cart trước','Sản phẩm có discount lớn hơn','Ngẫu nhiên'],
+    opts_en:['Product with higher price','Product added to cart first','Product with bigger discount','Random'],
+    c:1,
+    e_vi:'Ưu tiên theo thứ tự sản phẩm được thêm vào cart.',
+    e_en:'Priority by order products were added to cart.'
+  }
+];
+
+function buildQuizCu(){
+  const el=document.getElementById('quiz-cu');
+  el.innerHTML='';
+  const isVi=document.body.classList.contains('lang-vi');
+  quizCuData.forEach((it,i)=>{
+    const q=isVi?it.q_vi:it.q_en;
+    const opts=isVi?it.opts_vi:it.opts_en;
+    const exp=isVi?it.e_vi:it.e_en;
+    const div=document.createElement('div');div.className='qcard';
+    div.innerHTML=`<div class="qq">${i+1}. ${q}</div><div class="qopts" id="qcu-${i}">${opts.map((o,oi)=>`<div class="qopt" onclick="ansQuiz('cu',${i},${oi},this)"><span class="ok-k">${String.fromCharCode(65+oi)}</span>${o}</div>`).join('')}</div><div class="qfb" id="qcu-fb-${i}" data-exp="${exp.replace(/"/g,'&quot;')}"></div>`;
+    el.appendChild(div);
+  });
+}
+
+// ── TRUE/FALSE: PRODUCT BUNDLE (Slide 14) ────────────────
+const tfPbData=[
+  {
+    s_vi:'Product Bundle tạo một sản phẩm mới trong Shopify.',
+    s_en:'Product Bundle creates a new product in Shopify.',
+    a:true,
+    e_vi:'Đúng! Product Bundle tạo 1 SP mới (parent product) trong Shopify Products.',
+    e_en:'True! Product Bundle creates a new product (parent product) in Shopify Products.'
+  },
+  {
+    s_vi:'Product Bundle không có giới hạn về số lượng variant.',
+    s_en:'Product Bundle has no limit on number of variants.',
+    a:false,
+    e_vi:'Sai! Shopify giới hạn 100 variants và 3 options mỗi sản phẩm. Product Bundle dễ bị vượt limit.',
+    e_en:'False! Shopify limits 100 variants and 3 options per product. Product Bundle easily exceeds this.'
+  },
+  {
+    s_vi:'Product Bundle hiển thị như nhiều sản phẩm trên store.',
+    s_en:'Product Bundle shows as multiple products on the store.',
+    a:false,
+    e_vi:'Sai! Product Bundle hiển thị như MỘT sản phẩm duy nhất trên store.',
+    e_en:'False! Product Bundle shows as ONE single product on the store.'
+  },
+  {
+    s_vi:'Product Bundle có thể dùng chung Schedule và Target Customer giống QB.',
+    s_en:'Product Bundle can use the same Schedule and Target Customer settings as QB.',
+    a:true,
+    e_vi:'Đúng! Đây là shared patterns — áp dụng giống nhau cho hầu hết offer types.',
+    e_en:'True! These are shared patterns — applied the same way across most offer types.'
+  }
+];
+
+function buildTfPb(){
+  const el=document.getElementById('tf-pb');
+  el.innerHTML='';
+  const isVi=document.body.classList.contains('lang-vi');
+  tfPbData.forEach((it,i)=>{
+    const s=isVi?it.s_vi:it.s_en;
+    const exp=isVi?it.e_vi:it.e_en;
+    const div=document.createElement('div');div.className='tf-row';
+    div.innerHTML=`<div class="tf-stmt">${i+1}. ${s}</div><div class="tf-btns"><button class="tf-btn" onclick="ansTF('pb',${i},true,this)">${isVi?'Đúng':'True'}</button><button class="tf-btn" onclick="ansTF('pb',${i},false,this)">${isVi?'Sai':'False'}</button></div><div class="tf-exp" id="te-pb-${i}">${exp}</div>`;
+    el.appendChild(div);
+  });
+}
+const tfAns={};
+function ansTF(key,i,ans,btn){
+  const k=key+'-'+i;
+  if(tfAns[k])return;tfAns[k]=true;
+  const data=key==='pb'?tfPbData:tfBcData;
+  const ok=data[i].a===ans;
+  btn.classList.add(ok?'correct':'wrong');
+  document.getElementById(`te-${key}-${i}`).classList.add('show');
+}
+
+// ── TRUE/FALSE: BOOST CONVERSION (Slide 32) ─────────────
+const tfBcData=[
+  {
+    s_vi:'Show Discounted Price thay đổi giá hiển thị trên product page.',
+    s_en:'Show Discounted Price changes the price display on the product page.',
+    a:true,
+    e_vi:'Đúng! Hiển thị giá đã giảm ngay trên product page để tạo urgency.',
+    e_en:'True! Displays discounted price right on the product page to create urgency.'
+  },
+  {
+    s_vi:'Banner Widget và Popup Widget không liên kết với campaign cụ thể.',
+    s_en:'Banner Widget and Popup Widget are not linked to specific campaigns.',
+    a:false,
+    e_vi:'Sai! Cả Banner và Popup đều liên kết với campaign cụ thể. Khi khách truy cập SP của campaign sẽ thấy widget.',
+    e_en:'False! Both Banner and Popup are linked to specific campaigns. They appear when shopper navigates to campaign products.'
+  },
+  {
+    s_vi:'Auto Translate tự động dịch tất cả ngôn ngữ kể cả ngôn ngữ mặc định của store.',
+    s_en:'Auto Translate automatically translates all languages including the store default language.',
+    a:false,
+    e_vi:'Sai! Ngôn ngữ MẶC ĐỊNH phải được merchant TỰ DỊCH. App chỉ tự động xử lý ngôn ngữ phụ.',
+    e_en:'False! DEFAULT language must be translated by the MERCHANT manually. App only auto-translates secondary languages.'
+  },
+  {
+    s_vi:'Show on Collection Page hiển thị bảng quantity breaks trên trang danh sách sản phẩm.',
+    s_en:'Show on Collection Page displays the quantity breaks table on the product listing page.',
+    a:true,
+    e_vi:'Đúng! Hiển thị bảng QB trên collection page để khách thấy thông tin giảm giá từ sớm.',
+    e_en:'True! Displays QB table on collection page so customers see discount info early.'
+  }
+];
+
+function buildTfBc(){
+  const el=document.getElementById('tf-bc');
+  el.innerHTML='';
+  const isVi=document.body.classList.contains('lang-vi');
+  tfBcData.forEach((it,i)=>{
+    const s=isVi?it.s_vi:it.s_en;
+    const exp=isVi?it.e_vi:it.e_en;
+    const div=document.createElement('div');div.className='tf-row';
+    div.innerHTML=`<div class="tf-stmt">${i+1}. ${s}</div><div class="tf-btns"><button class="tf-btn" onclick="ansTF('bc',${i},true,this)">${isVi?'Đúng':'True'}</button><button class="tf-btn" onclick="ansTF('bc',${i},false,this)">${isVi?'Sai':'False'}</button></div><div class="tf-exp" id="te-bc-${i}">${exp}</div>`;
+    el.appendChild(div);
+  });
+}
+
+// ── MATCHING: 3 BUNDLE TYPES (Slide 18) ──────────────────
+const matchBundlesData={
+  lefts_vi:['Merchant bán skincare combo: sữa rửa mặt + toner + serum, mua cả 3 được giảm','Merchant muốn tạo 1 SP "Gaming Bundle" hiện như 1 sản phẩm trên store','Khách muốn 1 click add 3 SP vào cart với discount, không cần tạo SP mới','Merchant bán laptop + chuột + túi, khách phải mua cả 3 mới được giảm','Merchant muốn Gift Set hiện như 1 sản phẩm duy nhất để marketing','Merchant muốn gộp 3 SP, khách bấm 1 nút là thêm vào cart, đơn giản nhất có thể'],
+  lefts_en:['Merchant sells skincare combo: cleanser + toner + serum, buy all 3 get discount','Merchant wants to create a "Gaming Bundle" product showing as 1 product on store','Customer wants 1 click to add 3 products to cart with discount, no new product needed','Merchant sells laptop + mouse + bag, customer must buy all 3 to get discount','Merchant wants Gift Set to show as 1 single product for marketing','Merchant wants to combine 3 products, customer clicks 1 button to add to cart, simplest possible'],
+  rights_vi:['FBT','FBT','Product Bundle','Product Bundle','Single Bundle','Single Bundle'],
+  rights_en:['FBT','FBT','Product Bundle','Product Bundle','Single Bundle','Single Bundle'],
+  pairs:[0,2,4,1,3,5]
+};
+
+function buildMatchBundles(){
+  const el=document.getElementById('match-bundles');if(!el)return;
+  const isVi=document.body.classList.contains('lang-vi');
+  const lefts=isVi?matchBundlesData.lefts_vi:matchBundlesData.lefts_en;
+  const rights=isVi?matchBundlesData.rights_vi:matchBundlesData.rights_en;
+  const shuffledL=lefts.map((l,i)=>({text:l,origIdx:i})).sort(()=>Math.random()-.5);
+  const shuffledR=rights.map((r,i)=>({text:r,origIdx:i})).sort(()=>Math.random()-.5);
+  const lLabel=isVi?'Tình huống':'Scenario';
+  const rLabel=isVi?'Loại Bundle':'Bundle Type';
+  el.innerHTML=`<div class="match-col"><div class="match-col-label">${lLabel}</div>${shuffledL.map((l,i)=>`<div class="match-item" id="ml-bundles-${i}" data-orig="${l.origIdx}" onclick="selectMatch('bundles','l',${i})">${l.text}</div>`).join('')}</div><div class="match-col"><div class="match-col-label">${rLabel}</div>${shuffledR.map((r,i)=>`<div class="match-item" id="mr-bundles-${i}" data-orig="${r.origIdx}" onclick="selectMatch('bundles','r',${i})">${r.text}</div>`).join('')}</div>`;
+  matchDone['bundles']={l:{},r:{}};
+  matchSel['bundles']={};
+}
+
+const matchSel={};
+const matchDone={};
+function selectMatch(key,side,i){
+  if(!matchSel[key])matchSel[key]={};
+  if(!matchDone[key])matchDone[key]={l:{},r:{}};
+  if(matchDone[key][side][i])return;
+  const prev=matchSel[key][side];
+  if(prev!==undefined){document.getElementById(`m${side}-${key}-${prev}`).classList.remove('selected')}
+  if(prev===i){delete matchSel[key][side];return}
+  matchSel[key][side]=i;
+  document.getElementById(`m${side}-${key}-${i}`).classList.add('selected');
+  if(matchSel[key].l!==undefined&&matchSel[key].r!==undefined){
+    const li=matchSel[key].l,ri=matchSel[key].r;
+    const lEl=document.getElementById(`ml-${key}-${li}`);
+    const rEl=document.getElementById(`mr-${key}-${ri}`);
+    lEl.classList.remove('selected');rEl.classList.remove('selected');
+    lEl.style.opacity='.5';lEl.style.pointerEvents='none';
+    rEl.style.opacity='.5';rEl.style.pointerEvents='none';
+    const pairNum=Object.keys(matchDone[key].l).length+1;
+    const badge='<span style="display:inline-block;background:var(--blue);color:white;border-radius:50%;width:18px;height:18px;font-size:10px;font-weight:700;line-height:18px;text-align:center;margin-right:6px;flex-shrink:0">'+pairNum+'</span>';
+    lEl.insertAdjacentHTML('afterbegin',badge);rEl.insertAdjacentHTML('afterbegin',badge);
+    lEl.style.opacity='1';rEl.style.opacity='1';
+    matchDone[key].l[li]=ri;matchDone[key].r[ri]=li;
+    delete matchSel[key].l;delete matchSel[key].r;
+  }
+}
+function checkMatch(key){
+  const isVi=document.body.classList.contains('lang-vi');
+  const done=matchDone[key]||{l:{}};
+  const totalLeft=key==='bundles'?matchBundlesData.lefts_vi.length:0;
+  let ok=0;
+  Object.keys(done.l).forEach(li=>{
+    const ri=done.l[li];
+    const lEl=document.getElementById(`ml-${key}-${li}`);
+    const rEl=document.getElementById(`mr-${key}-${ri}`);
+    const lOrig=parseInt(lEl.dataset.orig);
+    const rOrig=parseInt(rEl.dataset.orig);
+    const correct=matchBundlesData.pairs[lOrig]===rOrig;
+    lEl.style.opacity='1';lEl.style.pointerEvents='auto';
+    rEl.style.opacity='1';rEl.style.pointerEvents='auto';
+    lEl.classList.add(correct?'matched-ok':'matched-bad');
+    rEl.classList.add(correct?'matched-ok':'matched-bad');
+    if(correct)ok++;
+  });
+  const fb=document.getElementById(`match-${key}-fb`);
+  const total=totalLeft;
+  if(fb){
+    fb.textContent=ok===total?(isVi?`Hoàn hảo! ${ok}/${total}`:`Perfect! ${ok}/${total}`):`${ok}/${total} ${isVi?'đúng':'correct'}`;
+    fb.style.color=ok===total?'var(--green)':'var(--amber)';
+  }
+}
+
+// ── SPINWHEEL (Slide 35) ─────────────────────────────────
+const spinQs=[
+  {q_vi:'FBT yêu cầu khách mua mấy sản phẩm để được discount?',q_en:'How many products must a customer buy for FBT discount?',a_vi:'Tất cả sản phẩm trong bundle group.',a_en:'All products in the bundle group.'},
+  {q_vi:'Product Bundle có giới hạn gì của Shopify?',q_en:'What Shopify limitation does Product Bundle have?',a_vi:'100 variants và 3 options mỗi sản phẩm.',a_en:'100 variants and 3 options per product.'},
+  {q_vi:'Checkout page upsell yêu cầu Shopify plan nào?',q_en:'What Shopify plan does checkout page upsell require?',a_vi:'Shopify Plus only!',a_en:'Shopify Plus only!'},
+  {q_vi:'Countdown timer hết giờ — discount còn work không?',q_en:'Countdown timer ends — does discount still work?',a_vi:'Có! Widget ẩn nhưng discount vẫn hoạt động.',a_en:'Yes! Widget hides but discount still works.'},
+  {q_vi:'Auto Translate có tự động dịch ngôn ngữ mặc định không?',q_en:'Does Auto Translate handle the default language?',a_vi:'Không! Ngôn ngữ mặc định phải merchant tự dịch.',a_en:'No! Default language must be translated by merchant.'},
+  {q_vi:'Single Bundle có tạo sản phẩm mới trong Shopify không?',q_en:'Does Single Bundle create a new product in Shopify?',a_vi:'Không! Đơn giản nhất, không tạo SP mới.',a_en:'No! Simplest bundle type, doesn\'t create new product.'},
+  {q_vi:'Banner Widget liên kết với gì?',q_en:'What is Banner Widget linked to?',a_vi:'Liên kết với campaign cụ thể.',a_en:'Linked to a specific campaign.'},
+  {q_vi:'Checkout Upsell logic: khi tất cả rules đều đạt thì sao?',q_en:'Checkout Upsell logic: when all rules are met, what happens?',a_vi:'Không gợi ý gì nữa.',a_en:'No more suggestions.'},
+  {q_vi:'3 trang nào có thể hiển thị Checkout Upsell?',q_en:'Which 3 pages can display Checkout Upsell?',a_vi:'Checkout page (Plus only), Thank You page, Order Status page.',a_en:'Checkout page (Plus only), Thank You page, Order Status page.'},
+  {q_vi:'FBT có mấy loại discount?',q_en:'How many discount types does FBT have?',a_vi:'3 loại: % off, $ off, Fixed price.',a_en:'3 types: % off, $ off, Fixed price.'}
+];
+const colors=['#0953D3','#0E9E89','#7C3AED','#D97706','#E11D48','#059669','#0953D3','#0E9E89','#7C3AED','#D97706'];
+const canvas=document.getElementById('spin-canvas');
+const ctx=canvas.getContext('2d');
+let spinAngle=0;let spinVel=0;let spinning=false;let currentQ=0;
+
+function drawWheel(angle){
+  const cx=130,cy=130,r=118;
+  ctx.clearRect(0,0,260,260);
+  spinQs.forEach((_,i)=>{
+    const a1=angle+i*(2*Math.PI/spinQs.length);
+    const a2=a1+(2*Math.PI/spinQs.length);
+    ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,r,a1,a2);ctx.closePath();
+    ctx.fillStyle=colors[i%colors.length];ctx.fill();
+    ctx.strokeStyle='white';ctx.lineWidth=2;ctx.stroke();
+    ctx.save();ctx.translate(cx,cy);ctx.rotate(a1+(2*Math.PI/spinQs.length)/2);
+    ctx.textAlign='right';ctx.fillStyle='white';ctx.font='bold 10px Inter';
+    ctx.fillText((i+1).toString(),r-8,4);ctx.restore();
+  });
+  ctx.beginPath();ctx.arc(cx,cy,16,0,2*Math.PI);ctx.fillStyle='white';ctx.fill();
+  ctx.fillStyle=colors[0];ctx.font='bold 12px Inter';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('P',cx,cy);
+  ctx.beginPath();ctx.moveTo(cx+r+8,cy);ctx.lineTo(cx+r-2,cy-8);ctx.lineTo(cx+r-2,cy+8);ctx.closePath();
+  ctx.fillStyle='#111827';ctx.fill();
+}
+
+function spinWheel(){
+  if(spinning)return;
+  spinning=true;
+  const isVi=document.body.classList.contains('lang-vi');
+  document.getElementById('spin-reveal').style.display='none';
+  document.getElementById('spin-answer').classList.remove('show');
+  document.getElementById('spin-answer').textContent='';
+  document.getElementById('spin-question').textContent=isVi?'Đang quay...':'Spinning...';
+  spinVel=0.25+Math.random()*0.2;
+  function anim(){
+    spinAngle+=spinVel;spinVel*=0.985;
+    drawWheel(spinAngle);
+    if(spinVel>0.003){requestAnimationFrame(anim)}
+    else{
+      spinning=false;
+      const norm=((spinAngle%(2*Math.PI))+2*Math.PI)%(2*Math.PI);
+      const idx=Math.floor(((2*Math.PI-norm)%(2*Math.PI))/(2*Math.PI/spinQs.length))%spinQs.length;
+      currentQ=idx;
+      document.getElementById('spin-question').textContent=isVi?spinQs[idx].q_vi:spinQs[idx].q_en;
+      document.getElementById('spin-reveal').style.display='inline-block';
+    }
+  }
+  requestAnimationFrame(anim);
+}
+function revealSpin(){
+  const isVi=document.body.classList.contains('lang-vi');
+  const a=document.getElementById('spin-answer');
+  a.textContent=isVi?spinQs[currentQ].a_vi:spinQs[currentQ].a_en;
+  a.classList.add('show');
+  document.getElementById('spin-reveal').style.display='none';
+}
+drawWheel(0);
+
+// ── REBUILD ALL (on language toggle) ─────────────────────
+function rebuildAll(){
+  // Reset quiz/TF answer tracking
+  Object.keys(quizAns).forEach(k=>delete quizAns[k]);
+  Object.keys(tfAns).forEach(k=>delete tfAns[k]);
+  Object.keys(vs).forEach(k=>delete vs[k]);
+  buildVoting();
+  buildQuizFbt();
+  buildQuizCu();
+  buildTfPb();
+  buildTfBc();
+  buildMatchBundles();
+}
+
+// ── INITIAL BUILD ────────────────────────────────────────
+buildVoting();
+buildQuizFbt();
+buildQuizCu();
+buildTfPb();
+buildTfBc();
+buildMatchBundles();
+upUI();
+</script>
+</body>
+</html>
