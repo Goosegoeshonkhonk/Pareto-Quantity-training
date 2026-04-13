@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>P: Final Assessment · Part 5</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--blue:#0953D3;--blue-l:#EEF4FF;--blue-m:#B3CEFF;--teal:#0E9E89;--teal-l:#E8FAF7;--teal-m:#7FD9CE;--grad:linear-gradient(150deg,#0953D3 8%,#8BDCCB 100%);--ink:#111827;--ink2:#374151;--ink3:#6B7280;--ink4:#9CA3AF;--bg:#F9FAFB;--white:#fff;--line:#E5E7EB;--line2:#D1D5DB;--amber:#D97706;--amber-l:#FFFBEB;--amber-m:#FDE68A;--rose:#E11D48;--rose-l:#FFF1F2;--rose-m:#FECDD3;--green:#059669;--green-l:#ECFDF5;--green-m:#A7F3D0;--r:10px;--rlg:14px;--sh:0 1px 3px rgba(0,0,0,.07);--shmd:0 4px 12px rgba(0,0,0,.08)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);overflow:hidden;-webkit-font-smoothing:antialiased;font-size:15px}
+body.lang-vi .lang-en{display:none}body.lang-en .lang-vi{display:none}
+#topbar{position:fixed;top:0;left:0;right:0;z-index:300;height:50px;background:var(--white);border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 16px;gap:12px}
+.tb-logo{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.tb-logo .lp{width:28px;height:28px;border-radius:7px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:white}
+.tb-logo .ln{font-size:13px;font-weight:700;color:var(--blue);white-space:nowrap}
+.tb-sep{width:1px;height:16px;background:var(--line2);flex-shrink:0}
+#tb-mod{font-size:12px;color:var(--ink3);font-weight:500;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#tb-num{font-size:12px;color:var(--ink4);font-weight:600;flex-shrink:0}
+#tb-score{font-size:12px;font-weight:700;color:var(--blue);background:var(--blue-l);padding:3px 10px;border-radius:20px;border:1px solid var(--blue-m)}
+#menu-btn{flex-shrink:0;width:32px;height:32px;border-radius:8px;border:1px solid var(--line);background:var(--white);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--ink3)}
+#prog{position:fixed;top:86px;left:0;right:0;height:2px;background:var(--line);z-index:299}
+#pf{height:100%;background:var(--grad);transition:width .3s}
+#day-nav{position:fixed;top:50px;left:0;right:0;z-index:298;height:36px;background:var(--bg);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:center;gap:8px;padding:0 16px}
+.day-pill{padding:4px 16px;border-radius:20px;font-size:12px;font-weight:600;color:var(--ink3);text-decoration:none;border:1px solid var(--line2);background:var(--white)}
+.day-pill.active{background:var(--blue);color:white;border-color:var(--blue)}
+#sidebar{position:fixed;top:86px;left:0;bottom:0;width:240px;background:var(--white);border-right:1px solid var(--line);overflow-y:auto;z-index:200;padding:10px 0;transform:translateX(-100%);transition:transform .25s}
+#sidebar.open{transform:translateX(0)}
+.sb-sec{padding:10px 14px 3px;font-size:10px;font-weight:700;color:var(--ink4);letter-spacing:.08em;text-transform:uppercase}
+.sb-item{padding:7px 14px;font-size:13px;color:var(--ink2);cursor:pointer;border-left:2px solid transparent;display:flex;align-items:center;gap:6px}
+.sb-item:hover{background:var(--bg)}
+.sb-item.cur{color:var(--blue);border-left-color:var(--blue);background:var(--blue-l);font-weight:500}
+.sb-mark{font-size:12px;margin-left:auto;font-weight:700}
+.sb-mark.ok{color:var(--green)}.sb-mark.bad{color:var(--rose)}
+#deck{position:fixed;top:86px;left:0;right:0;bottom:56px;overflow:hidden}
+.slide{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:20px 28px;opacity:0;pointer-events:none;transform:translateX(32px);transition:opacity .28s,transform .28s}
+.slide.active{opacity:1;pointer-events:all;transform:translateX(0)}
+.slide.out-l{transform:translateX(-32px);opacity:0}
+.sc{width:100%;max-width:900px;max-height:calc(100vh - 150px);overflow-y:auto}
+.ey{font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--blue);margin-bottom:10px}
+h1{font-size:clamp(22px,3vw,40px);font-weight:800;line-height:1.12}
+h2{font-size:clamp(17px,2.3vw,28px);font-weight:700;line-height:1.2}
+h3{font-size:15px;font-weight:600;margin-bottom:7px}
+p{font-size:14px;line-height:1.65;color:var(--ink2)}
+.lead{font-size:16px;color:var(--ink2);line-height:1.6}
+strong{font-weight:600;color:var(--ink)}
+.g{display:grid;gap:12px;margin-top:14px}.g3{grid-template-columns:repeat(3,1fr)}
+.card{background:var(--white);border:1px solid var(--line);border-radius:var(--rlg);padding:14px 16px;box-shadow:var(--sh)}
+.card.blue{border-color:var(--blue-m);background:var(--blue-l)}
+.card.teal{border-color:var(--teal-m);background:var(--teal-l)}
+.card.amber{border-color:var(--amber-m);background:var(--amber-l)}
+.callout{border-radius:var(--r);padding:10px 14px;display:flex;gap:8px;font-size:13px;line-height:1.55;margin-top:10px}
+.callout.info{background:var(--blue-l);border:1px solid var(--blue-m);color:#1e3a8a}
+.callout.warn{background:var(--amber-l);border:1px solid var(--amber-m);color:#78350f}
+.tag{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600}
+.tag.ink{background:var(--bg);color:var(--ink3);border:1px solid var(--line2)}
+.q-ticket{background:var(--white);border:1px solid var(--line);border-radius:var(--rlg);padding:16px;box-shadow:var(--sh)}
+.q-meta{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;font-size:11px;color:var(--ink4);align-items:center}
+.q-msg{font-family:ui-monospace,monospace;font-size:12.5px;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:12px;color:var(--ink2);line-height:1.65;margin-bottom:12px;white-space:pre-wrap}
+.q-prompt{font-size:14px;font-weight:600;margin-bottom:10px;line-height:1.4}
+.q-opts{display:flex;flex-direction:column;gap:8px}
+.q-opt{display:flex;align-items:flex-start;gap:10px;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px 14px;font-size:13px;cursor:pointer;line-height:1.5;transition:all .15s}
+.q-opt:hover{border-color:var(--blue);background:var(--blue-l)}
+.q-opt .q-key{width:24px;height:24px;border-radius:50%;border:1.5px solid var(--line2);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;color:var(--ink3);margin-top:1px}
+.q-opt.correct{border-color:var(--green-m);background:var(--green-l);color:var(--green)}
+.q-opt.correct .q-key{border-color:var(--green);color:var(--green)}
+.q-opt.wrong{border-color:var(--rose-m);background:var(--rose-l);color:var(--rose)}
+.q-opt.wrong .q-key{border-color:var(--rose);color:var(--rose)}
+.q-fb{margin-top:10px;font-size:12.5px;font-weight:500;display:none;padding:10px 12px;border-radius:8px;line-height:1.6}
+.q-fb.show{display:block}
+.q-fb.ok{background:var(--green-l);border:1px solid var(--green-m);color:var(--green)}
+.q-fb.no{background:var(--rose-l);border:1px solid var(--rose-m);color:var(--rose)}
+.difficulty{display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--line2);margin-right:2px}
+.difficulty.on{background:var(--amber)}
+.score-big{font-size:clamp(56px,12vw,96px);font-weight:800;line-height:1;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;display:block}
+.score-out{font-size:22px;color:var(--ink3);font-weight:600}
+.score-bar-wrap{background:var(--line);border-radius:12px;height:18px;overflow:hidden;margin:16px auto;max-width:520px}
+.score-bar{height:100%;background:var(--grad);transition:width .6s;border-radius:12px}
+.review-item{background:var(--white);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:13px;margin-bottom:8px;display:flex;gap:10px}
+.review-item.wrong-item{border-color:var(--rose-m);background:var(--rose-l)}
+.review-badge{flex-shrink:0;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;background:var(--rose);color:white}
+.exit-ticket{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
+.et-card{background:var(--white);border:1px solid var(--line);border-radius:var(--rlg);padding:14px;box-shadow:var(--sh)}
+.et-icon{font-size:20px;margin-bottom:5px}
+.et-label{font-size:11px;font-weight:700;color:var(--ink3);display:block;margin-bottom:7px;text-transform:uppercase}
+.et-card textarea{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:7px;color:var(--ink);font-family:inherit;font-size:12px;padding:8px 10px;resize:none;min-height:65px;outline:none}
+.bbtn{padding:8px 16px;border-radius:7px;font-size:12px;font-weight:600;border:1px solid var(--line);background:var(--white);cursor:pointer;color:var(--ink2);font-family:inherit}
+.bbtn.primary{background:var(--blue);color:white;border-color:var(--blue)}
+#botnav{position:fixed;bottom:0;left:0;right:0;height:56px;background:var(--white);border-top:1px solid var(--line);display:flex;align-items:center;justify-content:center;gap:12px;z-index:300}
+.nav-btn{width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:var(--white);color:var(--ink2);font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.nav-btn:disabled{opacity:.3;cursor:not-allowed}
+.dots-row{display:flex;gap:4px}.dot{width:4px;height:4px;border-radius:50%;background:var(--line2);cursor:pointer}
+.dot.active{background:var(--blue);width:14px;border-radius:3px}
+@media(max-width:600px){.g3,.exit-ticket{grid-template-columns:1fr}#tb-num{display:none}.tb-logo .ln{display:none}}
+</style>
+</head>
+<body class="lang-vi">
+
+<div id="topbar">
+  <button id="menu-btn" onclick="toggleSB()">&#9776;</button>
+  <div class="tb-sep"></div>
+  <div class="tb-logo"><div class="lp">P</div><span class="ln">Final Assessment</span></div>
+  <div class="tb-sep"></div>
+  <span id="tb-mod"></span>
+  <span id="tb-score">0 / 14</span>
+  <button id="lang-toggle" onclick="toggleLang()" style="padding:3px 10px;border-radius:14px;border:1px solid var(--line2);background:var(--white);font-size:11px;font-weight:700;color:var(--ink3);cursor:pointer;font-family:inherit"><span id="lang-label">EN</span></button>
+  <span id="tb-num">1 / 18</span>
+</div>
+<div id="prog"><div id="pf"></div></div>
+
+<div id="day-nav">
+  <a href="pareto_training_day1_v4.html" class="day-pill">Part 1</a>
+  <a href="pareto_training_day2.html" class="day-pill">Part 2</a>
+  <a href="pareto_training_day3.html" class="day-pill">Part 3</a>
+  <a href="pareto_training_day4.html" class="day-pill">Part 4</a>
+  <a href="pareto_training_day5.html" class="day-pill active">Part 5</a>
+</div>
+
+<div id="sidebar"></div>
+
+<div id="deck">
+
+<div class="slide active" data-mod-vi="Giới thiệu · Đánh giá" data-mod-en="Intro · Assessment">
+<div class="sc" style="text-align:center">
+  <div style="width:68px;height:68px;border-radius:16px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:800;color:white;margin:0 auto 18px">P</div>
+  <div class="ey" style="display:flex;align-items:center;justify-content:center;gap:6px;margin-bottom:12px">CS TRAINING · PART 5</div>
+  <h1 style="margin-bottom:14px"><span class="lang-vi">Bài đánh giá<br><span style="background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent">tổng hợp</span></span><span class="lang-en">Final<br><span style="background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent">Assessment</span></span></h1>
+  <p class="lead" style="max-width:600px;margin:0 auto 20px"><span class="lang-vi">14 ticket thực tế, <strong>không có module hint</strong>. Mỗi câu 1 điểm. Tự chấm điểm, có feedback ngay sau mỗi câu.</span><span class="lang-en">14 real tickets, <strong>no module hints</strong>. 1 point each. Auto-scored with instant feedback per question.</span></p>
+  <div class="callout warn" style="max-width:600px;margin:0 auto;text-align:left"><span>⚠️</span><div><span class="lang-vi"><strong>Luật:</strong> Mỗi câu chỉ chọn 1 lần, không đổi được. Điểm real-time ở topbar. Trang cuối hiển thị tổng điểm + gợi ý ôn lại.</span><span class="lang-en"><strong>Rules:</strong> One attempt per question, can't change. Live score in topbar. Final slide shows total + review list.</span></div></div>
+</div>
+</div>
+
+<div class="slide" data-mod-vi="Giới thiệu · Cách tiếp cận" data-mod-en="Intro · Approach">
+<div class="sc">
+  <div class="ey">Intro · <span class="lang-vi">Cách tiếp cận</span><span class="lang-en">Approach</span></div>
+  <h2><span class="lang-vi">3 bước cho mỗi ticket</span><span class="lang-en">3 steps per ticket</span></h2>
+  <div class="g g3">
+    <div class="card blue"><h3>① Classify</h3><p style="font-size:13px"><span class="lang-vi">Setup? Bug? Conflict? Billing? Dev escalate?</span><span class="lang-en">Setup? Bug? Conflict? Billing? Dev escalate?</span></p></div>
+    <div class="card teal"><h3>② Offer type?</h3><p style="font-size:13px">QB · OD · BXGY · Bundle · One Discount</p></div>
+    <div class="card amber"><h3>③ CS or Dev?</h3><p style="font-size:13px"><span class="lang-vi">Xem Escalation Matrix Part 4</span><span class="lang-en">See Part 4 Escalation Matrix</span></p></div>
+  </div>
+  <div class="callout info" style="margin-top:14px"><span>💡</span><div><span class="lang-vi">Chọn đáp án <strong>tốt nhất</strong>. Nếu ngập ngừng giữa 2 options, pick cái concrete và sát thực tế hơn.</span><span class="lang-en">Pick the <strong>best</strong> answer. Between 2 options, pick the more concrete, realistic one.</span></div></div>
+</div>
+</div>
+
+<div id="ticket-container"></div>
+
+<div class="slide" data-mod-vi="Kết quả cuối cùng" data-mod-en="Final Score">
+<div class="sc" style="text-align:center">
+  <div class="ey" style="display:flex;justify-content:center"><span class="lang-vi">Kết quả</span><span class="lang-en">Final Score</span></div>
+  <span class="score-big" id="final-score-num">0</span>
+  <div class="score-out">/ 14</div>
+  <div class="score-bar-wrap"><div class="score-bar" id="final-score-bar" style="width:0%"></div></div>
+  <h2 id="final-verdict" style="margin-top:10px"></h2>
+  <p class="lead" id="final-advice" style="max-width:560px;margin:10px auto 0"></p>
+  <div id="review-list" style="max-width:620px;margin:20px auto 0;text-align:left"></div>
+  <button class="bbtn" onclick="resetQuiz()" style="margin-top:18px"><span class="lang-vi">↻ Làm lại</span><span class="lang-en">↻ Retake</span></button>
+</div>
+</div>
+
+<div class="slide" data-mod-vi="Feedback" data-mod-en="Feedback">
+<div class="sc">
+  <div class="ey">Wrap-up · Feedback</div>
+  <h2><span class="lang-vi">Exit ticket</span><span class="lang-en">Exit ticket</span></h2>
+  <div class="exit-ticket">
+    <div class="et-card"><div class="et-icon">🎯</div><span class="et-label"><span class="lang-vi">Tự đánh giá</span><span class="lang-en">Self-reflection</span></span><textarea></textarea></div>
+    <div class="et-card"><div class="et-icon">🧩</div><span class="et-label"><span class="lang-vi">Câu khó nhất</span><span class="lang-en">Hardest question</span></span><textarea></textarea></div>
+    <div class="et-card"><div class="et-icon">📚</div><span class="et-label"><span class="lang-vi">Cần ôn lại</span><span class="lang-en">Need to review</span></span><textarea></textarea></div>
+  </div>
+</div>
+</div>
+
+<div class="slide" data-mod-vi="Tốt nghiệp" data-mod-en="Graduation">
+<div class="sc" style="text-align:center">
+  <div style="width:80px;height:80px;border-radius:20px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-size:38px;color:white;margin:0 auto 22px">🏆</div>
+  <h1 style="margin-bottom:14px"><span class="lang-vi">Training hoàn tất!</span><span class="lang-en">Training Complete!</span></h1>
+  <p class="lead" style="max-width:600px;margin:0 auto"><span class="lang-vi">Từ giờ mỗi ticket thực tế = 1 rep thêm vào pattern library. Chúc may mắn!</span><span class="lang-en">From now, every real ticket = 1 more rep in your pattern library. Good luck!</span></p>
+</div>
+</div>
+
+</div>
+
+<div id="botnav">
+  <button class="nav-btn" id="btn-prev" onclick="prev()">&larr;</button>
+  <div class="dots-row" id="dots-row"></div>
+  <button class="nav-btn" id="btn-next" onclick="next()">&rarr;</button>
+</div>
+
+<script>
+const tickets=[
+{d:1,m_vi:'"Em tạo offer, Active rồi, nhưng widget không hiện trên product page. App Embed bật rồi. Product trong scope rồi. Thiếu gì nữa?"',m_en:'"I created an offer, Active, but widget doesn\'t show on product page. App Embed is ON. Product is in scope. What\'s missing?"',p_vi:'Điều khả năng thiếu?',p_en:'What\'s most likely missing?',o_vi:['Bật App Embed','Add App Block vào product template trong theme editor','Upgrade Pro plan','Clear cache'],o_en:['Enable App Embed','Add App Block to product template in theme editor','Upgrade Pro plan','Clear cache'],c:1,e_vi:'App Embed chỉ enable script. Widget cần App Block add vào template: Theme editor → Product template → Add block → Pareto.',e_en:'App Embed only enables the script. Widget needs App Block in template: Theme editor → Product template → Add block → Pareto.'},
+{d:1,m_vi:'"Buy 3 = 10%, buy 5 = 20%. Cart: 3 áo + 2 quần = 5 items. Chỉ giảm 10%. Tại sao?"',m_en:'"Buy 3 = 10%, buy 5 = 20%. Cart: 3 shirts + 2 pants = 5 items. Only 10% off. Why?"',p_vi:'Sửa setting nào?',p_en:'Which setting to fix?',o_vi:['Upgrade Advanced','Set Quantity Conditions: "each product" → "all products"','Đổi Fixed price','Bật Multiples'],o_en:['Upgrade Advanced','Set Quantity Conditions: "each product" → "all products"','Switch to Fixed price','Enable Multiples'],c:1,e_vi:'"each product" đếm riêng: 3 áo = tier 1, 2 quần = no tier. Đổi "all products" → cộng 5 items = tier 2.',e_en:'"each product" counts separately: 3 shirts = tier 1, 2 pants = no tier. Switch to "all products" → sum 5 = tier 2.'},
+{d:1,m_vi:'"Buy 3 áo → tặng 1 mũ free. Khách mua 3 áo mà mũ không tự vào cart."',m_en:'"Buy 3 shirts → 1 free hat. Customer buys 3 shirts but hat doesn\'t auto-add."',p_vi:'Vì sao?',p_en:'Why?',o_vi:['App bug','Discount target = "Different product" với Free → khách phải click "Add gift" popup','Khách chưa login','Offer ở Draft'],o_en:['App bug','Discount target = "Different product" with Free → customer must click "Add gift" popup','Customer not logged in','Offer is Draft'],c:1,e_vi:'Different product + Free không tự add. Đây là hành vi đúng. Bật auto popup trong Display.',e_en:'Different product + Free does not auto-add. Correct behavior. Enable auto popup in Display.'},
+{d:1,m_vi:'"Countdown 00:00 nhưng discount vẫn apply ở checkout. Muốn offer thực sự hết."',m_en:'"Countdown 00:00 but discount still applies. Want offer to truly end."',p_vi:'Cách tắt discount?',p_en:'How to fully disable?',o_vi:['"Hide display only"','"Everything: same UI/UX"','"Hide & disable discount", hoặc set Schedule end date','Uninstall feature'],o_en:['"Hide display only"','"Everything: same UI/UX"','"Hide & disable discount", or set Schedule end date','Uninstall feature'],c:2,e_vi:'Default "Hide display only" chỉ ẩn widget. Chỉ "Hide & disable discount" tắt hẳn. Hoặc Schedule end date.',e_en:'Default "Hide display only" only hides widget. Only "Hide & disable discount" stops it. Or Schedule end date.'},
+{d:2,m_vi:'"Discount work ở product + cart, nhưng biến mất ở checkout. Có dùng Shopify code 10% khác."',m_en:'"Discount works on product + cart, disappears at checkout. Using another Shopify 10% code."',p_vi:'Nguyên nhân?',p_en:'Cause?',o_vi:['Shopify checkout hỏng','Pareto Manual method (không stack code) → switch Automatic','Browser block cookies','Theme cần update'],o_en:['Shopify checkout broken','Pareto on Manual (doesn\'t stack with code) → switch Automatic','Browser blocks cookies','Theme needs update'],c:1,e_vi:'Manual dùng draft order, không stack Shopify code. Chuyển Automatic. Check Shopify 5-discount limit.',e_en:'Manual uses draft order, doesn\'t stack with code. Switch Automatic. Check Shopify 5-discount limit.'},
+{d:2,m_vi:'"OD chi $100 Summer giảm 10%. Khách $50 Summer + $60 Winter, cả $110 được giảm. Chỉ muốn giảm Summer."',m_en:'"OD spend $100 Summer → 10%. Customer $50 Summer + $60 Winter, whole $110 discounted. Want only Summer."',p_vi:'Tư vấn?',p_en:'Advise?',o_vi:['Add Winter vào exclusions','Giảm threshold $50','Đổi OD sang QB hoặc BXGY (OD áp toàn cart theo design)','Update app'],o_en:['Add Winter to exclusions','Lower threshold to $50','Switch OD → QB or BXGY (OD applies to whole cart by design)','Update app'],c:2,e_vi:'OD luôn áp toàn cart. Exclusions chỉ loại trigger. Phải đổi offer type.',e_en:'OD always applies to entire cart. Exclusions only affect trigger. Must change offer type.'},
+{d:2,m_vi:'"Tôi muốn add 5 sản phẩm vào 1 bundle nhưng app chỉ cho chọn 3."',m_en:'"I want to add 5 products to 1 bundle but app only lets me pick 3."',p_vi:'Vì sao?',p_en:'Why?',o_vi:['Do Shopify limit variants','App giới hạn tối đa 3 products trong 1 bundle — tư vấn tách 2 bundles hoặc chọn lại tổ hợp','Upgrade plan để unlock thêm','Add từng product riêng'],o_en:['Shopify variant limit','App caps at 3 products per bundle — advise splitting into 2 bundles or revising the combo','Upgrade plan to unlock more','Add each product separately'],c:1,e_vi:'App có hard cap = 3 products per bundle. Không liên quan Shopify variant/option limits. Muốn thêm → tạo bundle thứ 2, hoặc rà lại 3 products nào quan trọng nhất.',e_en:'App has a hard cap of 3 products per bundle. Not related to Shopify variant/option limits. To add more → create a 2nd bundle, or narrow down to the 3 most important products.'},
+{d:2,m_vi:'"Khách có 1200+ offers, muốn set Display Name (Label trên widget) thành \'Bulk Buy Discount\' cho tất cả offers cùng type. Cách nhanh nhất?"',m_en:'"Customer has 1200+ offers, wants to set Display Name (widget Label) to \'Bulk Buy Discount\' for all offers of the same type. Fastest way?"',p_vi:'Cách xử lý?',p_en:'Approach?',o_vi:['Edit thủ công Campaign Name của từng offer trong Rule settings (1200 lần)','Mở Display settings của 1 offer → sửa Label trong "Show campaign name" → click nút "Apply this display to all" trên cùng để propagate cho tất cả offers cùng type','Export CSV → find/replace Display Name → re-import','Dùng custom CSS override text "Not by bulk" thành "Bulk Buy Discount" trên frontend'],o_en:['Manually edit Campaign Name in Rule settings of each offer (1200 times)','Open Display settings of one offer → edit Label under "Show campaign name" → click the top-right "Apply this display to all" button to propagate to all offers of the same type','Export CSV → find/replace Display Name → re-import','Use custom CSS to override "Not by bulk" text with "Bulk Buy Discount" on the frontend'],c:1,e_vi:'App có built-in button "Apply this display to all" ở Display settings — propagate display config (bao gồm Label) cho tất cả offers cùng type chỉ với 1 click. Đây là feature chính chủ của app, nhanh hơn CSV. Lưu ý: chỉ apply cho offers CÙNG TYPE (Quantity Breaks sang Quantity Breaks; không cross type).',e_en:'App has a built-in "Apply this display to all" button in Display settings — propagates display config (including Label) to all offers of the same type in one click. This is the native feature, faster than CSV. Note: only applies to SAME-TYPE offers (QB→QB; not cross-type).'},
+{d:2,m_vi:'"Giới hạn gift 100 cái cho OD. Không thấy Max Quantity, chỉ có Max Discount value."',m_en:'"Cap gift at 100 for OD. No Max Quantity option, only Max Discount value."',p_vi:'Workaround?',p_en:'Workaround?',o_vi:['Upgrade plan','Manually disable khi đạt 100','Set Max Discount = (giá 1 gift × 100)','Dùng QB'],o_en:['Upgrade plan','Manually disable when reaching 100','Set Max Discount = (1 gift × 100)','Use QB'],c:2,e_vi:'OD Max Discount theo $ value. Tính (giá 1 gift × 100) → Max Discount. Nhắc update khi giá đổi.',e_en:'OD Max Discount by $ value. Compute (1 gift × 100) → Max Discount. Remind update if price changes.'},
+{d:3,m_vi:'"Store có 2 ngôn ngữ: English (default) và Dutch. Storefront dịch Dutch OK, nhưng English lại không dịch đúng — widget text hiện không chuẩn."',m_en:'"Store has 2 languages: English (default) and Dutch. Storefront translates Dutch fine, but English doesn\'t translate correctly — widget text is off."',p_vi:'Giải thích cho merchant?',p_en:'Explain to merchant?',o_vi:['App bug — escalate dev ngay','Auto Translate KHÔNG dịch ngôn ngữ default của store — merchant phải tự dịch text English trong Shopify Translate & Adapt (hoặc app\'s Custom text)','Yêu cầu khách đổi default language sang Dutch','Tắt Auto Translate, dùng custom CSS cho English'],o_en:['App bug — escalate dev immediately','Auto Translate does NOT translate the store\'s default language — merchant must manually localize English via Shopify Translate & Adapt (or app\'s Custom text)','Ask customer to change default language to Dutch','Disable Auto Translate, use custom CSS for English'],c:1,e_vi:'Auto Translate chỉ dịch non-default languages. Default language (English trong case này) được coi là "nguồn" — không có target để dịch. Merchant tự custom text cho English.',e_en:'Auto Translate only translates non-default languages. The default language (English here) is treated as the "source" — no target to translate to. Merchant must customize English text manually.'},
+{d:3,m_vi:'"Default GBP. Discount work GBP. Khách switch USD → không apply. Tắt app → USD checkout OK nhưng mất discount."',m_en:'"Default GBP. Works GBP. Customer USD → no discount. Disable app → USD OK but no discount."',p_vi:'Classify + action?',p_en:'Classify + action?',o_vi:['Pareto bug — escalate dev','Customer error','Multi-currency/Markets conflict — check Apply to countries + Markets bespoke prices, escalate dev full context','Nói USD không support'],o_en:['Pareto bug — escalate dev','Customer error','Multi-currency/Markets conflict — check Apply to countries + Markets bespoke prices, escalate dev with full context','Tell USD not supported'],c:2,e_vi:'App tính discount trên Shopify catalog base, có thể không match market override. Collect full context → dev.',e_en:'App calcs discount on Shopify catalog base, may not match market override. Collect full context → dev.'},
+{d:3,m_vi:'"Khách set OD: \'spend €250 giảm 2%\'. Ở cart page khách thấy notification \'Buy X€ more to get 2% off\'. Khách muốn ẨN notification này cho offer này thôi, các offer khác vẫn giữ."',m_en:'"Customer set OD: \'spend €250 get 2% off\'. In cart they see \'Buy X€ more to get 2% off\' notification. Customer wants to HIDE this notification for THIS offer only, keep others."',p_vi:'Cách xử lý?',p_en:'How to handle?',o_vi:['Tắt toàn bộ cart widget của app (sẽ ảnh hưởng tất cả offers)','Vào Display settings của offer đó → Cart page notifications → tắt "Buy more notification" chỉ cho offer này','Dùng custom CSS ẩn notification bằng class name','Không hỗ trợ per-offer — escalate dev'],o_en:['Disable entire app cart widget (affects all offers)','Go to that offer\'s Display settings → Cart page notifications → turn off "Buy more notification" for this offer only','Use custom CSS to hide notification via class name','Not supported per-offer — escalate dev'],c:1,e_vi:'Display settings là per-offer. "Buy more notification" có thể tắt riêng cho từng offer mà không ảnh hưởng offers khác. Không cần CSS hay escalate dev.',e_en:'Display settings are per-offer. "Buy more notification" can be disabled for individual offers without affecting others. No CSS or dev escalation needed.'},
+{d:3,m_vi:'"Merchant vừa đổi price của 1 product từ $10 → $8 trên Shopify. Nhưng widget trên storefront vẫn hiện discount tính trên $10 (giá cũ). Cache hay gì?"',m_en:'"Merchant just changed a product price from $10 → $8 on Shopify. But the widget on storefront still shows discount calculated on $10 (old price). Cache issue?"',p_vi:'Fix?',p_en:'Fix?',o_vi:['Bảo khách đợi 24h cho Shopify CDN refresh','Vào App Configurations → click nút Product Data Sync để force sync data mới từ Shopify','Reinstall app','Xóa offer rồi tạo lại'],o_en:['Tell customer to wait 24h for Shopify CDN refresh','Go to App Configurations → click Product Data Sync button to force-sync latest data from Shopify','Reinstall the app','Delete offer and recreate'],c:1,e_vi:'App cache product data. Khi merchant đổi info trên Shopify, đôi khi không sync ngay → widget hiện giá cũ. Product Data Sync trong App Configurations force-sync lập tức, không cần đợi hoặc reinstall.',e_en:'App caches product data. When merchant changes info on Shopify, it may not sync instantly → widget shows old price. Product Data Sync in App Configurations force-syncs immediately, no wait or reinstall needed.'},
+{d:3,m_vi:'"Merchant muốn: Buy 1 giá gốc, Buy 2 = $20, Buy 3 = $20 + giá gốc (1 lẻ), Buy 4 = $40, Buy 5 = $40 + giá gốc, ... pattern tiếp tục tới Buy 20. Dùng offer type nào và setup sao?"',m_en:'"Merchant wants: Buy 1 normal price, Buy 2 = $20, Buy 3 = $20 + normal (1 extra), Buy 4 = $40, Buy 5 = $40 + normal, ... pattern continues up to Buy 20. Which offer type + setup?"',p_vi:'Config đúng nhất?',p_en:'Best config?',o_vi:['BXGY với Discount target = "Different product"','Order Discount với multiples','Quantity Breaks: Buy from = 2, Discount type = Fixed price = $20, bật Multiples of buy from → mỗi 2 items trong cart = $20, cứ thế stack lên tới 20','Không làm được với app, escalate dev'],o_en:['BXGY with Discount target = "Different product"','Order Discount with multiples','Quantity Breaks: Buy from = 2, Discount type = Fixed price = $20, enable Multiples of buy from → every 2 items in cart = $20, stacks up to 20','Not possible, escalate dev'],c:2,e_vi:'Pattern: mỗi cặp 2 items = $20 fixed, lẻ 1 → giá gốc. QB Fixed price $20 + Multiples of buy from (=2) stack: Buy 2→$20, Buy 4→$40 (2 cặp), Buy 6→$60 (3 cặp)... Buy 20→$200 (10 cặp). Số lẻ (1,3,5...) → phần lẻ tính giá gốc, phần chẵn áp tier.',e_en:'Pattern: every pair of 2 = $20 fixed, odd ones → normal price. QB Fixed price $20 + Multiples of buy from (=2) stacks: Buy 2→$20, Buy 4→$40, Buy 6→$60... Buy 20→$200. Odd counts (1,3,5...) → extra at normal price, pairs get the tier.'}
+];
+
+const container=document.getElementById('ticket-container');
+tickets.forEach((t,i)=>{
+  const idx=i+1;
+  const s=document.createElement('div');
+  s.className='slide';
+  s.dataset.modVi='Ticket '+idx+' / 14';s.dataset.modEn='Ticket '+idx+' / 14';
+  s.innerHTML='<div class="sc"><div class="q-ticket"><div class="q-meta"><span class="tag ink">#'+String(idx).padStart(2,'0')+'</span><span>'+'<span class="difficulty on"></span>'.repeat(t.d)+'<span class="difficulty"></span>'.repeat(3-t.d)+'</span><span style="margin-left:auto;font-weight:700;color:var(--ink3)">'+idx+' / 14</span></div><div class="q-msg"><span class="lang-vi">'+t.m_vi+'</span><span class="lang-en">'+t.m_en+'</span></div><div class="q-prompt"><span class="lang-vi">'+t.p_vi+'</span><span class="lang-en">'+t.p_en+'</span></div><div class="q-opts" id="qo-'+idx+'">'+t.o_vi.map((_,oi)=>'<div class="q-opt" onclick="answer('+idx+','+oi+',this)"><span class="q-key">'+String.fromCharCode(65+oi)+'</span><span><span class="lang-vi">'+t.o_vi[oi]+'</span><span class="lang-en">'+t.o_en[oi]+'</span></span></div>').join('')+'</div><div class="q-fb" id="qf-'+idx+'"></div></div></div>';
+  container.appendChild(s);
+});
+
+const finalSlide=document.querySelector('[data-mod-en="Final Score"]');
+const feedbackSlide=document.querySelector('[data-mod-en="Feedback"]');
+const gradSlide=document.querySelector('[data-mod-en="Graduation"]');
+const deck=document.getElementById('deck');
+deck.appendChild(finalSlide);deck.appendChild(feedbackSlide);deck.appendChild(gradSlide);
+
+const sb=document.getElementById('sidebar');
+let sbH='<div class="sb-sec">Intro</div><div class="sb-item" onclick="go(0)">01 · <span class="lang-vi">Trang bìa</span><span class="lang-en">Title</span></div><div class="sb-item" onclick="go(1)">02 · <span class="lang-vi">Cách tiếp cận</span><span class="lang-en">Approach</span></div><div class="sb-sec">Easy ⦿⦾⦾</div>';
+tickets.forEach((t,i)=>{
+  if(i===4)sbH+='<div class="sb-sec">Medium ⦿⦿⦾</div>';
+  if(i===9)sbH+='<div class="sb-sec">Hard ⦿⦿⦿</div>';
+  sbH+='<div class="sb-item" onclick="go('+(i+2)+')">'+String(i+3).padStart(2,'0')+' · Ticket '+(i+1)+'<span class="sb-mark" id="sm-'+(i+1)+'"></span></div>';
+});
+sbH+='<div class="sb-sec">Result</div><div class="sb-item" onclick="go('+(tickets.length+2)+')">'+(tickets.length+3)+' · <span class="lang-vi">Điểm</span><span class="lang-en">Score</span></div><div class="sb-item" onclick="go('+(tickets.length+3)+')">'+(tickets.length+4)+' · Feedback</div><div class="sb-item" onclick="go('+(tickets.length+4)+')">'+(tickets.length+5)+' · <span class="lang-vi">Tốt nghiệp</span><span class="lang-en">Graduation</span></div>';
+sb.innerHTML=sbH;
+
+const slides=document.querySelectorAll('.slide');
+const TOTAL=slides.length;
+let cur=0;
+const answers={};
+
+function L(){return document.body.classList.contains('lang-vi')?'vi':'en'}
+function toggleLang(){
+  const isVi=document.body.classList.contains('lang-vi');
+  document.body.classList.toggle('lang-vi',!isVi);
+  document.body.classList.toggle('lang-en',isVi);
+  document.getElementById('lang-label').textContent=isVi?'VI':'EN';
+  try{localStorage.setItem('pareto_training_lang',isVi?'en':'vi')}catch(e){}
+  upUI();renderFinalScore();
+}
+try{const saved=localStorage.getItem('pareto_training_lang');if(saved==='en'){document.body.classList.remove('lang-vi');document.body.classList.add('lang-en');document.getElementById('lang-label').textContent='VI'}}catch(e){}
+
+function go(i){if(i<0||i>=TOTAL||i===cur)return;slides[cur].classList.remove('active');if(i>cur)slides[cur].classList.add('out-l');setTimeout(()=>slides[cur].classList.remove('out-l'),280);cur=i;slides[cur].classList.add('active');slides[cur].querySelector('.sc').scrollTop=0;upUI();if(cur===tickets.length+2)renderFinalScore()}
+function next(){go(cur+1)}
+function prev(){go(cur-1)}
+function toggleSB(){document.getElementById('sidebar').classList.toggle('open')}
+function upUI(){
+  document.getElementById('pf').style.width=((cur+1)/TOTAL*100)+'%';
+  document.getElementById('tb-num').textContent=(cur+1)+' / '+TOTAL;
+  var mv=slides[cur].dataset.modVi||'';var me=slides[cur].dataset.modEn||'';
+  document.getElementById('tb-mod').innerHTML='<span class="lang-vi">'+mv+'</span><span class="lang-en">'+me+'</span>';
+  document.getElementById('btn-prev').disabled=cur===0;
+  document.getElementById('btn-next').disabled=cur===TOTAL-1;
+  document.querySelectorAll('.dot').forEach((d,i)=>d.classList.toggle('active',i===cur));
+  document.querySelectorAll('.sb-item').forEach((s,i)=>s.classList.toggle('cur',i===cur));
+  const correct=Object.values(answers).filter(v=>v==='correct').length;
+  document.getElementById('tb-score').textContent=correct+' / 14';
+}
+
+const dr=document.getElementById('dots-row');
+for(let i=0;i<TOTAL;i++){const d=document.createElement('div');d.className='dot'+(i===0?' active':'');d.onclick=()=>go(i);dr.appendChild(d)}
+document.addEventListener('keydown',e=>{if(e.target.tagName==='TEXTAREA'||e.target.tagName==='INPUT')return;if(e.key==='ArrowRight'||e.key==='ArrowDown')next();if(e.key==='ArrowLeft'||e.key==='ArrowUp')prev()});
+
+function answer(idx,oi,el){
+  if(answers[idx])return;
+  const t=tickets[idx-1];
+  const ok=oi===t.c;
+  answers[idx]=ok?'correct':'wrong';
+  el.classList.add(ok?'correct':'wrong');
+  if(!ok)document.querySelectorAll('#qo-'+idx+' .q-opt')[t.c].classList.add('correct');
+  document.querySelectorAll('#qo-'+idx+' .q-opt').forEach(o=>{o.style.cursor='default';o.onclick=null});
+  const lang=L();
+  const fb=document.getElementById('qf-'+idx);
+  fb.className='q-fb show '+(ok?'ok':'no');
+  fb.innerHTML=(ok?'✅ <strong>'+(lang==='vi'?'Đúng!':'Correct!')+'</strong> ':'❌ <strong>'+(lang==='vi'?'Sai. ':'Wrong. ')+'</strong>')+(lang==='vi'?t.e_vi:t.e_en);
+  const sm=document.getElementById('sm-'+idx);
+  if(sm){sm.className='sb-mark '+(ok?'ok':'bad');sm.textContent=ok?'✓':'✗'}
+  upUI();
+}
+
+function renderFinalScore(){
+  const correct=Object.values(answers).filter(v=>v==='correct').length;
+  const answered=Object.keys(answers).length;
+  const pct=Math.round(correct/14*100);
+  document.getElementById('final-score-num').textContent=correct;
+  document.getElementById('final-score-bar').style.width=pct+'%';
+  const lang=L();
+  let v,a;
+  if(answered<14){v=lang==='vi'?'⚠️ Chưa làm hết':'⚠️ Not all answered';a=(lang==='vi'?'Mới trả lời ':'Answered ')+answered+'/14. '+(lang==='vi'?'Quay lại làm cho đủ.':'Go back to finish.');}
+  else if(correct>=12){v=lang==='vi'?'🎉 Xuất sắc':'🎉 Excellent';a=lang==='vi'?'Master 80%+. Handle tickets độc lập.':'Mastered 80%+. Handle tickets independently.';}
+  else if(correct>=9){v=lang==='vi'?'👍 Tốt':'👍 Good';a=lang==='vi'?'Solid. Shadow senior 1 tuần trước khi go solo.':'Solid. Shadow senior 1 week before going solo.';}
+  else if(correct>=6){v=lang==='vi'?'📖 Trung bình':'📖 Average';a=lang==='vi'?'Review Part 1–4. Chú ý phân biệt offer types.':'Review Parts 1–4. Focus on offer type discrimination.';}
+  else{v=lang==='vi'?'⚠️ Chưa đủ':'⚠️ Not ready';a=lang==='vi'?'Học lại 4 parts. Chú ý Escalation Matrix + timer behaviors + OD entire-cart pitfall.':'Restart 4 parts. Focus Escalation Matrix + timer behaviors + OD entire-cart pitfall.';}
+  document.getElementById('final-verdict').textContent=v;
+  document.getElementById('final-advice').textContent=a;
+  const wrongs=[];for(let i=1;i<=14;i++)if(answers[i]==='wrong')wrongs.push(i);
+  const rl=document.getElementById('review-list');
+  if(wrongs.length===0&&answered===14){rl.innerHTML='<div class="callout info" style="margin:0"><span>🎯</span><div>'+(lang==='vi'?'Không có câu sai — hoàn hảo!':'No wrong answers — perfect!')+'</div></div>';}
+  else if(wrongs.length){rl.innerHTML='<h3 style="margin-bottom:10px">'+(lang==='vi'?'Câu cần review ('+wrongs.length+')':'Review these ('+wrongs.length+')')+'</h3>'+wrongs.map(idx=>{const t=tickets[idx-1];return '<div class="review-item wrong-item"><div class="review-badge">✗</div><div><strong>Ticket '+idx+':</strong> '+(lang==='vi'?t.p_vi:t.p_en)+'<br><span style="color:var(--ink3);font-size:12px">→ '+(lang==='vi'?t.e_vi:t.e_en)+'</span></div></div>';}).join('');}
+  else{rl.innerHTML='';}
+}
+
+function resetQuiz(){
+  if(!confirm(L()==='vi'?'Làm lại từ đầu?':'Retake from start?'))return;
+  Object.keys(answers).forEach(k=>delete answers[k]);
+  document.querySelectorAll('.q-opt').forEach(o=>{o.classList.remove('correct','wrong');o.style.cursor='pointer'});
+  document.querySelectorAll('.q-fb').forEach(f=>{f.className='q-fb';f.innerHTML=''});
+  document.querySelectorAll('.sb-mark').forEach(m=>{m.className='sb-mark';m.textContent=''});
+  tickets.forEach((t,i)=>{const idx=i+1;document.querySelectorAll('#qo-'+idx+' .q-opt').forEach((opt,oi)=>{opt.onclick=()=>answer(idx,oi,opt)});});
+  go(0);upUI();
+}
+
+upUI();
+</script>
+</body>
+</html>
