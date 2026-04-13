@@ -135,6 +135,14 @@ code{font-family:ui-monospace,monospace;font-size:12px;background:var(--bg);bord
 .bbtn:hover{border-color:var(--blue);color:var(--blue)}
 .bbtn.primary{background:var(--blue);color:white;border-color:var(--blue)}
 .bbtn.primary:hover{background:#0842b0}
+.match-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:12px}
+.match-col-label{font-size:11px;font-weight:700;color:var(--ink3);letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px}
+.match-item{background:var(--white);border:2px solid var(--line);border-radius:8px;padding:8px 12px;font-size:12.5px;font-weight:500;cursor:pointer;line-height:1.4;margin-bottom:6px}
+.match-item:hover{border-color:var(--blue)}
+.match-item.selected{border-color:var(--blue);background:var(--blue-l);color:var(--blue)}
+.match-item.ok{border-color:var(--green-m);background:var(--green-l);color:var(--green);cursor:default}
+.match-item.bad{border-color:var(--rose-m);background:var(--rose-l);color:var(--rose)}
+.match-pair-num{display:inline-block;background:var(--blue);color:white;border-radius:50%;width:18px;height:18px;font-size:10px;line-height:18px;text-align:center;margin-right:5px;font-weight:700}
 .dtree{background:var(--white);border:1px solid var(--line);border-radius:var(--rlg);padding:14px 16px;box-shadow:var(--sh);margin-top:10px}
 .dt-node{font-size:14px;font-weight:600;margin-bottom:10px;line-height:1.4}
 .dt-btns{display:flex;gap:8px;flex-wrap:wrap}
@@ -171,7 +179,7 @@ code{font-family:ui-monospace,monospace;font-size:12px;background:var(--bg);bord
   <div class="tb-sep"></div>
   <span id="tb-mod"></span>
   <button id="lang-toggle" onclick="toggleLang()" style="flex-shrink:0;padding:3px 10px;border-radius:14px;border:1px solid var(--line2);background:var(--white);font-size:11px;font-weight:700;color:var(--ink3);cursor:pointer;font-family:inherit"><span id="lang-label">EN</span></button>
-  <span id="tb-num">1 / 32</span>
+  <span id="tb-num">1 / 34</span>
 </div>
 <div id="prog"><div id="pf"></div></div>
 
@@ -189,41 +197,43 @@ code{font-family:ui-monospace,monospace;font-size:12px;background:var(--bg);bord
   <div class="sb-item" onclick="go(1)">02 · 5 Features Overview</div>
   <div class="sb-item" onclick="go(2)">03 · Show Discounted Price</div>
   <div class="sb-item" onclick="go(3)">04 · Banner + Popup</div>
-  <div class="sb-item" onclick="go(4)">05 · Collection Page + Auto Translate</div>
+  <div class="sb-item" onclick="go(4)">05 · Collection Page</div>
+  <div class="sb-item" onclick="go(5)">06 · ⚠️ Auto Translate</div>
   <div class="sb-sec">Module 14 · Checkout Upsell</div>
-  <div class="sb-item" onclick="go(5)">06 · 3 Pages</div>
-  <div class="sb-item" onclick="go(6)">07 · Suggest Logic + Layout</div>
+  <div class="sb-item" onclick="go(6)">07 · 3 Pages</div>
+  <div class="sb-item" onclick="go(7)">08 · Suggest Logic + Layout</div>
   <div class="sb-sec">Module 15 · Launch Time</div>
-  <div class="sb-item" onclick="go(7)">08 · Create Modes</div>
-  <div class="sb-item" onclick="go(8)">09 · Countdown Mode</div>
-  <div class="sb-item" onclick="go(9)">10 · ⚠️ 4 End-Behaviors at 00:00</div>
+  <div class="sb-item" onclick="go(8)">09 · Create Modes</div>
+  <div class="sb-item" onclick="go(9)">10 · Countdown Mode</div>
+  <div class="sb-item" onclick="go(10)">11 · ⚠️ 4 End-Behaviors at 00:00</div>
   <div class="sb-sec">Module 16 · App Configurations</div>
-  <div class="sb-item" onclick="go(10)">11 · Discount Method</div>
-  <div class="sb-item" onclick="go(11)">12 · OD Combining + Data Sync</div>
-  <div class="sb-item" onclick="go(12)">13 · Custom CSS + Classname</div>
+  <div class="sb-item" onclick="go(11)">12 · Discount Method</div>
+  <div class="sb-item" onclick="go(12)">13 · OD Combining + Data Sync</div>
+  <div class="sb-item" onclick="go(13)">14 · Custom CSS vs Classname</div>
+  <div class="sb-item" onclick="go(14)">15 · Plan × Feature Matrix</div>
   <div class="sb-sec">Module 17 · Troubleshooting</div>
-  <div class="sb-item" onclick="go(13)">14 · Top 10 Tickets</div>
-  <div class="sb-item" onclick="go(14)">15 · Decision Tree · Widget</div>
-  <div class="sb-item" onclick="go(15)">16 · Decision Tree · Discount</div>
-  <div class="sb-item" onclick="go(16)">17 · Stacking Matrix</div>
-  <div class="sb-item" onclick="go(17)">18 · Multi-currency / Markets</div>
-  <div class="sb-item" onclick="go(18)">19 · Theme / 3rd-party Conflicts</div>
-  <div class="sb-item" onclick="go(19)">20 · Import/Export · CSV</div>
-  <div class="sb-item" onclick="go(20)">21 · Customization Requests</div>
-  <div class="sb-item" onclick="go(21)">22 · Billing · Charges · Refunds</div>
+  <div class="sb-item" onclick="go(15)">16 · Top 10 Matching</div>
+  <div class="sb-item" onclick="go(16)">17 · Decision Tree · Widget</div>
+  <div class="sb-item" onclick="go(17)">18 · Decision Tree · Discount</div>
+  <div class="sb-item" onclick="go(18)">19 · Stacking Matrix</div>
+  <div class="sb-item" onclick="go(19)">20 · Multi-currency / Markets</div>
+  <div class="sb-item" onclick="go(20)">21 · Theme / 3rd-party Conflicts</div>
+  <div class="sb-item" onclick="go(21)">22 · Import/Export · CSV</div>
+  <div class="sb-item" onclick="go(22)">23 · Customization Requests</div>
+  <div class="sb-item" onclick="go(23)">24 · Billing · Charges · Refunds</div>
   <div class="sb-sec">Module 18 · Ticket Simulations</div>
-  <div class="sb-item" onclick="go(22)">23 · Ticket Set 1</div>
-  <div class="sb-item" onclick="go(23)">24 · Ticket Set 2</div>
-  <div class="sb-item" onclick="go(24)">25 · Ticket Set 3</div>
+  <div class="sb-item" onclick="go(24)">25 · Ticket Set 1</div>
+  <div class="sb-item" onclick="go(25)">26 · Ticket Set 2</div>
+  <div class="sb-item" onclick="go(26)">27 · Ticket Set 3</div>
   <div class="sb-sec">Module 19 · Quick Reference</div>
-  <div class="sb-item" onclick="go(25)">26 · Master Cheat Sheet</div>
-  <div class="sb-item" onclick="go(26)">27 · Escalation Matrix</div>
+  <div class="sb-item" onclick="go(27)">28 · Master Cheat Sheet</div>
+  <div class="sb-item" onclick="go(28)">29 · Escalation Matrix</div>
   <div class="sb-sec">Wrap-Up</div>
-  <div class="sb-item" onclick="go(27)">28 · Final Quiz</div>
-  <div class="sb-item" onclick="go(28)">29 · Mega Spinwheel</div>
-  <div class="sb-item" onclick="go(29)">30 · Final Ticket</div>
-  <div class="sb-item" onclick="go(30)">31 · Feedback</div>
-  <div class="sb-item" onclick="go(31)">32 · Graduation</div>
+  <div class="sb-item" onclick="go(29)">30 · Final Quiz</div>
+  <div class="sb-item" onclick="go(30)">31 · Mega Spinwheel</div>
+  <div class="sb-item" onclick="go(31)">32 · Final Ticket</div>
+  <div class="sb-item" onclick="go(32)">33 · Feedback</div>
+  <div class="sb-item" onclick="go(33)">34 · Graduation</div>
 </div>
 
 <div id="deck">
@@ -281,15 +291,31 @@ code{font-family:ui-monospace,monospace;font-size:12px;background:var(--bg);bord
 </div>
 </div>
 
-<div class="slide" data-mod="Module 13 · Collection + Translate">
+<div class="slide" data-mod="Module 13 · Collection Page">
 <div class="sc">
-  <div class="ey">Module 13 · Collection Page + Auto Translate</div>
-  <h2><span class="lang-vi">Show on Collection Page + Auto Translate</span><span class="lang-en">Show on Collection Page + Auto Translate</span></h2>
+  <div class="ey">Module 13 · Collection Page Display</div>
+  <h2><span class="lang-vi">Show qty breaks trên collection page</span><span class="lang-en">Show qty breaks on collection page</span></h2>
   <div class="field-list">
-    <div class="field-row"><div class="fname">Collection page</div><div class="fdesc"><span class="lang-vi">Hiển thị qty breaks table trong mỗi product card trên collection page. Yêu cầu add block vào theme.</span><span class="lang-en">Show qty breaks table inside each product card on collection page. Requires adding theme block.</span></div></div>
-    <div class="field-row highlight"><div class="fname">Auto Translate</div><div class="fdesc"><span class="lang-vi">Widget tự dịch theo ngôn ngữ store. <strong>Lưu ý:</strong> ngôn ngữ <em>default</em> của store — merchant phải tự dịch trong Shopify Translate &amp; Adapt trước, app không tự dịch cho ngôn ngữ default.</span><span class="lang-en">Widget auto-translates to store language. <strong>Note:</strong> <em>default</em> language — merchant must translate via Shopify Translate &amp; Adapt first, app doesn't auto-translate the default language.</span></div></div>
+    <div class="field-row"><div class="fname"><span class="lang-vi">Nơi hiện</span><span class="lang-en">Where</span></div><div class="fdesc"><span class="lang-vi">Mỗi product card trên collection page sẽ có bảng qty breaks nhỏ.</span><span class="lang-en">Each product card on collection page shows a small qty breaks table.</span></div></div>
+    <div class="field-row"><div class="fname"><span class="lang-vi">Yêu cầu</span><span class="lang-en">Requires</span></div><div class="fdesc"><span class="lang-vi">Add app block vào <strong>collection template</strong> trong theme editor. CS có thể hỗ trợ thêm block nếu merchant cấp quyền theme.</span><span class="lang-en">Add app block to <strong>collection template</strong> in theme editor. CS can help add the block if merchant grants theme access.</span></div></div>
+    <div class="field-row"><div class="fname"><span class="lang-vi">Ticket phổ biến</span><span class="lang-en">Common ticket</span></div><div class="fdesc"><span class="lang-vi">"Table không hiện trên collection" → 99% là chưa add block vào collection template (khác với product template).</span><span class="lang-en">"Table not showing on collection" → 99% is missing block on collection template (different from product template).</span></div></div>
   </div>
-  <div class="callout warn" style="margin-top:10px"><span class="ci">⚠️</span><div><span class="lang-vi">Ticket phổ biến: "French không dịch đúng" hoặc "Dutch dịch, English không". → Check ngôn ngữ default của store + Shopify translation settings.</span><span class="lang-en">Common ticket: "French not translating" or "Dutch translates, English doesn't". → Check store default language + Shopify translation settings.</span></div></div>
+</div>
+</div>
+
+<div class="slide" data-mod="Module 13 · Auto Translate">
+<div class="sc">
+  <div class="ey">Module 13 · ⚠️ Auto Translate</div>
+  <h2><span class="lang-vi">Auto Translate — rule quan trọng</span><span class="lang-en">Auto Translate — critical rule</span></h2>
+  <div class="callout danger"><span class="ci">🚨</span><div><span class="lang-vi"><strong>Auto Translate KHÔNG dịch ngôn ngữ DEFAULT của store.</strong> Nó chỉ dịch các ngôn ngữ <em>non-default</em> được khách switch sang ở storefront.</span><span class="lang-en"><strong>Auto Translate does NOT translate the store's DEFAULT language.</strong> It only translates <em>non-default</em> languages that customers switch to on storefront.</span></div></div>
+  <h3 style="margin-top:14px"><span class="lang-vi">Vì sao?</span><span class="lang-en">Why?</span></h3>
+  <p><span class="lang-vi">Default language được coi là <strong>"nguồn"</strong> — text merchant nhập vào widget settings mặc định là default language. Auto Translate dịch từ default → các ngôn ngữ khác. Không có "nguồn khác" để dịch sang default.</span><span class="lang-en">The default language is the <strong>"source"</strong> — text merchant enters in widget settings is assumed to be the default language. Auto Translate translates FROM default → other languages. There's no other source to translate TO the default.</span></p>
+  <h3 style="margin-top:12px"><span class="lang-vi">Cách fix khi default language text sai</span><span class="lang-en">How to fix default language text</span></h3>
+  <div class="field-list">
+    <div class="field-row"><div class="fname">Option A</div><div class="fdesc"><span class="lang-vi">Merchant đổi trực tiếp text trong widget settings (Custom text trong Display Settings). Đây là nguồn → sẽ hiện cho default language.</span><span class="lang-en">Merchant directly edits text in widget settings (Custom text in Display Settings). This IS the source → shows on default language.</span></div></div>
+    <div class="field-row"><div class="fname">Option B</div><div class="fdesc"><span class="lang-vi">Dùng <strong>Shopify Translate &amp; Adapt</strong> để override text cho default language. App tôn trọng Shopify translations.</span><span class="lang-en">Use <strong>Shopify Translate &amp; Adapt</strong> to override text for default language. App respects Shopify translations.</span></div></div>
+  </div>
+  <div class="callout warn" style="margin-top:12px"><span class="ci">⚠️</span><div><span class="lang-vi"><strong>Ticket phổ biến:</strong> "Dutch dịch OK, English không dịch đúng". Case thực tế: store default = English → app không auto-translate English. Hướng dẫn merchant dùng Option A hoặc B ở trên.</span><span class="lang-en"><strong>Common ticket:</strong> "Dutch translates fine, English doesn't translate correctly". Real case: store default = English → app doesn't auto-translate English. Guide merchant to Option A or B above.</span></div></div>
 </div>
 </div>
 
@@ -297,6 +323,7 @@ code{font-family:ui-monospace,monospace;font-size:12px;background:var(--bg);bord
 <div class="sc">
   <div class="ey">Module 14 · Checkout Upsell</div>
   <h2><span class="lang-vi">3 pages để upsell</span><span class="lang-en">3 pages for upsell</span></h2>
+  <div class="callout info"><span class="ci">🔗</span><div><span class="lang-vi">Tính năng này áp dụng cho <strong>BXGY</strong> (Part 2), <strong>Order Discount</strong> (Part 2), và cả 3 <strong>Bundle templates</strong> (Part 3).</span><span class="lang-en">Applies to <strong>BXGY</strong> (Part 2), <strong>Order Discount</strong> (Part 2), and all 3 <strong>Bundle templates</strong> (Part 3).</span></div></div>
   <div class="g g3">
     <div class="card rose"><h4>Checkout page</h4><p><span class="lang-vi"><strong>⚠️ Yêu cầu Shopify Plus</strong>. Enable + add block to theme.</span><span class="lang-en"><strong>⚠️ Requires Shopify Plus</strong>. Enable + add block to theme.</span></p></div>
     <div class="card blue"><h4>Thank you page</h4><p><span class="lang-vi">Không cần Plus. Enable + add block.</span><span class="lang-en">No Plus needed. Enable + add block.</span></p></div>
@@ -398,34 +425,51 @@ code{font-family:ui-monospace,monospace;font-size:12px;background:var(--bg);bord
 </div>
 </div>
 
-<div class="slide" data-mod="Module 16 · Custom CSS + Classname">
+<div class="slide" data-mod="Module 16 · Custom CSS vs Classname">
 <div class="sc">
-  <div class="ey">Module 16 · Custom</div>
-  <h2><span class="lang-vi">Custom CSS + Custom Classname</span><span class="lang-en">Custom CSS + Custom Classname</span></h2>
-  <div class="field-list">
-    <div class="field-row"><div class="fname">Custom CSS</div><div class="fdesc"><span class="lang-vi">Custom màu, text, vị trí nhẹ. <strong>CS có thể xử lý thay đổi đơn giản</strong> (color, font size, padding). Phức tạp → escalate dev.</span><span class="lang-en">Custom color, text, light positioning. <strong>CS can handle simple tweaks</strong> (color, font size, padding). Complex → escalate dev.</span></div></div>
-    <div class="field-row"><div class="fname">Custom Classname</div><div class="fdesc"><span class="lang-vi">Khi widget hiển thị sai vị trí trong theme, dùng CSS selector khác để match đúng container. <strong>Escalate dev</strong> — cần inspect theme.</span><span class="lang-en">When widget displays in wrong position, use different CSS selector to match the right container. <strong>Escalate to dev</strong> — needs theme inspection.</span></div></div>
-  </div>
+  <div class="ey">Module 16 · Custom CSS vs Classname</div>
+  <h2><span class="lang-vi">2 tools khác nhau — đừng nhầm</span><span class="lang-en">2 different tools — don't confuse</span></h2>
+  <table class="cmp-table">
+    <tr><th></th><th>Custom CSS</th><th>Custom Classname</th></tr>
+    <tr><td><span class="lang-vi">Giải quyết vấn đề gì</span><span class="lang-en">Solves what</span></td><td><span class="lang-vi">Style (màu, font size, padding, text color, border)</span><span class="lang-en">Style (color, font size, padding, text color, border)</span></td><td><span class="lang-vi">Widget hiện sai vị trí / bị theme container che</span><span class="lang-en">Widget in wrong position / covered by theme container</span></td></tr>
+    <tr><td><span class="lang-vi">Input</span><span class="lang-en">Input</span></td><td>CSS rules</td><td><span class="lang-vi">CSS selector (để target container đúng)</span><span class="lang-en">CSS selector (to target correct container)</span></td></tr>
+    <tr><td><span class="lang-vi">Ví dụ</span><span class="lang-en">Example</span></td><td><code>.pareto-widget{color:#698F6D}</code></td><td><code>.product-form__container</code></td></tr>
+    <tr><td><span class="lang-vi">CS xử lý được?</span><span class="lang-en">CS can handle?</span></td><td style="color:var(--green)">✓ <span class="lang-vi">Thay đổi đơn giản (color, font)</span><span class="lang-en">Simple tweaks (color, font)</span></td><td style="color:var(--rose)">✗ <span class="lang-vi">Cần inspect theme → escalate dev</span><span class="lang-en">Needs theme inspection → escalate dev</span></td></tr>
+    <tr><td><span class="lang-vi">Khi nào dùng cái nào</span><span class="lang-en">When to use</span></td><td><span class="lang-vi">Merchant muốn đổi màu/font widget</span><span class="lang-en">Merchant wants widget color/font change</span></td><td><span class="lang-vi">Widget mặc định bị push xuống cuối trang hoặc không hiện</span><span class="lang-en">Widget pushed to bottom of page or not showing</span></td></tr>
+  </table>
+  <div class="callout warn" style="margin-top:12px"><span class="ci">⚠️</span><div><span class="lang-vi"><strong>Phân biệt:</strong> "Widget không hiện đúng chỗ" ≠ "Widget không style đúng". Classname fix <em>vị trí</em>; CSS fix <em>style</em>. CS hỏi rõ trước khi tư vấn.</span><span class="lang-en"><strong>Differentiate:</strong> "Widget in wrong spot" ≠ "Widget looks wrong". Classname fixes <em>position</em>; CSS fixes <em>style</em>. CS clarify before advising.</span></div></div>
 </div>
 </div>
 
-<div class="slide" data-mod="Module 17 · Top 10 Tickets">
+<div class="slide" data-mod="Module 16 · Plan Feature Matrix">
+<div class="sc">
+  <div class="ey">Module 16 · <span class="lang-vi">Ma trận Plan × Feature</span><span class="lang-en">Plan × Feature Matrix</span></div>
+  <h2><span class="lang-vi">Tính năng nào cần plan nào?</span><span class="lang-en">Which plan unlocks which feature?</span></h2>
+  <table class="cmp-table">
+    <tr><th><span class="lang-vi">Tính năng</span><span class="lang-en">Feature</span></th><th>Free</th><th>Basic</th><th>Pro</th><th>Advanced</th></tr>
+    <tr><td>Quantity Breaks · One Discount</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td></tr>
+    <tr><td>Buy X Get Y · Order Discount</td><td>—</td><td>✓</td><td>✓</td><td>✓</td></tr>
+    <tr><td>Bundles (FBT / FPB / Upsell Add-ons)</td><td>—</td><td>—</td><td>✓</td><td>✓</td></tr>
+    <tr><td>Boost Conversion (Banner / Popup / Collection)</td><td>—</td><td>✓</td><td>✓</td><td>✓</td></tr>
+    <tr><td>Checkout Upsell (Thank you / Order status)</td><td>—</td><td>✓</td><td>✓</td><td>✓</td></tr>
+    <tr><td>Checkout Upsell (Checkout page)</td><td colspan="4" style="text-align:center"><span class="lang-vi">+ Shopify Plus (không phải plan của Pareto)</span><span class="lang-en">+ requires Shopify Plus (not Pareto plan)</span></td></tr>
+    <tr><td>Wholesale layout</td><td>—</td><td>—</td><td>—</td><td>✓</td></tr>
+    <tr><td>Manual Discount Method (>100 line items)</td><td>—</td><td>—</td><td>—</td><td>✓</td></tr>
+    <tr><td>Import/Export CSV</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td></tr>
+  </table>
+  <div class="callout info" style="margin-top:12px"><span class="ci">💡</span><div><span class="lang-vi">Ticket phổ biến: "Tại sao không dùng được X?" → Kiểm tra plan merchant đang active trước khi escalate bug.</span><span class="lang-en">Common ticket: "Why can't I use X?" → Check merchant's active plan before escalating as bug.</span></div></div>
+</div>
+</div>
+
+<div class="slide" data-mod="Module 17 · Top 10 Matching">
 <div class="sc">
   <div class="ey">Module 17 · Troubleshooting</div>
-  <h2><span class="lang-vi">Top 10 câu hỏi merchant</span><span class="lang-en">Top 10 merchant questions</span></h2>
-  <table class="cmp-table">
-    <tr><th>#</th><th><span class="lang-vi">Câu hỏi</span><span class="lang-en">Question</span></th><th><span class="lang-vi">Check đầu tiên</span><span class="lang-en">First check</span></th></tr>
-    <tr><td>1</td><td>Discount không hiện trên product page</td><td>App Embed ON? App Block added? Target Customer đúng?</td></tr>
-    <tr><td>2</td><td>Discount không apply ở checkout</td><td>Discount method? Checkout validation? Plus plan nếu cần?</td></tr>
-    <tr><td>3</td><td>Muốn discount cho nhóm khách hàng</td><td>Target Customer → Logged in with tag</td></tr>
-    <tr><td>4</td><td>Widget style không đúng</td><td>Display settings, Holiday accent, Hide theme variant?</td></tr>
-    <tr><td>5</td><td>Campaign hết hạn vẫn hiển thị</td><td>Schedule, When time hits 00:00 settings</td></tr>
-    <tr><td>6</td><td>2 campaigns trùng product</td><td>Priority rules / recommend remove duplicate</td></tr>
-    <tr><td>7</td><td>Free gift không vào cart</td><td>Gift setup, popup settings, Shopify inventory</td></tr>
-    <tr><td>8</td><td>Muốn discount theo cart value</td><td>→ Order Discount (Cart Discounts)</td></tr>
-    <tr><td>9</td><td>Progress bar không hiện ở cart</td><td>Display settings, cần add "Omega Quantity - Campaign" theme block</td></tr>
-    <tr><td>10</td><td>Countdown hết nhưng discount vẫn chạy</td><td>Hide display only vs Hide &amp; disable discount (4 options)</td></tr>
-  </table>
+  <div class="act-hdr"><span class="act-badge">MATCHING</span><span class="timer-tag">5 min</span></div>
+  <h2 style="margin-bottom:8px"><span class="lang-vi">Match Top 10 ticket với first check</span><span class="lang-en">Match Top 10 ticket to first check</span></h2>
+  <p style="font-size:13px;color:var(--ink2);margin-bottom:10px"><span class="lang-vi">Click 1 ticket bên trái, rồi 1 check bên phải để ghép. Click "Kiểm tra" khi xong.</span><span class="lang-en">Click a ticket on the left, then a check on the right. Click "Check" when done.</span></p>
+  <div id="top10-match"></div>
+  <button class="bbtn primary" style="margin-top:10px" onclick="checkTop10()"><span class="lang-vi">Kiểm tra</span><span class="lang-en">Check</span></button>
+  <div id="top10-fb" style="margin-top:10px;font-size:13px;font-weight:600;min-height:16px"></div>
 </div>
 </div>
 
@@ -491,12 +535,12 @@ code{font-family:ui-monospace,monospace;font-size:12px;background:var(--bg);bord
 <div class="slide" data-mod="Module 17 · Import/Export">
 <div class="sc">
   <div class="ey">Module 17 · CSV</div>
-  <h2><span class="lang-vi">Import / Export — các issue phổ biến</span><span class="lang-en">Import / Export — common issues</span></h2>
-  <div class="field-list">
-    <div class="field-row"><div class="fname">Missing headers</div><div class="fdesc"><span class="lang-vi">"Missing required headers for quantity_breaks: campaign_name, campaign_type..." → dùng file sample template của app (Settings → Import/Export). File export không match template import.</span><span class="lang-en">"Missing required headers for quantity_breaks..." → use app's sample template (Settings → Import/Export). Export format differs from import format.</span></div></div>
-    <div class="field-row"><div class="fname">Variant ID khoa học</div><div class="fdesc"><span class="lang-vi">Excel hiển thị variant ID dạng <code>4.46061E+13</code>. Giải pháp: format cell thành Text, thêm dấu <code>'</code> prefix, hoặc dùng Google Sheets.</span><span class="lang-en">Excel shows variant ID as <code>4.46061E+13</code>. Fix: format cell as Text, add <code>'</code> prefix, or use Google Sheets.</span></div></div>
-    <div class="field-row"><div class="fname">Bulk update requests</div><div class="fdesc"><span class="lang-vi">Khách có 1000+ offers muốn update tier 1 default, display name, campaign name... → CS có thể hỗ trợ export, edit, re-import. Với 9000 products + 100k variants → escalate dev.</span><span class="lang-en">Customers with 1000+ offers want to bulk update tier 1 default, display name, campaign name... → CS can help export, edit, re-import. For 9000 products + 100k variants → escalate dev.</span></div></div>
-  </div>
+  <h2><span class="lang-vi">Import / Export — CSV template spec</span><span class="lang-en">Import / Export — CSV template spec</span></h2>
+  <h3 style="margin-top:10px"><span class="lang-vi">Required headers cho Quantity Breaks import</span><span class="lang-en">Required headers for Quantity Breaks import</span></h3>
+  <div style="background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-family:ui-monospace,monospace;font-size:11.5px;overflow-x:auto;margin-top:6px;line-height:1.6">campaign_name, campaign_type, product_assign, customer_assign,<br>rule_buy_from, rule_discount_value, rule_discount_unit, rule_discount_type</div>
+  <h3 style="margin-top:12px"><span class="lang-vi">Sample row</span><span class="lang-en">Sample row</span></h3>
+  <div style="background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-family:ui-monospace,monospace;font-size:11.5px;overflow-x:auto;line-height:1.6">Summer Sale, quantity_breaks, collection:summer, all_visitors,<br>3, 10, percentage, per_item</div>
+  <div class="callout warn" style="margin-top:12px"><span class="ci">⚠️</span><div><span class="lang-vi"><strong>3 pitfalls:</strong> (1) Export format KHÁC import format — phải dùng sample template (Settings → Import/Export). (2) Variant ID Excel hiện dạng khoa học <code>4.46061E+13</code> → format cell Text hoặc dùng Google Sheets. (3) >1000 offers import có thể timeout → escalate dev chạy bulk DB update.</span><span class="lang-en"><strong>3 pitfalls:</strong> (1) Export format DIFFERS from import format — use sample template (Settings → Import/Export). (2) Variant ID shows as <code>4.46061E+13</code> in Excel → format cell as Text or use Google Sheets. (3) >1000 offers import may timeout → escalate dev for bulk DB update.</span></div></div>
 </div>
 </div>
 
@@ -668,13 +712,13 @@ code{font-family:ui-monospace,monospace;font-size:12px;background:var(--bg);bord
 </div>
 
 <div class="slide" data-mod="Wrap-up · Feedback">
-<div class="sc">
-  <div class="ey">Wrap-up · Feedback</div>
-  <h2 style="margin-bottom:6px"><span class="lang-vi">Exit ticket 4-day training</span><span class="lang-en">4-day training Exit ticket</span></h2>
-  <div class="exit-ticket">
-    <div class="et-card"><div class="et-icon">💡</div><span class="et-label"><span class="lang-vi">Điều tâm đắc nhất</span><span class="lang-en">Biggest takeaway</span></span><textarea></textarea></div>
-    <div class="et-card"><div class="et-icon">💪</div><span class="et-label"><span class="lang-vi">Topic tự tin nhất</span><span class="lang-en">Most confident about</span></span><textarea></textarea></div>
-    <div class="et-card"><div class="et-icon">📚</div><span class="et-label"><span class="lang-vi">Cần học thêm</span><span class="lang-en">Need to learn more</span></span><textarea></textarea></div>
+<div class="sc" style="text-align:center">
+  <div class="ey" style="display:flex;justify-content:center">Wrap-up · Feedback</div>
+  <h2 style="margin-bottom:14px"><span class="lang-vi">Feedback</span><span class="lang-en">Feedback</span></h2>
+  <div style="max-width:440px;margin:0 auto;padding:40px 20px;background:var(--bg);border:2px dashed var(--line2);border-radius:14px;color:var(--ink4)">
+    <div style="font-size:40px;margin-bottom:12px">📷</div>
+    <div style="font-size:13px;font-weight:600;letter-spacing:.04em;text-transform:uppercase">IMAGE PLACEHOLDER</div>
+    <div style="font-size:12px;margin-top:8px;color:var(--ink3);line-height:1.5"><span class="lang-vi">Thêm QR code hoặc screenshot feedback form tại đây.</span><span class="lang-en">Insert QR code or feedback form screenshot here.</span></div>
   </div>
 </div>
 </div>
@@ -775,12 +819,69 @@ function treeGo(id,key){renderTree(id,id==='dtree-widget'?dtWidget:dtDisc,key)}
 renderTree('dtree-widget',dtWidget,'start');
 renderTree('dtree-disc',dtDisc,'start');
 
+// TOP 10 MATCHING
+const top10Data={
+  lefts_vi:['Discount không hiện trên product page','Discount không apply ở checkout','Muốn discount theo nhóm khách','Widget style không đúng','Campaign hết hạn vẫn hiển thị','2 campaigns trùng product','Free gift không vào cart','Muốn discount theo cart value','Progress bar không hiện ở cart','Countdown hết nhưng discount vẫn chạy'],
+  lefts_en:['Discount not showing on product page','Discount not applying at checkout','Want discount for customer group','Widget style wrong','Expired campaign still showing','2 campaigns on same product','Free gift not in cart','Want discount by cart value','Progress bar missing on cart','Countdown ended but discount still runs'],
+  rights_vi:['Check App Embed ON + App Block added + Target Customer','Check Discount Method (Automatic/Manual), checkout validation, Plus plan nếu cần','Target Customer → Logged in with tag','Display settings / Holiday accent / Hide theme variant','Schedule end date + timer 00:00 behavior','Recommend remove duplicate / check offer overlap','Check Gift Discount target (Different product) + popup settings','→ Order Discount (Cart Discounts)','Add theme block "Omega Quantity - Campaign"','Đây là default "Hide display only" — switch sang "Hide & disable discount" option 4'],
+  rights_en:['Check App Embed ON + App Block added + Target Customer','Check Discount Method (Automatic/Manual), checkout validation, Plus plan if needed','Target Customer → Logged in with tag','Display settings / Holiday accent / Hide theme variant','Schedule end date + timer 00:00 behavior','Recommend remove duplicate / check offer overlap','Check Gift Discount target (Different product) + popup settings','→ Order Discount (Cart Discounts)','Add theme block "Omega Quantity - Campaign"','Default is "Hide display only" — switch to option 4 "Hide & disable discount"'],
+  pairs:[0,1,2,3,4,5,6,7,8,9]
+};
+let top10Sel={l:null,r:null},top10Done={l:{},r:{}};
+function buildTop10(){
+  const el=document.getElementById('top10-match');if(!el)return;
+  const lang=L();
+  const lefts=top10Data['lefts_'+lang],rights=top10Data['rights_'+lang];
+  const shufR=rights.map((r,i)=>({text:r,origIdx:i})).sort(()=>Math.random()-.5);
+  let html='<div class="match-grid"><div><div class="match-col-label">'+(lang==='vi'?'Ticket':'Ticket')+'</div>';
+  lefts.forEach((t,i)=>{html+='<div class="match-item" id="ml-'+i+'" data-orig="'+i+'" onclick="selT10(\'l\','+i+')">'+t+'</div>';});
+  html+='</div><div><div class="match-col-label">'+(lang==='vi'?'Check đầu tiên':'First check')+'</div>';
+  shufR.forEach((r,i)=>{html+='<div class="match-item" id="mr-'+i+'" data-orig="'+r.origIdx+'" onclick="selT10(\'r\','+i+')">'+r.text+'</div>';});
+  html+='</div></div>';
+  el.innerHTML=html;
+  top10Sel={l:null,r:null};top10Done={l:{},r:{}};
+  document.getElementById('top10-fb').textContent='';
+}
+function selT10(side,i){
+  if(top10Done[side][i])return;
+  if(top10Sel[side]!==null){document.getElementById('m'+side+'-'+top10Sel[side]).classList.remove('selected')}
+  if(top10Sel[side]===i){top10Sel[side]=null;return}
+  top10Sel[side]=i;
+  document.getElementById('m'+side+'-'+i).classList.add('selected');
+  if(top10Sel.l!==null&&top10Sel.r!==null){
+    const li=top10Sel.l,ri=top10Sel.r;
+    const lEl=document.getElementById('ml-'+li),rEl=document.getElementById('mr-'+ri);
+    lEl.classList.remove('selected');rEl.classList.remove('selected');
+    const pairNum=Object.keys(top10Done.l).length+1;
+    const badge='<span class="match-pair-num">'+pairNum+'</span>';
+    lEl.insertAdjacentHTML('afterbegin',badge);rEl.insertAdjacentHTML('afterbegin',badge);
+    top10Done.l[li]=ri;top10Done.r[ri]=li;
+    top10Sel={l:null,r:null};
+  }
+}
+function checkTop10(){
+  let ok=0,total=top10Data.lefts_vi.length;
+  Object.keys(top10Done.l).forEach(li=>{
+    const ri=top10Done.l[li];
+    const lEl=document.getElementById('ml-'+li),rEl=document.getElementById('mr-'+ri);
+    const lOrig=parseInt(lEl.dataset.orig),rOrig=parseInt(rEl.dataset.orig);
+    const correct=top10Data.pairs[lOrig]===rOrig;
+    lEl.classList.add(correct?'ok':'bad');rEl.classList.add(correct?'ok':'bad');
+    if(correct)ok++;
+  });
+  const fb=document.getElementById('top10-fb');
+  const lang=L();
+  fb.textContent=ok===total?'🎉 '+ok+'/'+total+' — '+(lang==='vi'?'hoàn hảo!':'perfect!'):(ok+'/'+total+' '+(lang==='vi'?'đúng. Xem lại cặp sai.':'correct. Review the wrong pairs.'));
+  fb.style.color=ok===total?'var(--green)':'var(--amber)';
+}
+buildTop10();
+
 // Final quiz
 const finalQuizData=[
   {q_vi:'4 hành vi khi timer hit 00:00 — cái nào TẮT discount hoàn toàn?',q_en:'4 behaviors at timer 00:00 — which FULLY disables discount?',opts_vi:['Hide display only','Hide display + text','Everything same','Hide & disable discount'],opts_en:['Hide display only','Hide display + text','Everything same','Hide & disable discount'],c:3,e_vi:'Chỉ option 4 tắt discount. 3 options đầu chỉ ẩn UI, discount vẫn work.',e_en:'Only option 4 disables. First 3 only hide UI, discount still works.'},
   {q_vi:'Order discount >100 line items thường fail. Giải pháp?',q_en:'Order discount >100 line items often fails. Solution?',opts_vi:['Upgrade plan','Switch Manual Discount Method','Reduce cart size','Use Shopify code'],opts_en:['Upgrade plan','Switch to Manual Discount Method','Reduce cart size','Use Shopify code'],c:1,e_vi:'Manual method dùng draft order, xử lý được large orders. Yêu cầu Advanced plan.',e_en:'Manual uses draft order, handles large orders. Requires Advanced plan.'},
   {q_vi:'Checkout Upsell ở page nào CẦN Shopify Plus?',q_en:'Which Checkout Upsell page REQUIRES Shopify Plus?',opts_vi:['Thank you page','Order status page','Checkout page','Tất cả'],opts_en:['Thank you page','Order status page','Checkout page','All'],c:2,e_vi:'Chỉ Checkout page cần Plus. Thank you + Order status không cần.',e_en:'Only Checkout page needs Plus. Thank you + Order status don\'t.'},
-  {q_vi:'FPB giới hạn bao nhiêu variants/options?',q_en:'FPB limits how many variants/options?',opts_vi:['50/2','100/3','200/5','Không giới hạn'],opts_en:['50/2','100/3','200/5','Unlimited'],c:1,e_vi:'Shopify limits: 100 variants + 3 options per product.',e_en:'Shopify limits: 100 variants + 3 options per product.'},
+  {q_vi:'FPB có app cap gì?',q_en:'What is FPB\'s app cap?',opts_vi:['Max 100 variants (Shopify limit)','Max 3 child products per bundle','Max 3 options (Shopify limit)','Không giới hạn'],opts_en:['Max 100 variants (Shopify limit)','Max 3 child products per bundle','Max 3 options (Shopify limit)','Unlimited'],c:1,e_vi:'App cap = 3 products/bundle. KHÔNG phải Shopify variant/option limits. Muốn >3 → tách bundle hoặc dùng FBT.',e_en:'App cap = 3 products/bundle. NOT Shopify variant/option limits. For >3 → split bundle or use FBT.'},
   {q_vi:'Order Discount discount apply cho đâu?',q_en:'Order Discount applies to what?',opts_vi:['Chỉ Customer Buy scope','Toàn bộ cart (kể cả ngoài scope)','Chỉ product rẻ nhất','Tuỳ setup'],opts_en:['Only Customer Buy scope','Entire cart (incl. out-of-scope)','Only cheapest','Depends on setup'],c:1,e_vi:'⚠️ OD luôn áp cho toàn cart.',e_en:'⚠️ OD always applies to entire cart.'},
   {q_vi:'BXGY Discount Target có bao nhiêu options?',q_en:'BXGY Discount Target has how many options?',opts_vi:['2','3','4','5'],opts_en:['2','3','4','5'],c:1,e_vi:'3: Same (X) / Least expensive in X / Different product.',e_en:'3: Same (X) / Least expensive in X / Different product.'},
   {q_vi:'Upsell Add-ons tối đa bao nhiêu add-ons?',q_en:'Upsell Add-ons max add-ons?',opts_vi:['2','3','5','10'],opts_en:['2','3','5','10'],c:1,e_vi:'Hard cap 3.',e_en:'Hard cap 3.'},
@@ -818,7 +919,7 @@ const spinQs=[
   {q_vi:'D2: Order Discount apply cho đâu?',q_en:'D2: Order Discount applies to?',a_vi:'→ Toàn bộ cart, kể cả ngoài scope.',a_en:'→ Entire cart, including out-of-scope.'},
   {q_vi:'D2: Cap 100 gifts trong OD?',q_en:'D2: Cap 100 gifts in OD?',a_vi:'→ Max Discount = giá 1 gift × 100.',a_en:'→ Max Discount = 1 gift value × 100.'},
   {q_vi:'D3: 3 templates Mix & Match Bundle?',q_en:'D3: 3 Mix & Match templates?',a_vi:'→ FBT · Fixed Product Bundle · Upsell Add-ons.',a_en:'→ FBT · Fixed Product Bundle · Upsell Add-ons.'},
-  {q_vi:'D3: FPB limits?',q_en:'D3: FPB limits?',a_vi:'→ 100 variants, 3 options (Shopify limits).',a_en:'→ 100 variants, 3 options (Shopify limits).'},
+  {q_vi:'D3: FPB app cap?',q_en:'D3: FPB app cap?',a_vi:'→ Max 3 child products per bundle (app-level, không phải Shopify).',a_en:'→ Max 3 child products per bundle (app-level, not Shopify).'},
   {q_vi:'D3: Upsell Add-ons tối đa?',q_en:'D3: Upsell Add-ons max?',a_vi:'→ 3 add-ons.',a_en:'→ 3 add-ons.'},
   {q_vi:'D4: 4 behaviors timer 00:00 — cái nào tắt discount?',q_en:'D4: 4 timer 00:00 behaviors — which disables discount?',a_vi:'→ Hide & disable discount.',a_en:'→ Hide & disable discount.'},
   {q_vi:'D4: Automatic vs Manual Discount Method?',q_en:'D4: Automatic vs Manual Discount Method?',a_vi:'→ Automatic = Shopify function, stack OK. Manual = Pareto function, không stack, cho >100 line items.',a_en:'→ Automatic = Shopify function, stacks. Manual = Pareto function, no stack, for >100 line items.'},
@@ -882,6 +983,7 @@ function rebuildAll(){
   buildFinalQuiz();
   renderTree('dtree-widget',dtWidget,document.getElementById('dtree-widget').dataset.current||'start');
   renderTree('dtree-disc',dtDisc,document.getElementById('dtree-disc').dataset.current||'start');
+  buildTop10();
 }
 upUI();
 </script>

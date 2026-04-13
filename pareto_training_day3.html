@@ -121,6 +121,23 @@ code{font-family:ui-monospace,monospace;font-size:12px;background:var(--bg);bord
 .et-label{font-size:11px;font-weight:700;color:var(--ink3);display:block;margin-bottom:7px;text-transform:uppercase;letter-spacing:.04em}
 .et-card textarea{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:7px;color:var(--ink);font-family:inherit;font-size:12px;padding:8px 10px;resize:none;min-height:65px;outline:none;transition:border-color .15s;line-height:1.5}
 .et-card textarea:focus{border-color:var(--blue)}
+.tf-list{display:flex;flex-direction:column;gap:10px;margin-top:10px}
+.tf-row{background:var(--white);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px;box-shadow:var(--sh)}
+.tf-stmt{font-size:13px;font-weight:500;margin-bottom:8px;line-height:1.4}
+.tf-btns{display:flex;gap:7px}
+.tf-btn{padding:5px 16px;border-radius:7px;border:1px solid var(--line);background:var(--bg);font-size:12px;font-weight:600;cursor:pointer;color:var(--ink2);font-family:inherit}
+.tf-btn.correct{background:var(--green-l);border-color:var(--green-m);color:var(--green)}
+.tf-btn.wrong{background:var(--rose-l);border-color:var(--rose-m);color:var(--rose)}
+.tf-exp{font-size:12px;color:var(--ink3);margin-top:7px;padding-top:7px;border-top:1px solid var(--line);display:none;line-height:1.5}
+.tf-exp.show{display:block}
+.dtree-box{background:var(--white);border:1px solid var(--line);border-radius:var(--rlg);padding:14px 16px;box-shadow:var(--sh);margin-top:10px}
+.dt-node{font-size:14px;font-weight:600;margin-bottom:10px;line-height:1.4}
+.dt-btns{display:flex;gap:8px;flex-wrap:wrap}
+.dt-btn{padding:7px 14px;border-radius:7px;border:1px solid var(--line2);background:var(--bg);font-size:12px;font-weight:600;cursor:pointer;color:var(--ink2);font-family:inherit}
+.dt-btn:hover{border-color:var(--blue);color:var(--blue)}
+.dt-btn.yes{background:var(--green-l);border-color:var(--green-m);color:var(--green)}
+.dt-btn.no{background:var(--rose-l);border-color:var(--rose-m);color:var(--rose)}
+.dt-reset{margin-top:10px;font-size:11px;color:var(--ink3);background:none;border:none;cursor:pointer;text-decoration:underline;font-family:inherit}
 #spin-section{text-align:center}
 #spin-canvas{border-radius:50%;box-shadow:var(--shmd)}
 #spin-question{margin:16px auto 0;max-width:520px;background:var(--white);border:1px solid var(--line);border-radius:var(--rlg);padding:16px 20px;font-size:15px;font-weight:600;line-height:1.4;min-height:60px;display:flex;align-items:center;justify-content:center;text-align:center;box-shadow:var(--sh)}
@@ -165,7 +182,7 @@ code{font-family:ui-monospace,monospace;font-size:12px;background:var(--bg);bord
   <div class="tb-sep"></div>
   <span id="tb-mod"></span>
   <button id="lang-toggle" onclick="toggleLang()" style="flex-shrink:0;padding:3px 10px;border-radius:14px;border:1px solid var(--line2);background:var(--white);font-size:11px;font-weight:700;color:var(--ink3);cursor:pointer;font-family:inherit"><span id="lang-label">EN</span></button>
-  <span id="tb-num">1 / 22</span>
+  <span id="tb-num">1 / 23</span>
 </div>
 <div id="prog"><div id="pf"></div></div>
 
@@ -199,13 +216,14 @@ code{font-family:ui-monospace,monospace;font-size:12px;background:var(--bg);bord
   <div class="sb-item" onclick="go(14)">15 · Cart + Display</div>
   <div class="sb-item" onclick="go(15)">16 · Broken Setup</div>
   <div class="sb-sec">Module 12 · Practice</div>
-  <div class="sb-item" onclick="go(16)">17 · Quiz 3 Templates</div>
-  <div class="sb-item" onclick="go(17)">18 · Ticket Simulation</div>
+  <div class="sb-item" onclick="go(16)">17 · <span class="lang-vi">Đúng/Sai</span><span class="lang-en">True/False</span></div>
+  <div class="sb-item" onclick="go(17)">18 · Quiz 3 Templates</div>
+  <div class="sb-item" onclick="go(18)">19 · Ticket Simulation</div>
   <div class="sb-sec">Wrap-Up</div>
-  <div class="sb-item" onclick="go(18)">19 · Cheat Sheet</div>
-  <div class="sb-item" onclick="go(19)">20 · Spinwheel</div>
-  <div class="sb-item" onclick="go(20)">21 · Feedback</div>
-  <div class="sb-item" onclick="go(21)">22 · End</div>
+  <div class="sb-item" onclick="go(19)">20 · Cheat Sheet</div>
+  <div class="sb-item" onclick="go(20)">21 · Spinwheel</div>
+  <div class="sb-item" onclick="go(21)">22 · Feedback</div>
+  <div class="sb-item" onclick="go(22)">23 · End</div>
 </div>
 
 <div id="deck">
@@ -247,7 +265,7 @@ code{font-family:ui-monospace,monospace;font-size:12px;background:var(--bg);bord
   <h2><span class="lang-vi">3 templates — tổng quan</span><span class="lang-en">3 templates — overview</span></h2>
   <div class="g g3" style="margin-top:14px">
     <div class="tmpl-card fbt"><div class="tmpl-icon">🛒</div><h3>Frequently Bought Together</h3><p><span class="lang-vi">Khách mua đúng tổ hợp sản phẩm + đúng số lượng → được giảm. One-click add bundle.</span><span class="lang-en">Customer buys exact products + exact quantities → gets discount. One-click add bundle.</span></p></div>
-    <div class="tmpl-card fpb"><div class="tmpl-icon">📦</div><h3>Fixed Product Bundle</h3><p><span class="lang-vi">Tạo 1 product MỚI trên Shopify — combo cố định. Có Shopify limits.</span><span class="lang-en">Creates a NEW Shopify product — fixed combo. Has Shopify limits.</span></p></div>
+    <div class="tmpl-card fpb"><div class="tmpl-icon">📦</div><h3>Fixed Product Bundle</h3><p><span class="lang-vi">Tạo 1 product MỚI trên Shopify — combo cố định. App cap: max 3 child products.</span><span class="lang-en">Creates a NEW Shopify product — fixed combo. App cap: max 3 child products.</span></p></div>
     <div class="tmpl-card ua"><div class="tmpl-icon">✨</div><h3>Upsell Add-ons</h3><p><span class="lang-vi">Attach tối đa 3 add-ons vào main product — giảm giá khi mua kèm.</span><span class="lang-en">Attach max 3 add-ons to a main product — discounted when bought with main.</span></p></div>
   </div>
   <table class="cmp-table">
@@ -255,20 +273,17 @@ code{font-family:ui-monospace,monospace;font-size:12px;background:var(--bg);bord
     <tr><td><span class="lang-vi">Tạo product mới?</span><span class="lang-en">Creates new product?</span></td><td>✗</td><td>✓</td><td>✗</td></tr>
     <tr><td><span class="lang-vi">Fixed quantities</span><span class="lang-en">Fixed quantities</span></td><td>✓</td><td>✓</td><td><span class="lang-vi">Tuỳ chọn</span><span class="lang-en">Optional</span></td></tr>
     <tr><td><span class="lang-vi">Gắn với main product?</span><span class="lang-en">Tied to main product?</span></td><td>✗</td><td>✗</td><td>✓ (max 3)</td></tr>
-    <tr><td>Shopify limits</td><td>—</td><td>⚠️ 100 var / 3 opt</td><td>—</td></tr>
+    <tr><td><span class="lang-vi">Giới hạn</span><span class="lang-en">Limits</span></td><td>—</td><td>⚠️ <span class="lang-vi">max 3 products/bundle</span><span class="lang-en">max 3 products/bundle</span></td><td>⚠️ max 3 add-ons</td></tr>
   </table>
 </div>
 </div>
 
-<div class="slide" data-mod="Module 8 · Decision Tree">
+<div class="slide" data-mod="Module 8 · Interactive Decision Tree">
 <div class="sc">
-  <div class="ey">Module 8 · Decision Tree</div>
-  <h2><span class="lang-vi">Merchant hỏi "Tôi muốn bán combo" — chọn template nào?</span><span class="lang-en">Merchant asks "I want to sell combos" — which template?</span></h2>
-  <div class="field-list">
-    <div class="field-row"><div class="fname">FBT</div><div class="fdesc"><span class="lang-vi"><strong>Khi nào:</strong> Merchant có các sản phẩm riêng lẻ, chỉ khuyến khích mua kèm. Ví dụ: "Mua bàn chải + kem đánh răng + nước súc miệng → giảm 20%".</span><span class="lang-en"><strong>When:</strong> Separate products, encourage buying together. E.g. "Brush + toothpaste + mouthwash → 20% off".</span></div></div>
-    <div class="field-row"><div class="fname">Fixed Product Bundle</div><div class="fdesc"><span class="lang-vi"><strong>Khi nào:</strong> Bán combo NHƯ 1 SẢN PHẨM mới trên Shopify, có title/description/images riêng. Ví dụ: "Starter Pack: 1 case + 5 refills = $149".</span><span class="lang-en"><strong>When:</strong> Sell combo AS A NEW PRODUCT with own title/description/images. E.g. "Starter Pack: 1 case + 5 refills = $149".</span></div></div>
-    <div class="field-row"><div class="fname">Upsell Add-ons</div><div class="fdesc"><span class="lang-vi"><strong>Khi nào:</strong> Gợi ý add-on (tối đa 3) kèm 1 main product. Ví dụ: "Mua giày → thêm dây giày / xi / lót giày giảm 10% mỗi món".</span><span class="lang-en"><strong>When:</strong> Small upsell (max 3) alongside main product. E.g. "Buy shoes → add laces / polish / insole 10% off each".</span></div></div>
-  </div>
+  <div class="ey">Module 8 · <span class="lang-vi">Cây quyết định tương tác</span><span class="lang-en">Interactive Decision Tree</span></div>
+  <h2 style="margin-bottom:8px"><span class="lang-vi">Merchant muốn bán combo — template nào?</span><span class="lang-en">Merchant wants to sell combos — which template?</span></h2>
+  <p style="font-size:13px;color:var(--ink2);margin-bottom:10px"><span class="lang-vi">Trả lời Yes/No để tìm template phù hợp. Click Reset để bắt đầu lại.</span><span class="lang-en">Answer Yes/No to find the right template. Click Reset to restart.</span></p>
+  <div id="dtree-bundle" class="dtree-box"></div>
 </div>
 </div>
 
@@ -288,10 +303,22 @@ code{font-family:ui-monospace,monospace;font-size:12px;background:var(--bg);bord
 <div class="sc">
   <div class="ey">Module 9 · Setup</div>
   <h2><span class="lang-vi">Bundle Group + Discount Type</span><span class="lang-en">Bundle Group + Discount Type</span></h2>
-  <div class="field-list">
-    <div class="field-row"><div class="fname">Bundle Group</div><div class="fdesc"><span class="lang-vi">Chọn các sản phẩm trong bundle + số lượng cho mỗi sản phẩm. Tất cả required.</span><span class="lang-en">Pick products in bundle + qty per product. All required.</span></div></div>
-    <div class="field-row"><div class="fname">Discount type (3)</div><div class="fdesc"><span class="lang-vi">• <strong>%</strong> — cả bundle giảm X%<br>• <strong>$ (Price)</strong> — cả bundle giảm $X<br>• <strong>Fixed price</strong> — giá cố định sau giảm</span><span class="lang-en">• <strong>%</strong> — bundle X% off<br>• <strong>$ (Price)</strong> — bundle $X off<br>• <strong>Fixed price</strong> — fixed price after discount</span></div></div>
-    <div class="field-row"><div class="fname">"Add bundle to cart"</div><div class="fdesc"><span class="lang-vi">Button tự thêm tất cả sản phẩm + đúng số lượng chỉ với 1 click.</span><span class="lang-en">Button auto-adds all products + correct qty in one click.</span></div></div>
+  <h3 style="margin-top:12px"><span class="lang-vi">Bundle Group — setup visual</span><span class="lang-en">Bundle Group — setup visual</span></h3>
+  <div style="background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:14px;font-family:ui-monospace,monospace;font-size:12px;line-height:1.8;margin-top:8px">
+    ┌─ Bundle Group ────────────────────────────┐<br>
+    │  Product       │ Required qty            │<br>
+    │  ──────────────┼──────────────────────── │<br>
+    │  🪥 Toothbrush │ [   1   ]               │<br>
+    │  🧴 Toothpaste │ [   2   ]               │<br>
+    │  💧 Mouthwash  │ [   1   ]               │<br>
+    │                │                        │<br>
+    │  [+ Add product]                        │<br>
+    └───────────────────────────────────────────┘
+  </div>
+  <div class="field-list" style="margin-top:12px">
+    <div class="field-row"><div class="fname">Bundle Group</div><div class="fdesc"><span class="lang-vi">Chọn products + set required qty per product. Cart phải có ĐÚNG tổ hợp này (cả products lẫn qty) để kích hoạt discount.</span><span class="lang-en">Pick products + set required qty per product. Cart must have EXACT combo (both products and qty) to trigger discount.</span></div></div>
+    <div class="field-row"><div class="fname">Discount type (3)</div><div class="fdesc"><span class="lang-vi">• <strong>%</strong> — cả bundle giảm X% · <strong>$ (Price)</strong> — cả bundle giảm $X · <strong>Fixed price</strong> — giá cố định sau giảm</span><span class="lang-en">• <strong>%</strong> — bundle X% off · <strong>$ (Price)</strong> — bundle $X off · <strong>Fixed price</strong> — fixed price after discount</span></div></div>
+    <div class="field-row"><div class="fname">"Add bundle to cart"</div><div class="fdesc"><span class="lang-vi">Button tự thêm tất cả products + đúng quantity chỉ với 1 click.</span><span class="lang-en">Button auto-adds all products + correct qty in one click.</span></div></div>
   </div>
 </div>
 </div>
@@ -338,11 +365,11 @@ code{font-family:ui-monospace,monospace;font-size:12px;background:var(--bg);bord
 <div class="sc">
   <div class="ey">Module 10 · ⚠️ Shopify Limits</div>
   <h2><span class="lang-vi">Giới hạn kỹ thuật từ Shopify</span><span class="lang-en">Shopify technical limits</span></h2>
-  <div class="callout warn"><span class="ci">⚠️</span><div><span class="lang-vi">Vì FPB tạo real product trên Shopify, nó tuân <strong>Shopify limits</strong>:</span><span class="lang-en">Because FPB creates a real Shopify product, it follows <strong>Shopify limits</strong>:</span></div></div>
+  <div class="callout warn"><span class="ci">⚠️</span><div><span class="lang-vi">App có 1 giới hạn cứng cho FPB — tư vấn merchant trước khi setup:</span><span class="lang-en">App has 1 hard limit for FPB — advise merchant before setup:</span></div></div>
   <div class="field-list">
-    <div class="field-row highlight"><div class="fname">Max 100 variants</div><div class="fdesc"><span class="lang-vi">Tối đa 100 variants/product. Nếu bundle có 5 sizes × 5 colors × 5 materials = 125 → vượt limit.</span><span class="lang-en">Max 100 variants/product. If bundle has 5 sizes × 5 colors × 5 materials = 125 → over limit.</span></div></div>
-    <div class="field-row highlight"><div class="fname">Max 3 options</div><div class="fdesc"><span class="lang-vi">Tối đa 3 options/product (vd Size + Color + Material). Bundle 4+ option dimensions → không tạo được.</span><span class="lang-en">Max 3 options/product. Bundle with 4+ option dimensions → cannot create.</span></div></div>
+    <div class="field-row highlight"><div class="fname"><span class="lang-vi">Max 3 products/bundle</span><span class="lang-en">Max 3 products/bundle</span></div><div class="fdesc"><span class="lang-vi">1 bundle tối đa 3 child products. Nếu merchant muốn 4+ items → (a) tách 2 bundles, (b) chọn 3 items quan trọng nhất, hoặc (c) cân nhắc FBT (không tạo product mới, không cap 3).</span><span class="lang-en">Each bundle caps at 3 child products. For 4+ items → (a) split into 2 bundles, (b) pick the 3 most important, or (c) consider FBT (no new product, no 3-cap).</span></div></div>
   </div>
+  <div class="callout info" style="margin-top:10px"><span class="ci">💡</span><div><span class="lang-vi">KHÔNG phải Shopify variant/option limits — chỉ là app cap của Pareto.</span><span class="lang-en">NOT Shopify variant/option limits — this is Pareto's app-level cap.</span></div></div>
   <div class="callout danger" style="margin-top:12px"><span class="ci">🚨</span><div><span class="lang-vi">CS phải <strong>luôn hỏi trước</strong> nếu merchant có customization lớn. Vượt limit → tư vấn FBT hoặc tách bundle.</span><span class="lang-en">CS must <strong>always ask first</strong> if merchant has heavy customization. Over limit → advise FBT or split bundle.</span></div></div>
 </div>
 </div>
@@ -376,8 +403,9 @@ code{font-family:ui-monospace,monospace;font-size:12px;background:var(--bg);bord
   <div class="ey">Module 11 · Upsell Add-ons</div>
   <h2><span class="lang-vi">Upsell Add-ons — "Better Together"</span><span class="lang-en">Upsell Add-ons — "Better Together"</span></h2>
   <p style="margin-top:6px"><span class="lang-vi">Attach <strong>tối đa 3 add-on products</strong> vào 1 main product. Khách mua main + add-on → add-on được giảm.</span><span class="lang-en">Attach <strong>max 3 add-on products</strong> to a main product. Customer buys main + add-on → add-on discounted.</span></p>
+  <div class="callout warn" style="margin-top:6px"><span class="ci">⚠️</span><div><span class="lang-vi"><strong>Đừng nhầm với BXGY (Part 2):</strong> BXGY trigger bằng <em>qty của X</em> rồi giảm Y. Upsell Add-ons chỉ cần main + add-on cùng cart. BXGY không có "cross-sell" concept.</span><span class="lang-en"><strong>Don't confuse with BXGY (Part 2):</strong> BXGY triggers on <em>qty of X</em> then discounts Y. Upsell Add-ons just needs main + add-on in cart. BXGY has no "cross-sell" concept.</span></div></div>
   <div class="g g2" style="margin-top:10px">
-    <div class="card violet"><h4><span class="lang-vi">Khác biệt FBT/FPB</span><span class="lang-en">Different from FBT/FPB</span></h4><p><span class="lang-vi">• Không cần đúng tổ hợp — add-on optional.<br>• Main mua riêng vẫn được.<br>• Không tạo product mới.</span><span class="lang-en">• No exact combo — add-ons optional.<br>• Main sells alone fine.<br>• No new product.</span></p></div>
+    <div class="card violet" style="border-width:2px"><h4><span class="lang-vi">Khác biệt FBT/FPB</span><span class="lang-en">Different from FBT/FPB</span></h4><p><span class="lang-vi">• Không cần đúng tổ hợp — add-on optional.<br>• Main mua riêng vẫn được.<br>• Không tạo product mới.</span><span class="lang-en">• No exact combo — add-ons optional.<br>• Main sells alone fine.<br>• No new product.</span></p></div>
     <div class="card blue"><h4><span class="lang-vi">Use case</span><span class="lang-en">Use case</span></h4><p><span class="lang-vi">Mua iPhone → gợi ý: Case (30% off), Charger (20%), AirPods (10%).</span><span class="lang-en">Buy iPhone → suggest: Case (30% off), Charger (20%), AirPods (10%).</span></p></div>
   </div>
 </div>
@@ -421,6 +449,15 @@ code{font-family:ui-monospace,monospace;font-size:12px;background:var(--bg);bord
 </div>
 </div>
 
+<div class="slide" data-mod="Module 12 · True/False">
+<div class="sc">
+  <div class="ey">Module 12 · <span class="lang-vi">Đúng / Sai</span><span class="lang-en">True / False</span></div>
+  <div class="act-hdr"><span class="act-badge">TRUE / FALSE</span><span class="timer-tag">3 min</span></div>
+  <h2 style="margin-bottom:10px"><span class="lang-vi">Mix &amp; Match Bundle — Đúng hay Sai?</span><span class="lang-en">Mix &amp; Match Bundle — True or False?</span></h2>
+  <div id="mm-tf"></div>
+</div>
+</div>
+
 <div class="slide" data-mod="Module 12 · Quiz">
 <div class="sc">
   <div class="ey">Module 12 · Quiz</div>
@@ -446,7 +483,7 @@ code{font-family:ui-monospace,monospace;font-size:12px;background:var(--bg);bord
     <div class="ticket-msg"><span class="lang-vi"><strong>Ticket 2:</strong> "Tôi set Order Discount: chi $50 collection 'Summer' → giảm 20%. Nhưng khách mua 1 áo Summer ($30) + 1 quần Winter ($25) = $55, vẫn được giảm 20% trên $55. Tôi chỉ muốn giảm áo Summer."</span><span class="lang-en"><strong>Ticket 2:</strong> "I set Order Discount: spend $50 on 'Summer' collection → 20% off. Customer buys 1 Summer shirt ($30) + 1 Winter pants ($25) = $55, gets 20% off the whole $55. I only want to discount the Summer shirt."</span></div>
     <textarea class="ticket-ta" placeholder="..."></textarea>
     <button class="show-ans-btn" onclick="this.nextElementSibling.classList.add('show')">→</button>
-    <div class="ticket-ans"><span class="lang-vi">❌ Sai offer type. OD apply cho toàn cart theo design (xem Part 2 slide 23). Nếu merchant chỉ muốn giảm Summer → <strong>Quantity Breaks</strong> scope=Summer collection với value trigger, HOẶC <strong>Buy X Get Y</strong> với Same product (X = Summer). OD không phù hợp.</span><span class="lang-en">❌ Wrong offer type. OD applies to entire cart by design (see Part 2 slide 23). To discount only Summer → <strong>Quantity Breaks</strong> scope=Summer collection with value trigger, OR <strong>Buy X Get Y</strong> with Same product (X=Summer). OD is not the right fit.</span></div>
+    <div class="ticket-ans"><span class="lang-vi">❌ Sai offer type. OD apply cho toàn cart theo design (xem Part 2 · OD Entire Cart). Nếu merchant chỉ muốn giảm Summer → <strong>Quantity Breaks</strong> scope=Summer collection với value trigger, HOẶC <strong>Buy X Get Y</strong> với Same product (X = Summer). OD không phù hợp.</span><span class="lang-en">❌ Wrong offer type. OD applies to entire cart by design (see Part 2 · OD Entire Cart). To discount only Summer → <strong>Quantity Breaks</strong> scope=Summer collection with value trigger, OR <strong>Buy X Get Y</strong> with Same product (X=Summer). OD is not the right fit.</span></div>
   </div>
   <div class="qcard">
     <div class="ticket-msg"><span class="lang-vi"><strong>Ticket 3:</strong> "Tôi setup Upsell Add-ons: main = laptop, add-ons = chuột, bàn phím, tai nghe, webcam. App không cho thêm add-on thứ 4 (webcam)."</span><span class="lang-en"><strong>Ticket 3:</strong> "I set up Upsell Add-ons: main = laptop, add-ons = mouse, keyboard, headphones, webcam. App won't let me add a 4th add-on (webcam)."</span></div>
@@ -474,7 +511,7 @@ code{font-family:ui-monospace,monospace;font-size:12px;background:var(--bg);bord
     <tr><td>Fixed qty</td><td>✓</td><td>✓</td><td><span class="lang-vi">Tuỳ chọn</span><span class="lang-en">Optional</span></td></tr>
     <tr><td>Add-on limit</td><td>—</td><td>—</td><td><strong>Max 3</strong></td></tr>
     <tr><td>Discount types</td><td>% / $ / Fixed</td><td>% / $ / Fixed</td><td>% / $ per add-on</td></tr>
-    <tr><td>Shopify limits</td><td>—</td><td>⚠️ 100 var / 3 opt</td><td>—</td></tr>
+    <tr><td><span class="lang-vi">Giới hạn</span><span class="lang-en">Limits</span></td><td>—</td><td>⚠️ <span class="lang-vi">max 3 products/bundle</span><span class="lang-en">max 3 products/bundle</span></td><td>⚠️ max 3 add-ons</td></tr>
     <tr><td><span class="lang-vi">Cần đúng tổ hợp</span><span class="lang-en">Exact combo needed</span></td><td>✓</td><td>✓</td><td>✗</td></tr>
     <tr><td>Checkout Upsell</td><td>✓</td><td>✓</td><td>✓</td></tr>
   </table>
@@ -497,15 +534,14 @@ code{font-family:ui-monospace,monospace;font-size:12px;background:var(--bg);bord
 </div>
 
 <div class="slide" data-mod="Wrap-up · Feedback">
-<div class="sc">
-  <div class="ey">Wrap-up · Feedback</div>
-  <h2 style="margin-bottom:6px"><span class="lang-vi">Exit ticket Part 3</span><span class="lang-en">Part 3 Exit ticket</span></h2>
-  <div class="exit-ticket">
-    <div class="et-card"><div class="et-icon">💡</div><span class="et-label"><span class="lang-vi">Điều tôi học được</span><span class="lang-en">What I learned</span></span><textarea></textarea></div>
-    <div class="et-card"><div class="et-icon">❓</div><span class="et-label"><span class="lang-vi">Còn chưa rõ</span><span class="lang-en">Still unclear</span></span><textarea></textarea></div>
-    <div class="et-card"><div class="et-icon">✨</div><span class="et-label"><span class="lang-vi">Đề xuất</span><span class="lang-en">Suggestions</span></span><textarea></textarea></div>
+<div class="sc" style="text-align:center">
+  <div class="ey" style="display:flex;justify-content:center">Wrap-up · Feedback</div>
+  <h2 style="margin-bottom:14px"><span class="lang-vi">Feedback</span><span class="lang-en">Feedback</span></h2>
+  <div style="max-width:440px;margin:0 auto;padding:40px 20px;background:var(--bg);border:2px dashed var(--line2);border-radius:14px;color:var(--ink4)">
+    <div style="font-size:40px;margin-bottom:12px">📷</div>
+    <div style="font-size:13px;font-weight:600;letter-spacing:.04em;text-transform:uppercase">IMAGE PLACEHOLDER</div>
+    <div style="font-size:12px;margin-top:8px;color:var(--ink3);line-height:1.5"><span class="lang-vi">Thêm QR code hoặc screenshot feedback form tại đây.</span><span class="lang-en">Insert QR code or feedback form screenshot here.</span></div>
   </div>
-  <div class="callout info" style="margin-top:14px"><span class="ci">📆</span><div><span class="lang-vi"><strong>Part 4 preview:</strong> Boost Conversion · Checkout Upsell · Launch Time · App Configurations · Troubleshooting Mastery.</span><span class="lang-en"><strong>Part 4 preview:</strong> Boost Conversion · Checkout Upsell · Launch Time · App Configurations · Troubleshooting Mastery.</span></div></div>
 </div>
 </div>
 
@@ -561,7 +597,7 @@ document.addEventListener('keydown',e=>{if(e.target.tagName==='TEXTAREA'||e.targ
 const mmQuizData=[
   {q_vi:'Merchant muốn tạo combo "1 case + 5 refills = $149" — bán như 1 sản phẩm trên Shopify. Chọn template?',q_en:'Merchant wants "1 case + 5 refills = $149" combo — sold as 1 Shopify product. Pick template?',opts_vi:['FBT','Fixed Product Bundle','Upsell Add-ons','BXGY'],opts_en:['FBT','Fixed Product Bundle','Upsell Add-ons','BXGY'],c:1,e_vi:'FPB tạo product mới với Title/Description/Images — perfect cho starter pack.',e_en:'FPB creates a new product with own Title/Description/Images — perfect for starter pack.'},
   {q_vi:'"Mua iPhone → gợi ý thêm Case, Charger, AirPods (tối đa 3 món)." Chọn?',q_en:'"Buy iPhone → suggest Case, Charger, AirPods (max 3)." Pick?',opts_vi:['FBT','FPB','Upsell Add-ons','Order Discount'],opts_en:['FBT','FPB','Upsell Add-ons','Order Discount'],c:2,e_vi:'Upsell Add-ons tối đa 3 add-ons.',e_en:'Upsell Add-ons caps at 3 add-ons.'},
-  {q_vi:'FPB có giới hạn Shopify nào?',q_en:'What Shopify limits does FPB have?',opts_vi:['50 variants, 2 options','100 variants, 3 options','200 variants, 5 options','Không giới hạn'],opts_en:['50 variants, 2 options','100 variants, 3 options','200 variants, 5 options','No limits'],c:1,e_vi:'FPB tạo real product → 100 variants + 3 options.',e_en:'FPB creates real product → 100 variants + 3 options.'},
+  {q_vi:'FPB có giới hạn nào ở app-level?',q_en:'What app-level limit does FPB have?',opts_vi:['Max 100 variants (Shopify)','Max 3 child products/bundle','Max 3 options (Shopify)','Không giới hạn'],opts_en:['Max 100 variants (Shopify)','Max 3 child products/bundle','Max 3 options (Shopify)','No limits'],c:1,e_vi:'App cap = 3 products per bundle. KHÔNG phải Shopify variant/option limits. Muốn 4+ items → tách bundle hoặc dùng FBT.',e_en:'App cap = 3 products per bundle. NOT Shopify variant/option limits. For 4+ items → split bundle or use FBT.'},
   {q_vi:'Upsell Add-ons — add-on có được giảm khi khách mua riêng (không có main)?',q_en:'Upsell Add-ons — discounted when bought alone?',opts_vi:['Có','Không, chỉ khi có main trong cart','Chỉ Pro plan','Tuỳ theme'],opts_en:['Yes','No, only with main in cart','Only Pro plan','Depends on theme'],c:1,e_vi:'Add-on chỉ giảm khi main có trong cart.',e_en:'Add-on only discounted when main is in cart.'},
   {q_vi:'FBT khác FPB ở điểm cốt lõi nào?',q_en:'Core difference between FBT and FPB?',opts_vi:['FBT chỉ cho Plus','FBT KHÔNG tạo product mới','FBT không có discount','FBT không cần images'],opts_en:['FBT is Plus-only','FBT does NOT create a new Shopify product','FBT has no discount','FBT doesn\'t need images'],c:1,e_vi:'FBT dùng products có sẵn, không tạo product mới.',e_en:'FBT uses existing products, no new product.'}
 ];
@@ -586,10 +622,56 @@ function ansQ(i,oi,el){
 }
 buildQuiz();
 
+// TRUE/FALSE
+const tfData=[
+  {s_vi:'FBT tạo ra 1 sản phẩm mới trên Shopify với SKU riêng.',s_en:'FBT creates a new Shopify product with its own SKU.',a:false,e_vi:'Sai. FBT KHÔNG tạo product mới — chỉ wrap các products có sẵn. FPB mới tạo product mới.',e_en:'False. FBT does NOT create a new product — it wraps existing products. FPB is the one that creates new.'},
+  {s_vi:'FPB có app cap tối đa 3 child products per bundle.',s_en:'FPB has an app cap of max 3 child products per bundle.',a:true,e_vi:'Đúng. App-level cap = 3 products. KHÔNG phải Shopify variant/option limits.',e_en:'True. App-level cap = 3 products. NOT Shopify variant/option limits.'},
+  {s_vi:'Upsell Add-on được giảm giá kể cả khi khách mua add-on riêng (không có main trong cart).',s_en:'Upsell Add-on is discounted even when customer buys add-on alone (no main in cart).',a:false,e_vi:'Sai. Add-on CHỈ giảm khi có main product trong cart.',e_en:'False. Add-on ONLY discounted when main product is in cart.'},
+  {s_vi:'FBT yêu cầu khách có đúng sản phẩm + đúng số lượng trong cart để kích hoạt discount.',s_en:'FBT requires customer to have exact products + exact quantities in cart to trigger discount.',a:true,e_vi:'Đúng. Nếu qty sai hoặc thiếu 1 item → không áp discount.',e_en:'True. Wrong qty or missing item → no discount.'},
+  {s_vi:'Upsell Add-ons có thể có 5 add-ons per offer.',s_en:'Upsell Add-ons can have 5 add-ons per offer.',a:false,e_vi:'Sai. Hard cap = 3. Muốn hơn → tạo offer thứ 2 hoặc chuyển sang FBT.',e_en:'False. Hard cap = 3. Need more → create 2nd offer or switch to FBT.'},
+  {s_vi:'Cả 3 templates (FBT / FPB / Upsell Add-ons) đều có Checkout Upsell.',s_en:'All 3 templates (FBT / FPB / Upsell Add-ons) support Checkout Upsell.',a:true,e_vi:'Đúng. Xem Part 4 Module 14 cho chi tiết Checkout Upsell 3 pages.',e_en:'True. See Part 4 Module 14 for Checkout Upsell 3 pages detail.'}
+];
+const tfA={};
+function buildTF(){
+  const el=document.getElementById('mm-tf');if(!el)return;
+  el.innerHTML='';const lang=L();
+  tfData.forEach((it,i)=>{
+    const div=document.createElement('div');div.className='tf-row';
+    const tL=lang==='vi'?'Đúng':'True',fL=lang==='vi'?'Sai':'False';
+    div.innerHTML='<div class="tf-stmt">'+(i+1)+'. '+it['s_'+lang]+'</div><div class="tf-btns"><button class="tf-btn" onclick="ansTF('+i+',true,this)">✓ '+tL+'</button><button class="tf-btn" onclick="ansTF('+i+',false,this)">✗ '+fL+'</button></div><div class="tf-exp" id="tfe-'+i+'">💬 '+it['e_'+lang]+'</div>';
+    el.appendChild(div);
+  });
+}
+function ansTF(i,ans,btn){if(tfA[i])return;tfA[i]=true;const ok=tfData[i].a===ans;btn.classList.add(ok?'correct':'wrong');document.getElementById('tfe-'+i).classList.add('show')}
+buildTF();
+
+// BUNDLE DECISION TREE
+const dtBundle={
+  start:{q_vi:'Merchant có muốn bán combo này NHƯ 1 sản phẩm mới trên Shopify (có URL, images, title riêng)?',q_en:'Does the merchant want to sell this combo AS A NEW Shopify product (own URL, images, title)?',yes:'fpb_path',no:'no_new_product'},
+  no_new_product:{q_vi:'Merchant muốn gắn combo vào 1 main product (khách mua main + gợi ý add-on nhỏ)?',q_en:'Does merchant want to attach combo to a MAIN product (customer buys main + small add-on suggestions)?',yes:'addon_path',no:'fbt_path'},
+  fpb_path:{q_vi:'→ Fixed Product Bundle. Có title/description/images riêng. Cap: max 3 child products. Nếu >3 items cần tách bundle hoặc dùng FBT.',q_en:'→ Fixed Product Bundle. Own title/description/images. Cap: max 3 child products. For >3 items, split bundle or use FBT.',end:true},
+  addon_path:{q_vi:'Merchant muốn tối đa bao nhiêu add-ons? >3?',q_en:'How many add-ons max? >3?',yes:'addon_many',no:'addon_ok'},
+  addon_ok:{q_vi:'→ Upsell Add-ons. Max 3 add-ons per main product. Mỗi add-on có discount riêng. Chỉ giảm khi main có trong cart.',q_en:'→ Upsell Add-ons. Max 3 add-ons per main product. Each has own discount. Only discounts when main is in cart.',end:true},
+  addon_many:{q_vi:'→ Upsell Add-ons giới hạn 3. Tư vấn: (a) tạo 2+ offers Upsell Add-ons, hoặc (b) chuyển sang FBT nếu đó là bundle cố định.',q_en:'→ Upsell Add-ons caps at 3. Advise: (a) create 2+ Upsell Add-ons offers, or (b) switch to FBT if it\'s a fixed bundle.',end:true},
+  fbt_path:{q_vi:'→ Frequently Bought Together. Không tạo product mới. Yêu cầu đúng tổ hợp + đúng số lượng trong cart. One-click "Add bundle to cart".',q_en:'→ Frequently Bought Together. No new product. Requires exact combo + exact quantities in cart. One-click "Add bundle to cart".',end:true}
+};
+function renderBundleTree(current){
+  const el=document.getElementById('dtree-bundle');if(!el)return;
+  const node=dtBundle[current];const lang=L();
+  let html='<div class="dt-node">'+node['q_'+lang]+'</div>';
+  if(!node.end){
+    html+='<div class="dt-btns"><button class="dt-btn yes" onclick="bundleTreeGo(\''+node.yes+'\')">✓ '+(lang==='vi'?'Có':'Yes')+'</button><button class="dt-btn no" onclick="bundleTreeGo(\''+node.no+'\')">✗ '+(lang==='vi'?'Không':'No')+'</button></div>';
+  }
+  html+='<button class="dt-reset" onclick="bundleTreeGo(\'start\')">↻ '+(lang==='vi'?'Reset':'Reset')+'</button>';
+  el.innerHTML=html;el.dataset.current=current;
+}
+function bundleTreeGo(key){renderBundleTree(key)}
+renderBundleTree('start');
+
 const spinQs=[
   {q_vi:'Kể tên 3 templates của Mix & Match Bundle.',q_en:'Name the 3 Mix & Match Bundle templates.',a_vi:'→ Frequently Bought Together · Fixed Product Bundle · Upsell Add-ons.',a_en:'→ Frequently Bought Together · Fixed Product Bundle · Upsell Add-ons.'},
   {q_vi:'Template nào tạo product mới trên Shopify?',q_en:'Which template creates a new Shopify product?',a_vi:'→ Fixed Product Bundle.',a_en:'→ Fixed Product Bundle.'},
-  {q_vi:'Shopify limits cho FPB?',q_en:'FPB Shopify limits?',a_vi:'→ 100 variants, 3 options per product.',a_en:'→ 100 variants, 3 options per product.'},
+  {q_vi:'App cap cho FPB?',q_en:'FPB app cap?',a_vi:'→ Max 3 child products per bundle (app-level, không phải Shopify).',a_en:'→ Max 3 child products per bundle (app-level, not Shopify).'},
   {q_vi:'Upsell Add-ons tối đa bao nhiêu add-ons?',q_en:'Max add-ons in Upsell Add-ons?',a_vi:'→ 3.',a_en:'→ 3.'},
   {q_vi:'FBT yêu cầu gì ở cart?',q_en:'FBT requires what in cart?',a_vi:'→ Đúng sản phẩm + đúng số lượng.',a_en:'→ Exact products + exact quantities.'},
   {q_vi:'Upsell Add-on discount áp khi nào?',q_en:'When does Upsell Add-on discount apply?',a_vi:'→ Khi main product có trong cart.',a_en:'→ When main product is in cart.'},
@@ -648,7 +730,11 @@ drawWheel(0);
 
 function rebuildAll(){
   Object.keys(mmqA).forEach(k=>delete mmqA[k]);
+  Object.keys(tfA).forEach(k=>delete tfA[k]);
   buildQuiz();
+  buildTF();
+  const dt=document.getElementById('dtree-bundle');
+  if(dt)renderBundleTree(dt.dataset.current||'start');
 }
 upUI();
 </script>
