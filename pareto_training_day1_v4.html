@@ -1668,7 +1668,7 @@ function toggleLang(){
   const isVI=b.classList.contains('lang-vi');
   b.classList.remove(isVI?'lang-vi':'lang-en');
   b.classList.add(isVI?'lang-en':'lang-vi');
-  localStorage.setItem('pareto_training_lang',isVI?'en':'vi');
+  try{localStorage.setItem('pareto_training_lang',isVI?'en':'vi')}catch(e){}
   document.getElementById('lang-label').textContent=isVI?'VI':'EN';
   rebuildAll();
 }

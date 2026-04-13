@@ -540,7 +540,7 @@ function toggleLang(){
   try{localStorage.setItem('pareto_training_lang',isVi?'en':'vi')}catch(e){}
   rebuildAll();upUI();
 }
-try{const saved=localStorage.getItem('pareto_training_lang');if(saved==='en'){document.body.classList.remove('lang-vi');document.body.classList.add('lang-en');document.getElementById('lang-label').textContent='VI'}}catch(e){}
+try{const saved=localStorage.getItem('pareto_training_lang');if(saved==='en'){document.body.classList.remove('lang-vi');document.body.classList.add('lang-en');document.getElementById('lang-label').textContent='VI'}else if(saved==='vi'){document.body.classList.remove('lang-en');document.body.classList.add('lang-vi');document.getElementById('lang-label').textContent='EN'}}catch(e){}
 function go(i){if(i<0||i>=TOTAL||i===cur)return;slides[cur].classList.remove('active');if(i>cur)slides[cur].classList.add('out-l');setTimeout(()=>slides[cur].classList.remove('out-l'),280);cur=i;slides[cur].classList.add('active');slides[cur].querySelector('.sc').scrollTop=0;upUI()}
 function next(){go(cur+1)}
 function prev(){go(cur-1)}
